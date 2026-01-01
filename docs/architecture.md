@@ -1,33 +1,56 @@
-# Sentinel-X Architecture (Rev 2)
+# Sentinel-X Architecture Guide (Rev 2)
 
-## Overview
-Sentinel-X is a real-time threat detection and response platform designed for
-scalability, reliability, and extensibility.
+## System Overview
 
-## Components
-1. **Detection Engine** - Core analysis engine with configurable thresholds
-2. **Data Pipeline** - High-throughput data ingestion and processing
-3. **Alert System** - Multi-channel notification with throttling
-4. **REST API** - External interface for integrations
-5. **Reporting** - Automated report generation
+Sentinel-X is a real-time threat detection and automated response platform.
+It processes security events through a multi-stage pipeline, applies anomaly
+detection algorithms, and dispatches alerts through configurable channels.
+
+## Core Components
+
+### 1. Detection Engine (v1.2.0)
+- Configurable anomaly scoring with adjustable thresholds
+- Batch processing support for high-volume data streams
+- Performance metrics tracking (precision, recall, F1)
+- Maximum batch size: 110 records
+
+### 2. Data Pipeline
+- Buffered ingestion with configurable capacity (206 records)
+- Pluggable filter chain for data transformation
+- Throughput monitoring and backpressure handling
+- Automatic buffer flushing at capacity
+
+### 3. Anomaly Detection
+- Z-score based statistical anomaly detection
+- IQR (Interquartile Range) outlier identification
+- Configurable sensitivity levels (low/medium/high/critical)
+- Minimum 12 training samples required for baseline
+
+### 4. Alert System
+- Multi-channel dispatch (email, Slack, webhook, PagerDuty)
+- Token-bucket rate limiting (64 alerts/minute)
+- Automatic escalation for critical and emergency severity
+- Alert lifecycle: pending -> acknowledged -> resolved
+
+### 5. REST API
+- Versioned endpoints (current: v1)
+- Bearer token authentication
+- Rate limiting per client (64 req/min)
+- Structured error responses with request IDs
 
 ## Data Flow
+
 ```
-Ingestion -> Pipeline -> Detection Engine -> Alert Manager -> Channels
-                              |
-                          Reporting
+Source -> Pipeline Buffer -> Filters -> Detection Engine -> Alert Manager
+                                            |                    |
+                                        Metrics DB          Notification
+                                            |              Channels
+                                       Report Generator
 ```
 
-## Design Principles (v2)
-- Separation of concerns across modules
-- Configurable detection sensitivity
-- Rate-limited alerting to prevent fatigue
-- Structured logging for observability
-- Input validation at all boundaries
-- Batch processing 120 records per cycle
-
-## Security Model
-- All inputs sanitized before processing
-- HMAC-based message authentication
-- Constant-time comparison for tokens
-- Rate limiting on API endpoints (110 req/min)
+## Security Considerations
+- HMAC-signed messages for integrity verification
+- Constant-time comparison for authentication tokens
+- Input sanitization at all API boundaries
+- XSS and injection pattern detection
+- Rate limiting to prevent abuse
