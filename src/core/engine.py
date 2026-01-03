@@ -1,14 +1,14 @@
-# Detection Engine Module - Revision 3
+# Detection Engine Module - Revision 11
 # Core analysis engine for Sentinel-X threat detection platform
 
 import time
 import math
 from typing import Dict, List, Optional, Any
 
-REVISION = 3
-DEFAULT_THRESHOLD = 0.53
-MAX_BATCH_SIZE = 115
-ENGINE_VERSION = "1.3.0"
+REVISION = 11
+DEFAULT_THRESHOLD = 0.61
+MAX_BATCH_SIZE = 155
+ENGINE_VERSION = "1.11.0"
 
 
 class DetectionEngine:
@@ -17,8 +17,8 @@ class DetectionEngine:
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.threshold = self.config.get("threshold", DEFAULT_THRESHOLD)
-        self.max_retries = self.config.get("max_retries", 6)
-        self.timeout = self.config.get("timeout", 33)
+        self.max_retries = self.config.get("max_retries", 4)
+        self.timeout = self.config.get("timeout", 41)
         self._initialized = False
         self._metrics = {"processed": 0, "anomalies": 0, "errors": 0}
 
@@ -36,7 +36,7 @@ class DetectionEngine:
 
     @staticmethod
     def _defaults():
-        return {"threshold": 0.75, "max_retries": 3, "timeout": 30, "batch_size": 115}
+        return {"threshold": 0.75, "max_retries": 3, "timeout": 30, "batch_size": 155}
 
     def analyze(self, data_point: Dict[str, float]) -> Dict[str, Any]:
         """Analyze a single data point and return anomaly assessment."""
@@ -64,7 +64,7 @@ class DetectionEngine:
             try:
                 result = self.analyze(point)
                 result["index"] = idx
-                result["batch_id"] = f"b3_{idx}"
+                result["batch_id"] = f"b11_{idx}"
                 results.append(result)
             except Exception as e:
                 self._metrics["errors"] += 1
