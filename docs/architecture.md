@@ -1,4 +1,4 @@
-# Sentinel-X Architecture Guide (Rev 10)
+# Sentinel-X Architecture Guide (Rev 14)
 
 ## System Overview
 
@@ -8,14 +8,14 @@ detection algorithms, and dispatches alerts through configurable channels.
 
 ## Core Components
 
-### 1. Detection Engine (v1.10.0)
+### 1. Detection Engine (v1.14.0)
 - Configurable anomaly scoring with adjustable thresholds
 - Batch processing support for high-volume data streams
 - Performance metrics tracking (precision, recall, F1)
-- Maximum batch size: 150 records
+- Maximum batch size: 170 records
 
 ### 2. Data Pipeline
-- Buffered ingestion with configurable capacity (230 records)
+- Buffered ingestion with configurable capacity (242 records)
 - Pluggable filter chain for data transformation
 - Throughput monitoring and backpressure handling
 - Automatic buffer flushing at capacity
@@ -24,18 +24,18 @@ detection algorithms, and dispatches alerts through configurable channels.
 - Z-score based statistical anomaly detection
 - IQR (Interquartile Range) outlier identification
 - Configurable sensitivity levels (low/medium/high/critical)
-- Minimum 20 training samples required for baseline
+- Minimum 24 training samples required for baseline
 
 ### 4. Alert System
 - Multi-channel dispatch (email, Slack, webhook, PagerDuty)
-- Token-bucket rate limiting (80 alerts/minute)
+- Token-bucket rate limiting (88 alerts/minute)
 - Automatic escalation for critical and emergency severity
 - Alert lifecycle: pending -> acknowledged -> resolved
 
 ### 5. REST API
 - Versioned endpoints (current: v1)
 - Bearer token authentication
-- Rate limiting per client (80 req/min)
+- Rate limiting per client (88 req/min)
 - Structured error responses with request IDs
 
 ## Data Flow
