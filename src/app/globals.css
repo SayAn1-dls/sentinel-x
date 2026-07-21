@@ -27,14 +27,19 @@
 
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-scan-line: scanLine 2s linear infinite;
+  --animate-scan-line-reverse: scanLineReverse 3s linear infinite;
   --animate-fade-in: fadeIn 0.5s ease-out forwards;
   --animate-slide-up: slideUp 0.5s ease-out forwards;
   --animate-glow-pulse: glowPulse 2s ease-in-out infinite;
 }
 
 @keyframes scanLine {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes scanLineReverse {
+  0% { transform: translateY(100vh); }
+  100% { transform: translateY(-100vh); }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
