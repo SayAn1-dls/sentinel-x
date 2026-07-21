@@ -13,6 +13,47 @@ export interface BiometricSignal {
   behavioralScore: number;
 }
 
+export interface NetworkForensics {
+  hopCount: number;
+  packetJitter: number;
+  latencyMs: number;
+  tlsVersion: string;
+  asnPath: string;
+  geoHops: string[];
+  packetLoss: number;
+  mtu: number;
+  dnsResolutionMs: number;
+  protocolStack: string;
+}
+
+export interface IdentityProof {
+  deviceFingerprintMatch: number;
+  canvasHash: string;
+  webglRenderer: string;
+  audioFingerprint: string;
+  screenResolution: string;
+  timezoneOffset: number;
+  languageProfile: string;
+  pluginHash: string;
+  fontEnumeration: number;
+  hardwareConcurrency: number;
+}
+
+export interface BehavioralTelemetry {
+  keystrokeIntervalMean: number;
+  keystrokeIntervalStdDev: number;
+  keystrokeFlightTime: number;
+  keystrokeDwellTime: number;
+  mouseVelocityMean: number;
+  mouseVelocityStdDev: number;
+  mouseAcceleration: number;
+  scrollPatternEntropy: number;
+  clickPrecision: number;
+  idleTimeRatio: number;
+  copyPasteFrequency: number;
+  tabSwitchCount: number;
+}
+
 export interface Transaction {
   id: string;
   timestamp: string;
@@ -28,6 +69,9 @@ export interface Transaction {
   status: TransactionStatus;
   confidence: number;
   biometrics: BiometricSignal;
+  networkForensics: NetworkForensics;
+  identityProof: IdentityProof;
+  behavioralTelemetry: BehavioralTelemetry;
   flags: string[];
   network: string;
   settlementTime: string;
