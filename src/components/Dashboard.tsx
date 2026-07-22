@@ -10,8 +10,11 @@ import { Transaction, RiskLevel } from '@/lib/types';
 import { generateTransaction, generateInitialTransactions } from '@/lib/mock-data';
 import { generateForensicPDF } from '@/lib/pdf-generator';
 import TransactionRow from './TransactionRow';
+import { useMouseEntropy } from '@/lib/useMouseEntropy';
+import SignalPulseWidget from './SignalPulseWidget';
 
 export default function Dashboard() {
+  const entropyState = useMouseEntropy();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [filter, setFilter] = useState<'all' | 'synthetic' | 'human' | 'flagged'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -75,6 +78,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-obsidian noise-overlay">
+      <SignalPulseWidget entropy={entropyState} />
       {/* Top Bar */}
       <header className="sticky top-0 z-50 bg-obsidian/95 backdrop-blur-xl border-b border-obsidian-border">
         <div className="h-[2px] vermilion-gradient" />
@@ -203,8 +207,8 @@ export default function Dashboard() {
 
         {/* Footer */}
         <div className="mt-4 flex items-center justify-between text-[9px] font-mono text-off-white-dim/50">
-          <span>SENTINEL-X™ v4.2.1 · Kinexys Forensic Intelligence Platform</span>
-          <span>Showing {filtered.length} of {transactions.length} transactions · {new Date().toLocaleTimeString()}</span>
+          <span>SENTINEL-X\u2122 v4.2.1 \u00b7 Kinexys Forensic Intelligence Platform</span>
+          <span>Showing {filtered.length} of {transactions.length} transactions \u00b7 {new Date().toLocaleTimeString()}</span>
         </div>
       </div>
     </div>
