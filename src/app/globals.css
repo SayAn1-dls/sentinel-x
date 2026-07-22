@@ -104,7 +104,7 @@ body {
   background: linear-gradient(135deg, #10B981 0%, #059669 100%);
 }
 
-/* \u2550\u2550\u2550 Behavioral Entropy Monitor \u2550\u2550\u2550 */
+/* ═══ Behavioral Entropy Monitor ═══ */
 
 @keyframes entropyDotPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
@@ -136,4 +136,13 @@ body {
 
 .entropy-widget {
   font-family: "JetBrains Mono", Consolas, monospace;
+}
+
+/* Hide scrollbar for horizontal scroll containers */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
