@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import { EntropyState } from '@/lib/useMouseEntropy';
 
 interface SignalPulseWidgetProps {
@@ -25,7 +26,6 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
 
-      // Scanline grid (subtle)
       ctx.strokeStyle = 'rgba(255,255,255,0.03)';
       ctx.lineWidth = 0.5;
       for (let y = 0; y < H; y += 4) {
@@ -39,11 +39,9 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
       const offset = offsetRef.current;
 
       if (signal === 'BIOLOGICAL') {
-        // Organic heartbeat waveform
         const bioColor = '#10B981';
         const glowColor = 'rgba(16,185,129,0.3)';
 
-        // Glow layer
         ctx.strokeStyle = glowColor;
         ctx.lineWidth = 4;
         ctx.beginPath();
@@ -53,27 +51,21 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
           let y = midY;
 
           if (beatPhase > 1.2 && beatPhase < 1.6) {
-            // P-wave (small hump)
             const local = (beatPhase - 1.2) / 0.4;
             y = midY - Math.sin(local * Math.PI) * (6 + entropy * 4);
           } else if (beatPhase > 2.0 && beatPhase < 2.3) {
-            // Q dip
             const local = (beatPhase - 2.0) / 0.3;
             y = midY + Math.sin(local * Math.PI) * 4;
           } else if (beatPhase > 2.3 && beatPhase < 2.8) {
-            // R spike (main peak)
             const local = (beatPhase - 2.3) / 0.5;
             y = midY - Math.sin(local * Math.PI) * (14 + entropy * 10);
           } else if (beatPhase > 2.8 && beatPhase < 3.1) {
-            // S dip
             const local = (beatPhase - 2.8) / 0.3;
             y = midY + Math.sin(local * Math.PI) * 6;
           } else if (beatPhase > 3.6 && beatPhase < 4.2) {
-            // T-wave
             const local = (beatPhase - 3.6) / 0.6;
             y = midY - Math.sin(local * Math.PI) * (5 + entropy * 3);
           } else {
-            // Baseline with micro-noise (biological jitter)
             y = midY + (Math.random() - 0.5) * 1.2;
           }
 
@@ -82,7 +74,6 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
         }
         ctx.stroke();
 
-        // Sharp layer
         ctx.strokeStyle = bioColor;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
@@ -116,7 +107,6 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
         ctx.stroke();
 
       } else if (signal === 'SYNTHETIC') {
-        // Flatline with occasional glitch spikes
         const synthColor = '#E63946';
         const glowColor = 'rgba(230,57,70,0.3)';
 
@@ -126,7 +116,6 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
         for (let x = 0; x < W; x++) {
           const t = (x + offset) * 0.02;
           let y = midY;
-          // Occasional glitch
           const glitchPhase = t % (Math.PI * 8);
           if (glitchPhase > 6.0 && glitchPhase < 6.15) {
             y = midY - 8;
@@ -156,7 +145,6 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
         ctx.stroke();
 
       } else {
-        // Calibrating - dim pulsing sine
         ctx.strokeStyle = 'rgba(107,107,107,0.4)';
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -169,7 +157,6 @@ function HeartbeatWaveform({ signal, entropy }: { signal: EntropyState['signal']
         ctx.stroke();
       }
 
-      // Leading dot
       const dotX = W - 4;
       const dotColor = signal === 'BIOLOGICAL' ? '#10B981'
         : signal === 'SYNTHETIC' ? '#E63946'
@@ -229,9 +216,9 @@ function EntropyBar({ value }: { value: number }) {
 export default function SignalPulseWidget({ entropy }: SignalPulseWidgetProps) {
   const { signal, entropy: entropyValue, sampleCount, velocity, directionChanges } = entropy;
   const [flashActive, setFlashActive] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const prevSignalRef = useRef(signal);
 
-  // Flash on signal change
   useEffect(() => {
     if (prevSignalRef.current !== signal && signal !== 'CALIBRATING') {
       setFlashActive(true);
@@ -244,7 +231,6 @@ export default function SignalPulseWidget({ entropy }: SignalPulseWidgetProps) {
 
   const isBio = signal === 'BIOLOGICAL';
   const isSynthetic = signal === 'SYNTHETIC';
-  const isCalibrating = signal === 'CALIBRATING';
 
   const borderColor = isBio
     ? 'border-emerald/30'
@@ -262,8 +248,10 @@ export default function SignalPulseWidget({ entropy }: SignalPulseWidgetProps) {
     <div
       className={`
         entropy-widget
-        fixed top-[60px] right-4 z-[100]
-        w-[260px]
+        fixed z-[100]
+        bottom-3 left-3 right-3
+        sm:bottom-auto sm:left-auto sm:right-4 sm:top-[60px]
+        sm:w-[260px]
         bg-obsidian-card/95 backdrop-blur-xl
         border ${borderColor}
         rounded-lg overflow-hidden
@@ -279,12 +267,15 @@ export default function SignalPulseWidget({ entropy }: SignalPulseWidgetProps) {
         }`}
       />
 
-      {/* Header */}
-      <div className={`px-3 py-2 ${bgGlow}`}>
+      {/* Header \u2014 always visible, acts as toggle on mobile */}
+      <div
+        className={`px-3 py-2 ${bgGlow} cursor-pointer sm:cursor-default`}
+        onClick={() => setCollapsed(prev => !prev)}
+      >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <div
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-300 ${
                 isBio
                   ? 'bg-emerald entropy-dot-pulse'
                   : isSynthetic
@@ -293,7 +284,7 @@ export default function SignalPulseWidget({ entropy }: SignalPulseWidgetProps) {
               }`}
             />
             <span
-              className={`text-[10px] font-mono font-semibold tracking-wider transition-colors duration-300 ${
+              className={`text-[10px] font-mono font-semibold tracking-wider transition-colors duration-300 truncate ${
                 isBio ? 'text-emerald' : isSynthetic ? 'text-vermilion' : 'text-off-white-dim'
               }`}
             >
@@ -304,10 +295,19 @@ export default function SignalPulseWidget({ entropy }: SignalPulseWidgetProps) {
                   : '\u25cc CALIBRATING...'}
             </span>
           </div>
-          <span className="text-[8px] font-mono text-off-white-dim/60">BEM v1.0</span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[8px] font-mono text-off-white-dim/60 hidden sm:inline">BEM v1.0</span>
+            <button
+              className="sm:hidden text-off-white-dim/60 hover:text-off-white-dim p-0.5"
+              onClick={(e) => { e.stopPropagation(); setCollapsed(prev => !prev); }}
+              aria-label={collapsed ? 'Expand widget' : 'Collapse widget'}
+            >
+              {collapsed ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+          </div>
         </div>
 
-        {isSynthetic && (
+        {isSynthetic && !collapsed && (
           <div className="mt-1">
             <span className="text-[8px] font-mono text-vermilion/80 tracking-widest">
               SCRIPT DETECTED \u00b7 LOW ENTROPY
@@ -316,47 +316,50 @@ export default function SignalPulseWidget({ entropy }: SignalPulseWidgetProps) {
         )}
       </div>
 
-      {/* Waveform */}
-      <div className="px-3 py-1.5 border-t border-obsidian-border/50">
-        <HeartbeatWaveform signal={signal} entropy={entropyValue} />
-      </div>
-
-      {/* Metrics */}
-      <div className="px-3 py-2 border-t border-obsidian-border/50">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[8px] font-mono text-off-white-dim tracking-wider">ENTROPY</span>
-          <EntropyBar value={entropyValue} />
+      {/* Collapsible body \u2014 collapsed by default on mobile via CSS, always visible on sm+ */}
+      <div className={`${collapsed ? 'hidden' : 'block'} sm:block`}>
+        {/* Waveform */}
+        <div className="px-3 py-1.5 border-t border-obsidian-border/50">
+          <HeartbeatWaveform signal={signal} entropy={entropyValue} />
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          <div>
-            <div className="text-[7px] font-mono text-off-white-dim/60 tracking-wider">H(\u03b8)</div>
-            <div className="text-[11px] font-mono text-off-white font-medium">
-              {entropyValue.toFixed(3)}
-            </div>
+
+        {/* Metrics */}
+        <div className="px-3 py-2 border-t border-obsidian-border/50">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[8px] font-mono text-off-white-dim tracking-wider">ENTROPY</span>
+            <EntropyBar value={entropyValue} />
           </div>
-          <div>
-            <div className="text-[7px] font-mono text-off-white-dim/60 tracking-wider">VEL</div>
-            <div className="text-[11px] font-mono text-off-white font-medium">
-              {velocity.toFixed(1)}
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <div className="text-[7px] font-mono text-off-white-dim/60 tracking-wider">H(\u03b8)</div>
+              <div className="text-[11px] font-mono text-off-white font-medium">
+                {entropyValue.toFixed(3)}
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="text-[7px] font-mono text-off-white-dim/60 tracking-wider">\u0394 DIR</div>
-            <div className="text-[11px] font-mono text-off-white font-medium">
-              {directionChanges}
+            <div>
+              <div className="text-[7px] font-mono text-off-white-dim/60 tracking-wider">VEL</div>
+              <div className="text-[11px] font-mono text-off-white font-medium">
+                {velocity.toFixed(1)}
+              </div>
+            </div>
+            <div>
+              <div className="text-[7px] font-mono text-off-white-dim/60 tracking-wider">\u0394 DIR</div>
+              <div className="text-[11px] font-mono text-off-white font-medium">
+                {directionChanges}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="px-3 py-1.5 border-t border-obsidian-border/50 flex items-center justify-between">
-        <span className="text-[7px] font-mono text-off-white-dim/40 tracking-widest">
-          BEHAVIORAL ENTROPY MONITOR
-        </span>
-        <div className="flex items-center gap-1">
-          <div className={`w-1 h-1 rounded-full ${sampleCount >= 12 ? 'bg-emerald' : 'bg-off-white-dim'}`} />
-          <span className="text-[7px] font-mono text-off-white-dim/40">{sampleCount}/{64}</span>
+        {/* Footer */}
+        <div className="px-3 py-1.5 border-t border-obsidian-border/50 flex items-center justify-between">
+          <span className="text-[7px] font-mono text-off-white-dim/40 tracking-widest">
+            BEHAVIORAL ENTROPY MONITOR
+          </span>
+          <div className="flex items-center gap-1">
+            <div className={`w-1 h-1 rounded-full ${sampleCount >= 12 ? 'bg-emerald' : 'bg-off-white-dim'}`} />
+            <span className="text-[7px] font-mono text-off-white-dim/40">{sampleCount}/{64}</span>
+          </div>
         </div>
       </div>
     </div>
