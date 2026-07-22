@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Shield, Lock, Fingerprint, Eye, ChevronRight,
-  Scan, Activity, AlertTriangle, Radio, Cpu, Waves, Binary
+  Scan, Activity, AlertTriangle, Radio, Cpu, Waves, Binary, KeyRound
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -25,6 +25,9 @@ const SCAN_PHASES: ScanPhaseConfig[] = [
   { label: 'VOICE SPECTRA', detail: 'Sub-harmonic verification', icon: Waves, duration: 22 },
 ];
 
+const STORAGE_KEY = 'sentinel-x-admin-code';
+const CODE_LENGTH = 6;
+
 function DataStream({ active }: { active: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animRef = useRef<number>(0);
@@ -39,7 +42,7 @@ function DataStream({ active }: { active: boolean }) {
     const H = canvas.height = canvas.offsetHeight;
     const cols = Math.floor(W / 14);
     const drops = new Array(cols).fill(0).map(() => Math.random() * H);
-    const chars = '01\u03b1\u03b2\u03b3\u03b4\u03b5\u2211\u220f\u222b\u2202\u2207\u03a3\u03a6\u03a8\u03a9\u2591\u2592\u2593\u2588'.split('');
+    const chars = '01\u03b1\u03b2\u03b3\u03b4\u03b5\u2211\u220f\u222b\u2202\u2207\u03a3\u03a6\u03a8\u03a9abcdef'.split('');
 
     const draw = () => {
       ctx.fillStyle = 'rgba(10, 10, 10, 0.12)';
@@ -130,6 +133,8 @@ function BiometricWaveform({ active }: { active: boolean }) {
   );
 }
 
+type AuthStep = 'init' | 'set-code' | 'enter-code';
+
 export default function LandingPage({ onEnter }: LandingPageProps) {
   const [showContent, setShowContent] = useState(false);
   const [scanPhase, setScanPhase] = useState<'idle' | 'scanning' | 'verified'>('idle');
@@ -140,10 +145,146 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
   );
   const [telemetryLines, setTelemetryLines] = useState<string[]>([]);
 
+  const [authStep, setAuthStep] = useState<AuthStep>('init');
+  const [codeDigits, setCodeDigits] = useState<string[]>(Array(CODE_LENGTH).fill(''));
+  const [confirmDigits, setConfirmDigits] = useState<string[]>(Array(CODE_LENGTH).fill(''));
+  const [isConfirmPhase, setIsConfirmPhase] = useState(false);
+  const [codeError, setCodeError] = useState('');
+  const [codeSuccess, setCodeSuccess] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
+
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const confirmRefs = useRef<(HTMLInputElement | null)[]>([]);
+
   useEffect(() => {
     const t = setTimeout(() => setShowContent(true), 200);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      setAuthStep('enter-code');
+    } else {
+      setAuthStep('set-code');
+    }
+  }, []);
+
+  const focusInput = useCallback((refs: React.MutableRefObject<(HTMLInputElement | null)[]>, idx: number) => {
+    setTimeout(() => refs.current[idx]?.focus(), 0);
+  }, []);
+
+  const handleDigitChange = (
+    digits: string[],
+    setDigits: React.Dispatch<React.SetStateAction<string[]>>,
+    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
+    idx: number,
+    value: string
+  ) => {
+    if (!/^\d*$/.test(value)) return;
+    const digit = value.slice(-1);
+    const updated = [...digits];
+    updated[idx] = digit;
+    setDigits(updated);
+    setCodeError('');
+
+    if (digit && idx < CODE_LENGTH - 1) {
+      focusInput(refs, idx + 1);
+    }
+  };
+
+  const handleKeyDown = (
+    digits: string[],
+    setDigits: React.Dispatch<React.SetStateAction<string[]>>,
+    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
+    idx: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === 'Backspace') {
+      if (digits[idx]) {
+        const updated = [...digits];
+        updated[idx] = '';
+        setDigits(updated);
+      } else if (idx > 0) {
+        focusInput(refs, idx - 1);
+        const updated = [...digits];
+        updated[idx - 1] = '';
+        setDigits(updated);
+      }
+      setCodeError('');
+    }
+  };
+
+  const handlePaste = (
+    setDigits: React.Dispatch<React.SetStateAction<string[]>>,
+    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
+    e: React.ClipboardEvent<HTMLInputElement>
+  ) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, CODE_LENGTH);
+    if (pasted.length > 0) {
+      const updated = Array(CODE_LENGTH).fill('');
+      pasted.split('').forEach((d, i) => { updated[i] = d; });
+      setDigits(updated);
+      const nextFocus = Math.min(pasted.length, CODE_LENGTH - 1);
+      focusInput(refs, nextFocus);
+    }
+  };
+
+  const handleSetCode = () => {
+    const code = codeDigits.join('');
+    if (code.length < CODE_LENGTH) {
+      setCodeError(`Enter all ${CODE_LENGTH} digits`);
+      return;
+    }
+    if (!isConfirmPhase) {
+      setIsConfirmPhase(true);
+      setConfirmDigits(Array(CODE_LENGTH).fill(''));
+      setCodeError('');
+      setCodeSuccess('');
+      setTimeout(() => confirmRefs.current[0]?.focus(), 100);
+      return;
+    }
+    const confirmCode = confirmDigits.join('');
+    if (confirmCode.length < CODE_LENGTH) {
+      setCodeError(`Confirm all ${CODE_LENGTH} digits`);
+      return;
+    }
+    if (code !== confirmCode) {
+      setCodeError('ACCESS CODES DO NOT MATCH \u2014 RETRY');
+      setConfirmDigits(Array(CODE_LENGTH).fill(''));
+      setTimeout(() => confirmRefs.current[0]?.focus(), 100);
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, code);
+    setCodeSuccess('ACCESS CODE ESTABLISHED');
+    setCodeError('');
+    setTimeout(() => {
+      setAuthenticated(true);
+      setCodeSuccess('');
+    }, 800);
+  };
+
+  const handleEnterCode = () => {
+    const code = codeDigits.join('');
+    if (code.length < CODE_LENGTH) {
+      setCodeError(`Enter all ${CODE_LENGTH} digits`);
+      return;
+    }
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (code !== stored) {
+      setCodeError('ACCESS DENIED \u2014 INVALID CODE');
+      setCodeDigits(Array(CODE_LENGTH).fill(''));
+      setTimeout(() => inputRefs.current[0]?.focus(), 100);
+      return;
+    }
+    setCodeSuccess('CODE ACCEPTED \u2014 INITIATING BIOMETRIC SCAN');
+    setCodeError('');
+    setTimeout(() => {
+      setAuthenticated(true);
+      setCodeSuccess('');
+    }, 600);
+  };
 
   const TELEMETRY_POOL = [
     'INIT: biometric_pipeline v4.2.1',
@@ -218,6 +359,35 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
     }, 35);
   };
 
+  const renderPinInput = (
+    digits: string[],
+    setDigits: React.Dispatch<React.SetStateAction<string[]>>,
+    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
+    autoFocusFirst?: boolean
+  ) => (
+    <div className="flex items-center justify-center gap-2.5">
+      {digits.map((d, idx) => (
+        <input
+          key={idx}
+          ref={(el) => { refs.current[idx] = el; }}
+          type="password"
+          inputMode="numeric"
+          maxLength={1}
+          value={d}
+          autoFocus={autoFocusFirst && idx === 0}
+          onChange={(e) => handleDigitChange(digits, setDigits, refs, idx, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(digits, setDigits, refs, idx, e)}
+          onPaste={(e) => handlePaste(setDigits, refs, e)}
+          className="w-11 h-14 text-center text-xl font-mono font-semibold text-off-white bg-obsidian border border-obsidian-border rounded-md focus:border-vermilion focus:ring-1 focus:ring-vermilion/40 focus:outline-none transition-all duration-200 caret-vermilion placeholder:text-off-white-dim/20"
+          style={{ letterSpacing: '0.1em' }}
+        />
+      ))}
+    </div>
+  );
+
+  const showPasswordUI = !authenticated && (authStep === 'set-code' || authStep === 'enter-code');
+  const showBiometricUI = authenticated;
+
   return (
     <div className="min-h-screen bg-obsidian flex flex-col items-center justify-center relative overflow-hidden noise-overlay">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(230,57,70,0.04)_0%,transparent_70%)]" />
@@ -284,10 +454,109 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
         </p>
 
         <div className="mt-12 w-full max-w-md">
-          {scanPhase === 'idle' && (
+          {showPasswordUI && authStep === 'set-code' && (
+            <div className="border border-obsidian-border bg-obsidian-card rounded-lg overflow-hidden animate-fade-in">
+              <div className="px-6 pt-5 pb-4">
+                <div className="flex items-center gap-3 mb-5">
+                  <KeyRound className="w-5 h-5 text-vermilion" />
+                  <div>
+                    <p className="text-off-white text-sm font-medium">
+                      {isConfirmPhase ? 'Confirm Access Code' : 'Initialize Access Code'}
+                    </p>
+                    <p className="text-off-white-dim text-[10px] font-mono">
+                      {isConfirmPhase
+                        ? 'RE-ENTER 6-DIGIT CODE TO CONFIRM'
+                        : 'SET A 6-DIGIT ADMINISTRATIVE CODE'}
+                    </p>
+                  </div>
+                </div>
+
+                {!isConfirmPhase && renderPinInput(codeDigits, setCodeDigits, inputRefs, true)}
+                {isConfirmPhase && renderPinInput(confirmDigits, setConfirmDigits, confirmRefs, true)}
+
+                {codeError && (
+                  <div className="mt-3 flex items-center gap-2 justify-center">
+                    <AlertTriangle className="w-3 h-3 text-vermilion" />
+                    <p className="text-[10px] font-mono text-vermilion tracking-wider">{codeError}</p>
+                  </div>
+                )}
+                {codeSuccess && (
+                  <div className="mt-3 flex items-center gap-2 justify-center">
+                    <Lock className="w-3 h-3 text-emerald" />
+                    <p className="text-[10px] font-mono text-emerald tracking-wider">{codeSuccess}</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleSetCode}
+                  className="mt-5 w-full border border-obsidian-border hover:border-vermilion/50 bg-obsidian hover:bg-obsidian-hover rounded-md px-4 py-3 transition-all duration-300 cursor-pointer group"
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <Lock className="w-4 h-4 text-vermilion" />
+                    <span className="text-off-white text-xs font-mono tracking-wider">
+                      {isConfirmPhase ? 'CONFIRM & ESTABLISH' : 'SET ACCESS CODE'}
+                    </span>
+                    <ChevronRight className="w-3 h-3 text-off-white-dim group-hover:text-vermilion transition-colors" />
+                  </div>
+                </button>
+              </div>
+              <div className="border-t border-obsidian-border bg-obsidian/80 px-4 py-2">
+                <p className="text-[9px] font-mono text-off-white-dim/40 text-center tracking-wider">
+                  THIS CODE WILL BE REQUIRED ON EVERY ACCESS
+                </p>
+              </div>
+            </div>
+          )}
+
+          {showPasswordUI && authStep === 'enter-code' && (
+            <div className="border border-obsidian-border bg-obsidian-card rounded-lg overflow-hidden animate-fade-in">
+              <div className="px-6 pt-5 pb-4">
+                <div className="flex items-center gap-3 mb-5">
+                  <KeyRound className="w-5 h-5 text-vermilion" />
+                  <div>
+                    <p className="text-off-white text-sm font-medium">Administrative Access</p>
+                    <p className="text-off-white-dim text-[10px] font-mono">ENTER 6-DIGIT ACCESS CODE</p>
+                  </div>
+                </div>
+
+                {renderPinInput(codeDigits, setCodeDigits, inputRefs, true)}
+
+                {codeError && (
+                  <div className="mt-3 flex items-center gap-2 justify-center">
+                    <AlertTriangle className="w-3 h-3 text-vermilion" />
+                    <p className="text-[10px] font-mono text-vermilion tracking-wider">{codeError}</p>
+                  </div>
+                )}
+                {codeSuccess && (
+                  <div className="mt-3 flex items-center gap-2 justify-center">
+                    <Lock className="w-3 h-3 text-emerald" />
+                    <p className="text-[10px] font-mono text-emerald tracking-wider">{codeSuccess}</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleEnterCode}
+                  className="mt-5 w-full border border-obsidian-border hover:border-vermilion/50 bg-obsidian hover:bg-obsidian-hover rounded-md px-4 py-3 transition-all duration-300 cursor-pointer group"
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <Fingerprint className="w-4 h-4 text-vermilion" />
+                    <span className="text-off-white text-xs font-mono tracking-wider">AUTHENTICATE</span>
+                    <ChevronRight className="w-3 h-3 text-off-white-dim group-hover:text-vermilion transition-colors" />
+                  </div>
+                </button>
+              </div>
+              <div className="border-t border-obsidian-border bg-obsidian/80 px-4 py-2">
+                <p className="text-[9px] font-mono text-off-white-dim/40 text-center tracking-wider">
+                  CODE REQUIRED BEFORE BIOMETRIC VERIFICATION
+                </p>
+              </div>
+            </div>
+          )}
+
+          {showBiometricUI && scanPhase === 'idle' && (
             <button
               onClick={handleAuth}
-              className="group w-full relative overflow-hidden border border-obsidian-border hover:border-vermilion/50 bg-obsidian-card hover:bg-obsidian-hover rounded-lg px-6 py-4 transition-all duration-300 cursor-pointer"
+              className="group w-full relative overflow-hidden border border-obsidian-border hover:border-vermilion/50 bg-obsidian-card hover:bg-obsidian-hover rounded-lg px-6 py-4 transition-all duration-300 cursor-pointer animate-fade-in"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
