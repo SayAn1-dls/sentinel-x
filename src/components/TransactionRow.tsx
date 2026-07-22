@@ -77,14 +77,14 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
     const isGood = pct > 60;
     return (
       <div className="flex items-center gap-2">
-        <span className="text-[10px] text-off-white-dim w-32 shrink-0">{label}</span>
+        <span className="text-[9px] sm:text-[10px] text-off-white-dim w-24 sm:w-32 shrink-0">{label}</span>
         <div className="flex-1 h-1.5 bg-obsidian-border rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-700 ${isGood ? 'bg-emerald' : pct > 30 ? 'bg-amber' : 'bg-vermilion'}`}
             style={{ width: `${pct}%` }}
           />
         </div>
-        <span className={`text-[10px] font-mono w-16 text-right ${isGood ? 'text-emerald' : pct > 30 ? 'text-amber' : 'text-vermilion'}`}>
+        <span className={`text-[9px] sm:text-[10px] font-mono w-14 sm:w-16 text-right shrink-0 ${isGood ? 'text-emerald' : pct > 30 ? 'text-amber' : 'text-vermilion'}`}>
           {typeof value === 'number' ? value.toFixed(1) : value}{unit}
         </span>
       </div>
@@ -97,21 +97,21 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
     const ip = tx.identityProof;
 
     return (
-      <div className="space-y-5">
+      <div className="space-y-4 sm:space-y-5">
         {/* Behavioral Telemetry */}
-        <div className="bg-obsidian border border-obsidian-border rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Keyboard className="w-4 h-4 text-vermilion" />
-            <h4 className="text-[11px] font-mono text-off-white tracking-wider font-medium">BEHAVIORAL TELEMETRY</h4>
-            <div className="flex-1 h-px bg-obsidian-border" />
+        <div className="bg-obsidian border border-obsidian-border rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
+            <Keyboard className="w-4 h-4 text-vermilion shrink-0" />
+            <h4 className="text-[10px] sm:text-[11px] font-mono text-off-white tracking-wider font-medium">BEHAVIORAL TELEMETRY</h4>
+            <div className="flex-1 h-px bg-obsidian-border hidden sm:block" />
             <span className={`text-[9px] font-mono px-2 py-0.5 rounded ${
               bt.keystrokeIntervalStdDev < 5 ? 'bg-vermilion/10 text-vermilion' : 'bg-emerald/10 text-emerald'
             }`}>
               {bt.keystrokeIntervalStdDev < 5 ? 'ANOMALOUS' : 'NORMAL'}
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
-            <div className="col-span-2 mb-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-8 gap-y-1.5">
+            <div className="col-span-1 md:col-span-2 mb-1">
               <p className="text-[9px] font-mono text-off-white-dim tracking-wider mb-2">KEYSTROKE DYNAMICS</p>
             </div>
             <MiniGauge label="Interval Mean" value={bt.keystrokeIntervalMean} max={300} unit="ms" />
@@ -119,18 +119,18 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
             <MiniGauge label="Flight Time" value={bt.keystrokeFlightTime} max={150} unit="ms" />
             <MiniGauge label="Dwell Time" value={bt.keystrokeDwellTime} max={200} unit="ms" />
 
-            <div className="col-span-2 mt-2 mb-1">
+            <div className="col-span-1 md:col-span-2 mt-2 mb-1">
               <p className="text-[9px] font-mono text-off-white-dim tracking-wider mb-2">MOUSE & INTERACTION ENTROPY</p>
             </div>
             <MiniGauge label="Velocity Mean" value={bt.mouseVelocityMean} max={800} unit="px/s" />
             <MiniGauge label="Velocity StdDev" value={bt.mouseVelocityStdDev} max={250} unit="px/s" />
-            <MiniGauge label="Acceleration" value={bt.mouseAcceleration} max={500} unit="px/s²" />
+            <MiniGauge label="Acceleration" value={bt.mouseAcceleration} max={500} unit="px/s\u00b2" />
             <MiniGauge label="Scroll Entropy" value={bt.scrollPatternEntropy} max={10} unit="" />
             <MiniGauge label="Click Precision" value={bt.clickPrecision} max={100} unit="%" />
             <MiniGauge label="Idle Time Ratio" value={bt.idleTimeRatio * 100} max={100} unit="%" />
 
-            <div className="col-span-2 mt-2 pt-2 border-t border-obsidian-border/50">
-              <div className="flex gap-6">
+            <div className="col-span-1 md:col-span-2 mt-2 pt-2 border-t border-obsidian-border/50">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] text-off-white-dim font-mono">COPY/PASTE FREQ</span>
                   <span className={`text-[10px] font-mono font-bold ${bt.copyPasteFrequency > 0.5 ? 'text-vermilion' : 'text-emerald'}`}>
@@ -149,11 +149,11 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
         </div>
 
         {/* Network Forensics */}
-        <div className="bg-obsidian border border-obsidian-border rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Network className="w-4 h-4 text-vermilion" />
-            <h4 className="text-[11px] font-mono text-off-white tracking-wider font-medium">NETWORK FORENSICS</h4>
-            <div className="flex-1 h-px bg-obsidian-border" />
+        <div className="bg-obsidian border border-obsidian-border rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
+            <Network className="w-4 h-4 text-vermilion shrink-0" />
+            <h4 className="text-[10px] sm:text-[11px] font-mono text-off-white tracking-wider font-medium">NETWORK FORENSICS</h4>
+            <div className="flex-1 h-px bg-obsidian-border hidden sm:block" />
             <span className={`text-[9px] font-mono px-2 py-0.5 rounded ${
               nf.hopCount > 10 ? 'bg-vermilion/10 text-vermilion' : 'bg-emerald/10 text-emerald'
             }`}>
@@ -161,7 +161,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-8 gap-y-2">
             <div className="space-y-1.5">
               <MiniGauge label="Hop Count" value={nf.hopCount} max={25} unit="" />
               <MiniGauge label="Packet Jitter" value={nf.packetJitter} max={100} unit="ms" />
@@ -169,7 +169,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
               <MiniGauge label="Packet Loss" value={nf.packetLoss} max={20} unit="%" />
               <MiniGauge label="DNS Resolution" value={nf.dnsResolutionMs} max={500} unit="ms" />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 mt-2 md:mt-0">
               <div>
                 <span className="text-[9px] text-off-white-dim font-mono block mb-1">TLS VERSION</span>
                 <span className={`text-[10px] font-mono font-bold ${nf.tlsVersion === 'TLS 1.3' ? 'text-emerald' : 'text-vermilion'}`}>
@@ -202,7 +202,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
                     <span className="text-[9px] font-mono text-off-white bg-obsidian-card px-1.5 py-0.5 rounded border border-obsidian-border">
                       <Globe className="w-2.5 h-2.5 inline mr-1 text-off-white-dim" />{hop}
                     </span>
-                    {i < nf.geoHops.length - 1 && <span className="text-off-white-dim text-[9px]">→</span>}
+                    {i < nf.geoHops.length - 1 && <span className="text-off-white-dim text-[9px]">\u2192</span>}
                   </span>
                 ))}
               </div>
@@ -211,11 +211,11 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
         </div>
 
         {/* Identity Proof */}
-        <div className="bg-obsidian border border-obsidian-border rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Fingerprint className="w-4 h-4 text-vermilion" />
-            <h4 className="text-[11px] font-mono text-off-white tracking-wider font-medium">IDENTITY PROOF</h4>
-            <div className="flex-1 h-px bg-obsidian-border" />
+        <div className="bg-obsidian border border-obsidian-border rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
+            <Fingerprint className="w-4 h-4 text-vermilion shrink-0" />
+            <h4 className="text-[10px] sm:text-[11px] font-mono text-off-white tracking-wider font-medium">IDENTITY PROOF</h4>
+            <div className="flex-1 h-px bg-obsidian-border hidden sm:block" />
             <span className={`text-[9px] font-mono px-2 py-0.5 rounded ${
               ip.deviceFingerprintMatch > 70 ? 'bg-emerald/10 text-emerald' : 'bg-vermilion/10 text-vermilion'
             }`}>
@@ -223,8 +223,8 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-2.5">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-8 gap-y-2.5">
+            <div className="col-span-1 md:col-span-2">
               <MiniGauge label="Fingerprint Match" value={ip.deviceFingerprintMatch} max={100} unit="%" />
             </div>
 
@@ -235,7 +235,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
               </div>
               <div>
                 <span className="text-[9px] text-off-white-dim font-mono block mb-0.5">WebGL RENDERER</span>
-                <span className={`text-[10px] font-mono ${
+                <span className={`text-[10px] font-mono break-all ${
                   ip.webglRenderer.includes('SwiftShader') || ip.webglRenderer.includes('llvmpipe') ? 'text-vermilion' : 'text-off-white'
                 }`}>{ip.webglRenderer}</span>
               </div>
@@ -288,17 +288,17 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
       className={`group border-b border-obsidian-border/60 transition-all duration-200 animate-fade-in ${expanded ? 'bg-obsidian-light' : 'hover:bg-obsidian-hover'}`}
       style={{ animationDelay: `${index * 30}ms` }}
     >
-      {/* Main Row */}
+      {/* Desktop Row \u2014 hidden on mobile */}
       <div
-        className="grid grid-cols-[2.5fr_2fr_1.2fr_1.2fr_1fr_1fr_0.5fr] gap-3 items-center px-4 py-3 cursor-pointer"
+        className="hidden md:grid grid-cols-[2.5fr_2fr_1.2fr_1.2fr_1fr_1fr_0.5fr] gap-3 items-center px-4 py-3 cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-3 min-w-0">
-          <div className={`w-1.5 h-8 rounded-full ${style.dot} ${tx.riskLevel === 'CRITICAL' ? 'animate-pulse' : ''}`} />
+          <div className={`w-1.5 h-8 rounded-full shrink-0 ${style.dot} ${tx.riskLevel === 'CRITICAL' ? 'animate-pulse' : ''}`} />
           <div className="min-w-0">
             <p className="text-off-white text-xs font-mono truncate">{tx.id}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <Clock className="w-2.5 h-2.5 text-off-white-dim" />
+              <Clock className="w-2.5 h-2.5 text-off-white-dim shrink-0" />
               <p className="text-[10px] text-off-white-dim font-mono">{formatTime(tx.timestamp)}</p>
             </div>
           </div>
@@ -306,7 +306,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
 
         <div className="min-w-0">
           <p className="text-xs text-off-white truncate">{tx.sender}</p>
-          <p className="text-[10px] text-off-white-dim mt-0.5">→ {tx.receiver}</p>
+          <p className="text-[10px] text-off-white-dim mt-0.5 truncate">\u2192 {tx.receiver}</p>
         </div>
 
         <div className="text-right">
@@ -317,12 +317,12 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
         <div className="flex items-center gap-1.5">
           {tx.entityType === 'Synthetic AI' ? (
             <>
-              <Bot className="w-3.5 h-3.5 text-vermilion" />
+              <Bot className="w-3.5 h-3.5 text-vermilion shrink-0" />
               <span className="text-xs text-vermilion font-medium">Synthetic AI</span>
             </>
           ) : (
             <>
-              <User className="w-3.5 h-3.5 text-emerald" />
+              <User className="w-3.5 h-3.5 text-emerald shrink-0" />
               <span className="text-xs text-emerald font-medium">Human</span>
             </>
           )}
@@ -353,14 +353,65 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
         </div>
       </div>
 
+      {/* Mobile Card Row */}
+      <div
+        className="md:hidden px-3 py-3 cursor-pointer"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className="flex items-start gap-2.5">
+          <div className={`w-1 h-full min-h-[48px] rounded-full shrink-0 mt-0.5 ${style.dot} ${tx.riskLevel === 'CRITICAL' ? 'animate-pulse' : ''}`} />
+          <div className="flex-1 min-w-0">
+            {/* Top row: ID + amount */}
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-off-white text-[11px] font-mono truncate flex-1">{tx.id}</p>
+              <p className="text-off-white text-xs font-mono font-medium shrink-0">{formatAmount(tx.amount)}</p>
+            </div>
+            {/* Sender \u2192 Receiver */}
+            <p className="text-[10px] text-off-white-dim mt-1 truncate">
+              {tx.sender} \u2192 {tx.receiver}
+            </p>
+            {/* Badges row */}
+            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${style.bg} ${style.text} border ${style.border}`}>
+                {(tx.riskLevel === 'CRITICAL' || tx.riskLevel === 'HIGH') && <AlertTriangle className="w-2 h-2" />}
+                {tx.riskLevel}
+              </span>
+              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-mono ${statusStyle.bg} ${statusStyle.text}`}>
+                {tx.status === 'VERIFIED' && <ShieldCheck className="w-2 h-2" />}
+                {tx.status === 'BLOCKED' && <ShieldAlert className="w-2 h-2" />}
+                {tx.status === 'FLAGGED' && <Shield className="w-2 h-2" />}
+                {tx.status.replace('_', ' ')}
+              </span>
+              <span className="inline-flex items-center gap-1 text-[9px] font-mono text-off-white-dim">
+                {tx.entityType === 'Synthetic AI' ? (
+                  <><Bot className="w-2.5 h-2.5 text-vermilion" /><span className="text-vermilion">AI</span></>
+                ) : (
+                  <><User className="w-2.5 h-2.5 text-emerald" /><span className="text-emerald">Human</span></>
+                )}
+              </span>
+              <span className="text-[9px] font-mono text-off-white-dim/60 ml-auto shrink-0">
+                {formatTime(tx.timestamp)}
+              </span>
+            </div>
+          </div>
+          <div className="shrink-0 mt-1">
+            {expanded ? (
+              <ChevronUp className="w-4 h-4 text-off-white-dim" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-off-white-dim" />
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Expanded Detail */}
       {expanded && (
-        <div className="px-4 pb-4 animate-slide-up">
+        <div className="px-3 sm:px-4 pb-4 animate-slide-up">
           {/* Tab Switcher */}
           <div className="flex items-center gap-1 mb-3">
             <button
               onClick={() => setDetailTab('overview')}
-              className={`px-3 py-1.5 rounded-md text-[10px] font-mono border transition-all cursor-pointer ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-md text-[10px] font-mono border transition-all cursor-pointer ${
                 detailTab === 'overview'
                   ? 'border-vermilion/40 text-vermilion bg-vermilion-glow'
                   : 'border-obsidian-border text-off-white-dim hover:border-off-white-dim/30 hover:text-off-white'
@@ -370,24 +421,25 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
             </button>
             <button
               onClick={() => setDetailTab('signals')}
-              className={`px-3 py-1.5 rounded-md text-[10px] font-mono border transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-md text-[10px] font-mono border transition-all cursor-pointer flex items-center gap-1.5 ${
                 detailTab === 'signals'
                   ? 'border-vermilion/40 text-vermilion bg-vermilion-glow'
                   : 'border-obsidian-border text-off-white-dim hover:border-off-white-dim/30 hover:text-off-white'
               }`}
             >
               <Cpu className="w-3 h-3" />
-              Signal Analysis Detail
+              <span className="hidden sm:inline">Signal Analysis Detail</span>
+              <span className="sm:hidden">Signals</span>
             </button>
           </div>
 
           {detailTab === 'overview' && (
-            <div className="bg-obsidian-card border border-obsidian-border rounded-lg p-4">
-              <div className="grid grid-cols-3 gap-6">
+            <div className="bg-obsidian-card border border-obsidian-border rounded-lg p-3 sm:p-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 {/* Biometric Signals */}
                 <div>
                   <h4 className="text-[10px] font-mono text-off-white-dim tracking-wider mb-3 flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${style.dot}`} />
                     BIOMETRIC TELEMETRY
                   </h4>
                   <div className="space-y-2.5">
@@ -411,7 +463,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
                 {/* Trust Scores */}
                 <div>
                   <h4 className="text-[10px] font-mono text-off-white-dim tracking-wider mb-3 flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${style.dot}`} />
                     TRUST METRICS
                   </h4>
                   <div className="space-y-2.5">
@@ -435,7 +487,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
                 {/* Flags & Actions */}
                 <div>
                   <h4 className="text-[10px] font-mono text-off-white-dim tracking-wider mb-3 flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${style.dot}`} />
                     THREAT INDICATORS
                   </h4>
                   {tx.flags.length > 0 ? (
@@ -456,7 +508,7 @@ export default function TransactionRow({ tx, index }: TransactionRowProps) {
                   <div className="space-y-1 mb-4 text-[10px] font-mono">
                     <div className="flex justify-between text-off-white-dim">
                       <span>Session</span>
-                      <span className="text-off-white">{tx.biometrics.sessionFingerprint}</span>
+                      <span className="text-off-white truncate ml-2">{tx.biometrics.sessionFingerprint}</span>
                     </div>
                     <div className="flex justify-between text-off-white-dim">
                       <span>Network</span>
