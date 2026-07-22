@@ -12,6 +12,10 @@ import { generateForensicPDF } from '@/lib/pdf-generator';
 import TransactionRow from './TransactionRow';
 import { useMouseEntropy } from '@/lib/useMouseEntropy';
 import SignalPulseWidget from './SignalPulseWidget';
+import RiskScoringEngine from './RiskScoringEngine';
+import ThreatLandscapeMap from './ThreatLandscapeMap';
+
+type DashboardView = 'transactions' | 'intelligence';
 
 export default function Dashboard() {
   const entropyState = useMouseEntropy();
@@ -20,6 +24,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLive, setIsLive] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [activeView, setActiveView] = useState<DashboardView>('transactions');
   const feedRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -101,7 +106,35 @@ export default function Dashboard() {
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Search \u2014 full on desktop, icon-expandable on mobile */}
+              {/* View Switcher */}
+              <div className="flex items-center border border-obsidian-border rounded-md overflow-hidden">
+                <button
+                  onClick={() => setActiveView('transactions')}
+                  className={`px-2 sm:px-2.5 py-1.5 text-[9px] font-mono transition-all cursor-pointer ${
+                    activeView === 'transactions'
+                      ? 'bg-vermilion/15 text-vermilion'
+                      : 'text-off-white-dim hover:text-off-white hover:bg-obsidian-hover'
+                  }`}
+                >
+                  <span className="hidden sm:inline">TRANSACTIONS</span>
+                  <span className="sm:hidden">TXNS</span>
+                </button>
+                <div className="w-px h-4 bg-obsidian-border" />
+                <button
+                  onClick={() => setActiveView('intelligence')}
+                  className={`px-2 sm:px-2.5 py-1.5 text-[9px] font-mono transition-all cursor-pointer flex items-center gap-1 ${
+                    activeView === 'intelligence'
+                      ? 'bg-vermilion/15 text-vermilion'
+                      : 'text-off-white-dim hover:text-off-white hover:bg-obsidian-hover'
+                  }`}
+                >
+                  <Globe className="w-3 h-3" />
+                  <span className="hidden sm:inline">INTELLIGENCE</span>
+                  <span className="sm:hidden">INTEL</span>
+                </button>
+              </div>
+
+              {/* Search — full on desktop, icon-expandable on mobile */}
               <div className="relative hidden sm:block">
                 <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-off-white-dim" />
                 <input
@@ -141,7 +174,7 @@ export default function Dashboard() {
       </header>
 
       <div className="max-w-[1600px] mx-auto px-3 sm:px-6 py-4 sm:py-6 relative z-10">
-        {/* Stat Cards \u2014 fluid grid */}
+        {/* Stat Cards — fluid grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-3 mb-4 sm:mb-6">
           {[
             { label: 'TOTAL TXNS', value: stats.total.toString(), icon: Database, color: 'text-off-white' },
@@ -163,70 +196,85 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Filter Bar \u2014 horizontally scrollable on mobile */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
-            {(
-              [
-                { key: 'all', label: 'All', fullLabel: 'All Transactions', count: transactions.length },
-                { key: 'synthetic', label: 'Synthetic', fullLabel: 'Synthetic AI', count: stats.synthetic },
-                { key: 'flagged', label: 'Flagged', fullLabel: 'Flagged / Blocked', count: stats.flagged },
-                { key: 'human', label: 'Human', fullLabel: 'Human Verified', count: stats.verified },
-              ] as const
-            ).map(({ key, label, fullLabel, count }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-md text-[10px] font-mono border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                  filter === key
-                    ? 'border-vermilion/40 text-vermilion bg-vermilion-glow'
-                    : 'border-obsidian-border text-off-white-dim hover:border-off-white-dim/30 hover:text-off-white'
-                }`}
-              >
-                <span className="sm:hidden">{label}</span>
-                <span className="hidden sm:inline">{fullLabel}</span>
-                {' '}<span className="opacity-60">({count})</span>
-              </button>
-            ))}
+        {/* Intelligence View */}
+        {activeView === 'intelligence' && (
+          <div className="space-y-4 sm:space-y-6 animate-fade-in">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <RiskScoringEngine />
+              <ThreatLandscapeMap />
+            </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono text-off-white-dim shrink-0">
-            <Zap className="w-3 h-3 text-amber" />
-            <span>Processing {(Math.random() * 2000 + 500).toFixed(0)} txns/sec</span>
-          </div>
-        </div>
+        )}
 
-        {/* Transaction Feed */}
-        <div className="bg-obsidian-card border border-obsidian-border rounded-lg overflow-hidden">
-          {/* Table Header \u2014 hidden on mobile since rows use card layout */}
-          <div className="hidden md:grid grid-cols-[2.5fr_2fr_1.2fr_1.2fr_1fr_1fr_0.5fr] gap-3 items-center px-4 py-2.5 bg-obsidian-light border-b border-obsidian-border text-[9px] font-mono tracking-wider text-off-white-dim">
-            <span>TRANSACTION ID</span>
-            <span>COUNTERPARTIES</span>
-            <span className="text-right">AMOUNT</span>
-            <span>ENTITY</span>
-            <span>RISK</span>
-            <span>STATUS</span>
-            <span />
-          </div>
-
-          {/* Rows */}
-          <div ref={feedRef} className="max-h-[calc(100vh-320px)] sm:max-h-[calc(100vh-380px)] overflow-y-auto">
-            {filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 sm:py-16">
-                <Eye className="w-8 h-8 text-off-white-dim/30 mb-3" />
-                <p className="text-sm text-off-white-dim">No transactions match your criteria</p>
+        {/* Transaction View */}
+        {activeView === 'transactions' && (
+          <>
+            {/* Filter Bar — horizontally scrollable on mobile */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
+                {(
+                  [
+                    { key: 'all', label: 'All', fullLabel: 'All Transactions', count: transactions.length },
+                    { key: 'synthetic', label: 'Synthetic', fullLabel: 'Synthetic AI', count: stats.synthetic },
+                    { key: 'flagged', label: 'Flagged', fullLabel: 'Flagged / Blocked', count: stats.flagged },
+                    { key: 'human', label: 'Human', fullLabel: 'Human Verified', count: stats.verified },
+                  ] as const
+                ).map(({ key, label, fullLabel, count }) => (
+                  <button
+                    key={key}
+                    onClick={() => setFilter(key)}
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-md text-[10px] font-mono border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                      filter === key
+                        ? 'border-vermilion/40 text-vermilion bg-vermilion-glow'
+                        : 'border-obsidian-border text-off-white-dim hover:border-off-white-dim/30 hover:text-off-white'
+                    }`}
+                  >
+                    <span className="sm:hidden">{label}</span>
+                    <span className="hidden sm:inline">{fullLabel}</span>
+                    {' '}<span className="opacity-60">({count})</span>
+                  </button>
+                ))}
               </div>
-            ) : (
-              filtered.map((tx, i) => (
-                <TransactionRow key={tx.id} tx={tx} index={i} />
-              ))
-            )}
-          </div>
-        </div>
+              <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono text-off-white-dim shrink-0">
+                <Zap className="w-3 h-3 text-amber" />
+                <span>Processing {(Math.random() * 2000 + 500).toFixed(0)} txns/sec</span>
+              </div>
+            </div>
+
+            {/* Transaction Feed */}
+            <div className="bg-obsidian-card border border-obsidian-border rounded-lg overflow-hidden">
+              {/* Table Header — hidden on mobile since rows use card layout */}
+              <div className="hidden md:grid grid-cols-[2.5fr_2fr_1.2fr_1.2fr_1fr_1fr_0.5fr] gap-3 items-center px-4 py-2.5 bg-obsidian-light border-b border-obsidian-border text-[9px] font-mono tracking-wider text-off-white-dim">
+                <span>TRANSACTION ID</span>
+                <span>COUNTERPARTIES</span>
+                <span className="text-right">AMOUNT</span>
+                <span>ENTITY</span>
+                <span>RISK</span>
+                <span>STATUS</span>
+                <span />
+              </div>
+
+              {/* Rows */}
+              <div ref={feedRef} className="max-h-[calc(100vh-320px)] sm:max-h-[calc(100vh-380px)] overflow-y-auto">
+                {filtered.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 sm:py-16">
+                    <Eye className="w-8 h-8 text-off-white-dim/30 mb-3" />
+                    <p className="text-sm text-off-white-dim">No transactions match your criteria</p>
+                  </div>
+                ) : (
+                  filtered.map((tx, i) => (
+                    <TransactionRow key={tx.id} tx={tx} index={i} />
+                  ))
+                )}
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Footer */}
         <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row items-center sm:justify-between text-[8px] sm:text-[9px] font-mono text-off-white-dim/50 gap-1">
-          <span>SENTINEL-X\u2122 v4.2.1 \u00b7 Kinexys Forensic Intelligence Platform</span>
-          <span>Showing {filtered.length} of {transactions.length} transactions \u00b7 {new Date().toLocaleTimeString()}</span>
+          <span>SENTINEL-X™ v4.2.1 · Kinexys Forensic Intelligence Platform</span>
+          <span>Showing {filtered.length} of {transactions.length} transactions · {new Date().toLocaleTimeString()}</span>
         </div>
       </div>
     </div>
