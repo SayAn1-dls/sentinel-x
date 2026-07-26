@@ -1,4 +1,5 @@
-import { IPGeolocation, ForensicIntelligence } from './forensic-types';
+import { IPGeolocation, ForensicIntelligence, TemporalAnomalySignal } from './forensic-types';
+import { detectTemporalAnomaly } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -26,6 +27,8 @@ export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
 ];
 
 export function enrichWithForensics(transaction: any): any {
+  const temporalAnomaly = detectTemporalAnomaly(transaction.timestamp || new Date().toISOString());
+  
   return {
     ...transaction,
     forensics: {
@@ -37,6 +40,7 @@ export function enrichWithForensics(transaction: any): any {
         averageAmount: 10000,
         velocityZScore: 1.2
       },
+      temporalAnomaly,
       fingerprintEntropy: 15.4,
       behavioralBiometricSignature: 'SIG-' + Math.random().toString(36).substr(2, 9).toUpperCase()
     }

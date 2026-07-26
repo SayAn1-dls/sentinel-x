@@ -1,4 +1,4 @@
-import { IPGeolocation, ImpossibleTravelSignal, VelocityMetric, RiskLevel } from './forensic-types';
+import { IPGeolocation, ImpossibleTravelSignal, VelocityMetric, RiskLevel, TemporalAnomalySignal } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -35,11 +35,34 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `\${prev.city}, \${prev.country}`,
-    currentLocation: `\${curr.city}, \${curr.country}`,
+    previousLocation: `${prev.city}, ${prev.country}`,
+    currentLocation: `${curr.city}, ${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
+  };
+}
+
+/**
+ * Detects temporal anomalies based on transaction time.
+ * Compares current hour against "normal" business hours (9 AM - 6 PM).
+ */
+export function detectTemporalAnomaly(
+  timestamp: string,
+  timezoneOffset: number = 0
+): TemporalAnomalySignal {
+  const date = new Date(timestamp);
+  const localHour = (date.getUTCHours() + timezoneOffset + 24) % 24;
+
+  // Normal business hours: 09:00 to 18:00
+  const isBusinessHours = localHour >= 9 && localHour <= 18;
+  const isAnomaly = !isBusinessHours;
+
+  return {
+    isAnomaly,
+    localHour,
+    expectedRange: '09:00 - 18:00',
+    confidenceScore: isAnomaly ? 0.85 : 0.95,
   };
 }
 
@@ -51,13 +74,15 @@ export function calculateAdvancedRiskScore(
   baseScore: number,
   travelSignal?: ImpossibleTravelSignal,
   isProxy?: boolean,
-  velocityZScore?: number
+  velocityZScore?: number,
+  temporalAnomaly?: TemporalAnomalySignal
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
 
   if (travelSignal?.detected) score += 40;
   if (isProxy) score += 20;
   if (velocityZScore && velocityZScore > 3) score += 25;
+  if (temporalAnomaly?.isAnomaly) score += 15;
 
   score = Math.min(100, score);
 
