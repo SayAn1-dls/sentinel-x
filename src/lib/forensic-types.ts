@@ -29,10 +29,18 @@ export interface VelocityMetric {
   velocityZScore: number;
 }
 
+export interface TemporalAnomalySignal {
+  isAnomaly: boolean;
+  localHour: number;
+  expectedRange: string;
+  confidenceScore: number;
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   impossibleTravel?: ImpossibleTravelSignal;
   velocityMetrics: VelocityMetric;
+  temporalAnomaly?: TemporalAnomalySignal;
   fingerprintEntropy: number;
   behavioralBiometricSignature: string;
 }
