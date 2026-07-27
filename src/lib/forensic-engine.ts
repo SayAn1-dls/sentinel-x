@@ -1,4 +1,4 @@
-import { IPGeolocation, ImpossibleTravelSignal, VelocityMetric, RiskLevel, TemporalAnomalySignal } from './forensic-types';
+import { IPGeolocation, ImpossibleTravelSignal, VelocityMetric, RiskLevel, TemporalAnomalySignal, CrossChainLink } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -35,8 +35,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `${prev.city}, ${prev.country}`,
-    currentLocation: `${curr.city}, ${curr.country}`,
+    previousLocation: `\${prev.city}, \${prev.country}`,
+    currentLocation: `\${curr.city}, \${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -75,7 +75,8 @@ export function calculateAdvancedRiskScore(
   travelSignal?: ImpossibleTravelSignal,
   isProxy?: boolean,
   velocityZScore?: number,
-  temporalAnomaly?: TemporalAnomalySignal
+  temporalAnomaly?: TemporalAnomalySignal,
+  crossChainLinks?: CrossChainLink[]
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
 
@@ -83,6 +84,12 @@ export function calculateAdvancedRiskScore(
   if (isProxy) score += 20;
   if (velocityZScore && velocityZScore > 3) score += 25;
   if (temporalAnomaly?.isAnomaly) score += 15;
+  
+  // Cross-chain linking to known suspect addresses adds to risk
+  if (crossChainLinks && crossChainLinks.length > 0) {
+    const maxConfidence = Math.max(...crossChainLinks.map(l => l.confidence));
+    score += maxConfidence * 30;
+  }
 
   score = Math.min(100, score);
 
@@ -102,4 +109,37 @@ export function calculateAdvancedRiskScore(
 export function verifyKernelIntegrity(pageHashes: string[]): boolean {
   // Logic to verify memory pages against known good state
   return pageHashes.every(hash => !hash.startsWith('0xDEAD'));
+}
+
+/**
+ * Detects cross-chain forensic links based on behavioral patterns.
+ * (Heuristic-based linkage analysis)
+ */
+export function detectCrossChainLinks(
+  address: string,
+  ip: string,
+  fingerprint: string
+): CrossChainLink[] {
+  // Mock linkage logic for demonstration
+  const links: CrossChainLink[] = [];
+  
+  if (fingerprint.length > 5) {
+    links.push({
+      linkedAddress: '0x' + Math.random().toString(16).slice(2, 42),
+      network: 'Ethereum Mainnet',
+      confidence: 0.98,
+      reason: 'SAME_FINGERPRINT'
+    });
+  }
+
+  if (ip.startsWith('103.')) {
+    links.push({
+      linkedAddress: 'bc1q' + Math.random().toString(36).slice(2, 42),
+      network: 'Bitcoin',
+      confidence: 0.75,
+      reason: 'SHARED_IP'
+    });
+  }
+
+  return links;
 }

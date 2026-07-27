@@ -36,6 +36,13 @@ export interface TemporalAnomalySignal {
   confidenceScore: number;
 }
 
+export interface CrossChainLink {
+  linkedAddress: string;
+  network: string;
+  confidence: number;
+  reason: 'SHARED_IP' | 'SAME_FINGERPRINT' | 'SEQUENTIAL_TX';
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   impossibleTravel?: ImpossibleTravelSignal;
@@ -43,4 +50,5 @@ export interface ForensicIntelligence {
   temporalAnomaly?: TemporalAnomalySignal;
   fingerprintEntropy: number;
   behavioralBiometricSignature: string;
+  crossChainLinks?: CrossChainLink[];
 }

@@ -1,5 +1,5 @@
-import { IPGeolocation, ForensicIntelligence, TemporalAnomalySignal } from './forensic-types';
-import { detectTemporalAnomaly } from './forensic-engine';
+import { IPGeolocation, ForensicIntelligence } from './forensic-types';
+import { detectTemporalAnomaly, detectCrossChainLinks } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -27,12 +27,22 @@ export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
 ];
 
 export function enrichWithForensics(transaction: any): any {
-  const temporalAnomaly = detectTemporalAnomaly(transaction.timestamp || new Date().toISOString());
+  const timestamp = transaction.timestamp || new Date().toISOString();
+  const temporalAnomaly = detectTemporalAnomaly(timestamp);
+  const geolocation = MOCK_IP_GEOLOCATIONS[Math.floor(Math.random() * MOCK_IP_GEOLOCATIONS.length)];
+  const fingerprintEntropy = 15.4;
+  const behavioralBiometricSignature = 'SIG-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+  
+  const crossChainLinks = detectCrossChainLinks(
+    transaction.address || '0xUNKNOWN',
+    geolocation.ip,
+    behavioralBiometricSignature
+  );
   
   return {
     ...transaction,
     forensics: {
-      geolocation: MOCK_IP_GEOLOCATIONS[Math.floor(Math.random() * MOCK_IP_GEOLOCATIONS.length)],
+      geolocation,
       velocityMetrics: {
         windowMinutes: 60,
         transactionCount: 5,
@@ -41,8 +51,9 @@ export function enrichWithForensics(transaction: any): any {
         velocityZScore: 1.2
       },
       temporalAnomaly,
-      fingerprintEntropy: 15.4,
-      behavioralBiometricSignature: 'SIG-' + Math.random().toString(36).substr(2, 9).toUpperCase()
+      fingerprintEntropy,
+      behavioralBiometricSignature,
+      crossChainLinks
     }
   };
 }
