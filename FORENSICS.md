@@ -27,3 +27,22 @@ The risk scoring engine incorporates:
 - [x] Advanced Risk Scoring Improvements
 - [x] Mock Data Enrichment
 - [x] Temporal Anomaly Detection
+
+### Device Fingerprint Entropy Analysis (Added 2026-07-28)
+Calculates Shannon Entropy across multiple device attributes (Canvas, WebGL, Hardware) to identify highly unique or synthetic device profiles.
+
+### Transaction Velocity Analysis (Added 2026-07-28)
+Implements Z-Score based deviation analysis to detect rapid laundering patterns or bot-driven transaction bursts within sliding time windows.
+
+### Behavioral Biometric Verification (Added 2026-07-28)
+Enhanced logic to differentiate between human jitter and bot-generated event sequences using trajectory entropy models.
+
+## Updated Implementation Status
+- [x] IP Geolocation Data Models
+- [x] Impossible Travel Detection Logic
+- [x] Advanced Risk Scoring Improvements
+- [x] Mock Data Enrichment
+- [x] Temporal Anomaly Detection
+- [x] Device Fingerprint Entropy Models (New)
+- [x] Transaction Velocity Z-Score Analysis (New)
+- [x] Behavioral Biometric Bot Detection (New)

@@ -43,6 +43,23 @@ export interface CrossChainLink {
   reason: 'SHARED_IP' | 'SAME_FINGERPRINT' | 'SEQUENTIAL_TX';
 }
 
+export interface BehavioralBiometricSignal {
+  keystrokeDynamicsScore: number;
+  mouseTrajectoryEntropy: number;
+  scrollPatternConsistency: number;
+  isBotLikely: boolean;
+}
+
+export interface DeviceFingerprint {
+  userAgent: string;
+  language: string;
+  colorDepth: number;
+  hardwareConcurrency: number;
+  deviceMemory: number;
+  canvasHash: string;
+  webGLRenderer: string;
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   impossibleTravel?: ImpossibleTravelSignal;
@@ -50,5 +67,7 @@ export interface ForensicIntelligence {
   temporalAnomaly?: TemporalAnomalySignal;
   fingerprintEntropy: number;
   behavioralBiometricSignature: string;
+  behavioralBiometrics?: BehavioralBiometricSignal;
+  deviceFingerprint?: DeviceFingerprint;
   crossChainLinks?: CrossChainLink[];
 }

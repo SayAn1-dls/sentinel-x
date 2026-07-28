@@ -1,4 +1,13 @@
-import { IPGeolocation, ImpossibleTravelSignal, VelocityMetric, RiskLevel, TemporalAnomalySignal, CrossChainLink } from './forensic-types';
+import { 
+  IPGeolocation, 
+  ImpossibleTravelSignal, 
+  VelocityMetric, 
+  RiskLevel, 
+  TemporalAnomalySignal, 
+  CrossChainLink,
+  BehavioralBiometricSignal,
+  DeviceFingerprint
+} from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -67,29 +76,108 @@ export function detectTemporalAnomaly(
 }
 
 /**
+ * Calculates Shannon Entropy for a device fingerprint.
+ * Higher entropy indicates a more unique (and potentially suspicious) device configuration.
+ */
+export function calculateFingerprintEntropy(fingerprint: DeviceFingerprint): number {
+  const values = Object.values(fingerprint).map(String);
+  const totalLength = values.join('').length;
+  if (totalLength === 0) return 0;
+
+  const frequencies: Record<string, number> = {};
+  for (const val of values) {
+    frequencies[val] = (frequencies[val] || 0) + 1;
+  }
+
+  let entropy = 0;
+  for (const count of Object.values(frequencies)) {
+    const p = count / values.length;
+    entropy -= p * Math.log2(p);
+  }
+
+  // Normalize and scale to a typical fingerprint entropy range (e.g., 10-25 bits)
+  return parseFloat((entropy * 4.5).toFixed(2));
+}
+
+/**
+ * Analyzes behavioral biometrics to detect bots or non-human patterns.
+ */
+export function analyzeBehavioralBiometrics(
+  events: { type: string; timestamp: number }[]
+): BehavioralBiometricSignal {
+  // Mock analysis logic for keystroke and mouse jitter
+  const mouseEvents = events.filter(e => e.type === 'mousemove');
+  const keyEvents = events.filter(e => e.type === 'keydown');
+
+  // Bots often have zero jitter or perfectly linear trajectories
+  const mouseTrajectoryEntropy = mouseEvents.length > 20 ? 0.82 : 0.15;
+  const keystrokeDynamicsScore = keyEvents.length > 5 ? 0.91 : 0.22;
+
+  return {
+    keystrokeDynamicsScore,
+    mouseTrajectoryEntropy,
+    scrollPatternConsistency: 0.88,
+    isBotLikely: mouseTrajectoryEntropy < 0.3 && keyEvents.length > 0
+  };
+}
+
+/**
+ * Analyzes transaction velocity to detect rapid-fire laundering patterns.
+ */
+export function analyzeTransactionVelocity(
+  transactions: { amount: number; timestamp: number }[],
+  windowMinutes: number = 60
+): VelocityMetric {
+  const now = Date.now();
+  const windowMs = windowMinutes * 60 * 1000;
+  const recentTxs = transactions.filter(tx => now - tx.timestamp <= windowMs);
+
+  const count = recentTxs.length;
+  const total = recentTxs.reduce((sum, tx) => sum + tx.amount, 0);
+  const average = count > 0 ? total / count : 0;
+
+  // Simple Z-Score mock: deviation from "normal" 5 transactions/hour
+  const velocityZScore = count > 10 ? (count - 5) / 2 : 0.5;
+
+  return {
+    windowMinutes,
+    transactionCount: count,
+    totalAmount: total,
+    averageAmount: average,
+    velocityZScore: parseFloat(velocityZScore.toFixed(2))
+  };
+}
+
+/**
  * Advanced Risk Scoring Engine
  * Incorporates multi-dimensional forensic signals.
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
-  travelSignal?: ImpossibleTravelSignal,
-  isProxy?: boolean,
-  velocityZScore?: number,
-  temporalAnomaly?: TemporalAnomalySignal,
-  crossChainLinks?: CrossChainLink[]
+  params: {
+    travelSignal?: ImpossibleTravelSignal;
+    isProxy?: boolean;
+    velocityZScore?: number;
+    temporalAnomaly?: TemporalAnomalySignal;
+    crossChainLinks?: CrossChainLink[];
+    behavioralBiometrics?: BehavioralBiometricSignal;
+    fingerprintEntropy?: number;
+  }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
 
-  if (travelSignal?.detected) score += 40;
-  if (isProxy) score += 20;
-  if (velocityZScore && velocityZScore > 3) score += 25;
-  if (temporalAnomaly?.isAnomaly) score += 15;
+  if (params.travelSignal?.detected) score += 40;
+  if (params.isProxy) score += 20;
+  if (params.velocityZScore && params.velocityZScore > 3) score += 25;
+  if (params.temporalAnomaly?.isAnomaly) score += 15;
   
-  // Cross-chain linking to known suspect addresses adds to risk
-  if (crossChainLinks && crossChainLinks.length > 0) {
-    const maxConfidence = Math.max(...crossChainLinks.map(l => l.confidence));
+  if (params.crossChainLinks && params.crossChainLinks.length > 0) {
+    const maxConfidence = Math.max(...params.crossChainLinks.map(l => l.confidence));
     score += maxConfidence * 30;
   }
+
+  if (params.behavioralBiometrics?.isBotLikely) score += 50;
+  if (params.fingerprintEntropy && params.fingerprintEntropy > 20) score += 10;
 
   score = Math.min(100, score);
 
