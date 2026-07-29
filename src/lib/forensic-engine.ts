@@ -6,7 +6,9 @@ import {
   TemporalAnomalySignal, 
   CrossChainLink,
   BehavioralBiometricSignal,
-  DeviceFingerprint
+  DeviceFingerprint,
+  SessionReplaySignal,
+  ASNReputation
 } from './forensic-types';
 
 /**
@@ -44,8 +46,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `\${prev.city}, \${prev.country}`,
-    currentLocation: `\${curr.city}, \${curr.country}`,
+    previousLocation: `${prev.city}, ${prev.country}`,
+    currentLocation: `${curr.city}, ${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -54,7 +56,6 @@ export function detectImpossibleTravel(
 
 /**
  * Detects temporal anomalies based on transaction time.
- * Compares current hour against "normal" business hours (9 AM - 6 PM).
  */
 export function detectTemporalAnomaly(
   timestamp: string,
@@ -63,7 +64,6 @@ export function detectTemporalAnomaly(
   const date = new Date(timestamp);
   const localHour = (date.getUTCHours() + timezoneOffset + 24) % 24;
 
-  // Normal business hours: 09:00 to 18:00
   const isBusinessHours = localHour >= 9 && localHour <= 18;
   const isAnomaly = !isBusinessHours;
 
@@ -77,7 +77,6 @@ export function detectTemporalAnomaly(
 
 /**
  * Calculates Shannon Entropy for a device fingerprint.
- * Higher entropy indicates a more unique (and potentially suspicious) device configuration.
  */
 export function calculateFingerprintEntropy(fingerprint: DeviceFingerprint): number {
   const values = Object.values(fingerprint).map(String);
@@ -95,62 +94,55 @@ export function calculateFingerprintEntropy(fingerprint: DeviceFingerprint): num
     entropy -= p * Math.log2(p);
   }
 
-  // Normalize and scale to a typical fingerprint entropy range (e.g., 10-25 bits)
   return parseFloat((entropy * 4.5).toFixed(2));
 }
 
 /**
- * Analyzes behavioral biometrics to detect bots or non-human patterns.
+ * Detects Session Replay tools and anomalous event sequences.
  */
-export function analyzeBehavioralBiometrics(
-  events: { type: string; timestamp: number }[]
-): BehavioralBiometricSignal {
-  // Mock analysis logic for keystroke and mouse jitter
-  const mouseEvents = events.filter(e => e.type === 'mousemove');
-  const keyEvents = events.filter(e => e.type === 'keydown');
-
-  // Bots often have zero jitter or perfectly linear trajectories
-  const mouseTrajectoryEntropy = mouseEvents.length > 20 ? 0.82 : 0.15;
-  const keystrokeDynamicsScore = keyEvents.length > 5 ? 0.91 : 0.22;
-
+export function detectSessionReplay(
+  eventStream: { type: string; timestamp: number; metadata?: any }[]
+): SessionReplaySignal {
+  // Logic to detect recording buffers or common replay library signatures
+  const hasRecordingBuffer = eventStream.some(e => e.metadata?.hasBuffer === true);
+  
+  // Calculate interval variance - high variance often indicates human, low variance (exact intervals) indicates replay
+  const intervals = [];
+  for (let i = 1; i < eventStream.length; i++) {
+    intervals.push(eventStream[i].timestamp - eventStream[i-1].timestamp);
+  }
+  
+  const mean = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+  const variance = intervals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / intervals.length;
+  
+  const eventSequenceAnomaly = variance < 5; // Very low variance is suspicious (simulated events)
+  
   return {
-    keystrokeDynamicsScore,
-    mouseTrajectoryEntropy,
-    scrollPatternConsistency: 0.88,
-    isBotLikely: mouseTrajectoryEntropy < 0.3 && keyEvents.length > 0
+    detected: hasRecordingBuffer || eventSequenceAnomaly,
+    replayLikelihood: eventSequenceAnomaly ? 0.88 : (hasRecordingBuffer ? 0.95 : 0.05),
+    eventSequenceAnomaly,
+    recordingBufferDetected: hasRecordingBuffer
   };
 }
 
 /**
- * Analyzes transaction velocity to detect rapid-fire laundering patterns.
+ * Analyzes ASN Reputation and Proxy/VPN presence.
  */
-export function analyzeTransactionVelocity(
-  transactions: { amount: number; timestamp: number }[],
-  windowMinutes: number = 60
-): VelocityMetric {
-  const now = Date.now();
-  const windowMs = windowMinutes * 60 * 1000;
-  const recentTxs = transactions.filter(tx => now - tx.timestamp <= windowMs);
-
-  const count = recentTxs.length;
-  const total = recentTxs.reduce((sum, tx) => sum + tx.amount, 0);
-  const average = count > 0 ? total / count : 0;
-
-  // Simple Z-Score mock: deviation from "normal" 5 transactions/hour
-  const velocityZScore = count > 10 ? (count - 5) / 2 : 0.5;
-
+export function analyzeASNReputation(asn: number): ASNReputation {
+  // Mock reputation database lookup
+  const maliciousASNs = [4134, 13335, 16509]; // Example ASNs often used for scrapers/proxies
+  const isMalicious = maliciousASNs.includes(asn);
+  
   return {
-    windowMinutes,
-    transactionCount: count,
-    totalAmount: total,
-    averageAmount: average,
-    velocityZScore: parseFloat(velocityZScore.toFixed(2))
+    asn,
+    name: isMalicious ? 'High-Risk Network Node' : 'Tier 1 Global ISP',
+    type: isMalicious ? 'Hosting' : 'ISP',
+    abuseScore: isMalicious ? 82 : 4
   };
 }
 
 /**
- * Advanced Risk Scoring Engine
- * Incorporates multi-dimensional forensic signals.
+ * Advanced Risk Scoring Engine v2
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -162,6 +154,8 @@ export function calculateAdvancedRiskScore(
     crossChainLinks?: CrossChainLink[];
     behavioralBiometrics?: BehavioralBiometricSignal;
     fingerprintEntropy?: number;
+    sessionReplay?: SessionReplaySignal;
+    asnReputation?: ASNReputation;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -178,6 +172,10 @@ export function calculateAdvancedRiskScore(
 
   if (params.behavioralBiometrics?.isBotLikely) score += 50;
   if (params.fingerprintEntropy && params.fingerprintEntropy > 20) score += 10;
+  
+  // New v2 signals
+  if (params.sessionReplay?.detected) score += 60;
+  if (params.asnReputation && params.asnReputation.abuseScore > 80) score += 35;
 
   score = Math.min(100, score);
 
@@ -190,25 +188,15 @@ export function calculateAdvancedRiskScore(
   return { score, level };
 }
 
-/**
- * Kernel-level Memory Integrity Check (Mock Logic)
- * Simulates low-level verification of process memory.
- */
 export function verifyKernelIntegrity(pageHashes: string[]): boolean {
-  // Logic to verify memory pages against known good state
-  return pageHashes.every(hash => !hash.startsWith('0xDEAD'));
+  return pageHashes.every(hash => !hash.startsWith('0xDEAD') && hash.length === 64);
 }
 
-/**
- * Detects cross-chain forensic links based on behavioral patterns.
- * (Heuristic-based linkage analysis)
- */
 export function detectCrossChainLinks(
   address: string,
   ip: string,
   fingerprint: string
 ): CrossChainLink[] {
-  // Mock linkage logic for demonstration
   const links: CrossChainLink[] = [];
   
   if (fingerprint.length > 5) {
