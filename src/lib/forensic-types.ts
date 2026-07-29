@@ -60,8 +60,23 @@ export interface DeviceFingerprint {
   webGLRenderer: string;
 }
 
+export interface SessionReplaySignal {
+  detected: boolean;
+  replayLikelihood: number;
+  eventSequenceAnomaly: boolean;
+  recordingBufferDetected: boolean;
+}
+
+export interface ASNReputation {
+  asn: number;
+  name: string;
+  type: 'ISP' | 'Business' | 'Hosting' | 'Proxy' | 'Wireless' | 'Unknown';
+  abuseScore: number;
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
+  asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;
   velocityMetrics: VelocityMetric;
   temporalAnomaly?: TemporalAnomalySignal;
@@ -70,4 +85,5 @@ export interface ForensicIntelligence {
   behavioralBiometrics?: BehavioralBiometricSignal;
   deviceFingerprint?: DeviceFingerprint;
   crossChainLinks?: CrossChainLink[];
+  sessionReplay?: SessionReplaySignal;
 }

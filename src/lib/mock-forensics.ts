@@ -4,7 +4,9 @@ import {
   detectCrossChainLinks, 
   calculateFingerprintEntropy,
   analyzeBehavioralBiometrics,
-  analyzeTransactionVelocity
+  analyzeTransactionVelocity,
+  detectSessionReplay,
+  analyzeASNReputation
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -79,18 +81,28 @@ export function enrichWithForensics(transaction: any): any {
     geolocation.ip,
     behavioralBiometricSignature
   );
+
+  const sessionReplay = detectSessionReplay([
+    { type: 'mousemove', timestamp: Date.now() - 1000 },
+    { type: 'mousemove', timestamp: Date.now() - 950 },
+    { type: 'mousemove', timestamp: Date.now() - 900 }
+  ]);
+
+  const asnReputation = analyzeASNReputation(geolocation.isp === 'Verizon' ? 701 : 4134);
   
   return {
     ...transaction,
     forensics: {
       geolocation,
+      asnReputation,
       velocityMetrics,
       temporalAnomaly,
       fingerprintEntropy,
       behavioralBiometricSignature,
       behavioralBiometrics,
       deviceFingerprint: mockFingerprint,
-      crossChainLinks
+      crossChainLinks,
+      sessionReplay
     }
   };
 }

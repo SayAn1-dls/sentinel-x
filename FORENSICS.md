@@ -46,3 +46,20 @@ Enhanced logic to differentiate between human jitter and bot-generated event seq
 - [x] Device Fingerprint Entropy Models (New)
 - [x] Transaction Velocity Z-Score Analysis (New)
 - [x] Behavioral Biometric Bot Detection (New)
+
+## Update: 2026-07-29 - Advanced Forensic Signal Expansion
+
+### Session Replay Detection
+Introduced heuristic-based detection of session replay tools. The engine now analyzes event stream variance to identify robotic or pre-recorded mouse movements.
+- **Signal**: `sessionReplay`
+- **Metric**: `replayLikelihood` (0.0 to 1.0)
+- **Detection**: Flags variance < 5ms as high-confidence replay.
+
+### ASN Reputation Analysis
+The risk scoring engine now incorporates ASN (Autonomous System Number) reputation data.
+- **Signal**: `asnReputation`
+- **Scoring**: Differentiates between Tier 1 ISPs and high-risk hosting/proxy providers.
+- **Abuse Score**: Integrated into the `calculateAdvancedRiskScore` v2.
+
+### Risk Engine v2
+Updated the `calculateAdvancedRiskScore` function to include new weightings for session replay and ASN abuse scores, providing a more comprehensive security posture.

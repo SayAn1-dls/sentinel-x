@@ -101,23 +101,28 @@ export async function generateForensicPDF(tx: Transaction): Promise<void> {
   y = kvPair('Corridor', tx.corridor, y);
   y = kvPair('Network', tx.network, y);
   y = kvPair('Settlement', tx.settlementTime, y);
-  y = kvPair('Memo', tx.memo, y);
 
   y += 5;
 
-  // Counterparties
-  y = sectionHeader('COUNTERPARTY INFORMATION', y);
-  y = kvPair('Originator', tx.sender, y);
-  y = kvPair('Originator Acct', tx.senderAccount, y);
-  y = kvPair('Beneficiary', tx.receiver, y);
-  y = kvPair('Beneficiary Acct', tx.receiverAccount, y);
+  // Advanced Forensic Signals (v2)
+  y = sectionHeader('ADVANCED FORENSIC SIGNALS', y);
+  
+  const forensicData = (tx as any).forensics || {};
+  const asn = forensicData.asnReputation || { name: 'N/A', abuseScore: 0 };
+  const replay = forensicData.sessionReplay || { detected: false, replayLikelihood: 0 };
+
+  y = kvPair('ASN Name', asn.name, y);
+  y = kvPair('ASN Abuse Score', `${asn.abuseScore}/100`, y);
+  y = kvPair('Session Replay', replay.detected ? 'DETECTED' : 'NOT DETECTED', y);
+  y = kvPair('Replay Likelihood', `${(replay.replayLikelihood * 100).toFixed(1)}%", y);
+  y = kvPair('Entropy Rating', `${(forensicData.fingerprintEntropy || 0).toFixed(2)} bits", y);
 
   y += 5;
 
   // Detective Engine Results
   y = sectionHeader('DETECTIVE ENGINE ANALYSIS', y);
   y = kvPair('Entity Class', tx.entityType, y);
-  y = kvPair('Confidence', `${tx.confidence}%`, y);
+  y = kvPair('Confidence', `${tx.confidence}%", y);
   y = kvPair('Risk Level', tx.riskLevel, y);
   y = kvPair('Status', tx.status, y);
 
@@ -132,9 +137,8 @@ export async function generateForensicPDF(tx: Transaction): Promise<void> {
     ['Biometric Liveness', `${(tx.biometrics.biometricLiveness * 100).toFixed(1)}%`, tx.biometrics.biometricLiveness > 0.7 ? 'PASS' : 'FAIL'],
     ['Mouse Entropy', `${tx.biometrics.mouseEntropy}`, tx.biometrics.mouseEntropy > 40 ? 'NORMAL' : 'ANOMALOUS'],
     ['IP Reputation', `${tx.biometrics.ipReputation}/100`, tx.biometrics.ipReputation > 60 ? 'TRUSTED' : 'SUSPICIOUS'],
-    ['Device Trust', `${tx.biometrics.deviceTrust}/100`, tx.biometrics.deviceTrust > 60 ? 'TRUSTED' : 'UNTRUSTED'],
+    ['ASN Reputation', `${100 - asn.abuseScore}/100`, asn.abuseScore < 50 ? 'TRUSTED' : 'UNTRUSTED'],
     ['Behavioral Score', `${tx.biometrics.behavioralScore}/100`, tx.biometrics.behavioralScore > 60 ? 'NORMAL' : 'ANOMALOUS'],
-    ['Session ID', tx.biometrics.sessionFingerprint, ''],
   ];
 
   // Table header
@@ -167,18 +171,6 @@ export async function generateForensicPDF(tx: Transaction): Promise<void> {
   });
 
   y += 5;
-
-  // Flags
-  if (tx.flags.length > 0) {
-    y = sectionHeader('THREAT INDICATORS', y);
-    tx.flags.forEach((flag, i) => {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(6.5);
-      doc.setTextColor(...colors.vermilion);
-      doc.text(`⚠  ${i + 1}. ${flag}`, margin + 3, y + 3);
-      y += 5;
-    });
-  }
 
   // Footer
   const footerY = 280;
