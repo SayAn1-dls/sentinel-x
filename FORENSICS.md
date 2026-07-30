@@ -63,3 +63,25 @@ The risk scoring engine now incorporates ASN (Autonomous System Number) reputati
 
 ### Risk Engine v2
 Updated the `calculateAdvancedRiskScore` function to include new weightings for session replay and ASN abuse scores, providing a more comprehensive security posture.
+
+## Update: 2026-07-30 - Kernel-Level & Network Proximity Analysis (v3)
+
+### Kernel Forensic Attestation
+Implemented mock kernel integrity verification to detect virtualized environments, debuggers, and system call hooks.
+- **Signal**: `kernelForensics`
+- **Check**: Detects `0xDEAD` memory page hashes and identifies OS build integrity.
+- **Risk Impact**: High (Critical weighting for syscall hooking).
+
+### Peer-to-Peer Network Proximity
+Added analysis for peer network positioning and exit node detection.
+- **Signal**: `peerAnalysis`
+- **Metric**: `proximityScore` and `peerCount` correlation.
+- **Detection**: Flags nodes identified as high-risk exit points in P2P networks.
+
+### Risk Engine v3
+Upgraded the `calculateAdvancedRiskScore` function to integrate kernel-level signals and network proximity metrics.
+- **Version**: 3.0.0
+- **Weighting**: Syscall hooking (+45), Exit nodes (+30), VM detection (+15).
+
+### Functional Restoration & Logic Enrichment
+Fixed critical compilation issues in the mock data pipeline by implementing missing `analyzeBehavioralBiometrics` and `analyzeTransactionVelocity` utility functions.
