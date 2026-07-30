@@ -60,6 +60,21 @@ export interface DeviceFingerprint {
   webGLRenderer: string;
 }
 
+export interface KernelForensics {
+  isVirtualMachine: boolean;
+  isDebuggerPresent: boolean;
+  syscallHookingDetected: boolean;
+  integrityHash: string;
+  osBuild: string;
+}
+
+export interface PeerNetworkAnalysis {
+  proximityScore: number;
+  peerCount: number;
+  isExitNode: boolean;
+  networkCongestion: number;
+}
+
 export interface SessionReplaySignal {
   detected: boolean;
   replayLikelihood: number;
@@ -86,4 +101,6 @@ export interface ForensicIntelligence {
   deviceFingerprint?: DeviceFingerprint;
   crossChainLinks?: CrossChainLink[];
   sessionReplay?: SessionReplaySignal;
+  kernelForensics?: KernelForensics;
+  peerAnalysis?: PeerNetworkAnalysis;
 }
