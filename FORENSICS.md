@@ -85,3 +85,10 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate kernel-level sig
 
 ### Functional Restoration & Logic Enrichment
 Fixed critical compilation issues in the mock data pipeline by implementing missing `analyzeBehavioralBiometrics` and `analyzeTransactionVelocity` utility functions.
+
+## Secure Enclave & Hardware Security Module (HSM) Analysis (Added 2026-07-31)
+The Sentinel-X engine now includes kernel-level verification for Secure Enclaves (Apple SEP, Intel SGX, ARM TrustZone). 
+- **Attestation Token Verification**: Checks for valid hardware attestation tokens.
+- **Memory Encryption Detection**: Analyzes if TME (Total Memory Encryption) or similar technologies are active.
+- **Tamper Resistance Scoring**: Evaluates the physical and logical tamper-resistance of the underlying hardware.
+- **Risk Scoring Integration**: Transactions originating from devices without active enclaves or failed attestation are automatically flagged for higher risk.
