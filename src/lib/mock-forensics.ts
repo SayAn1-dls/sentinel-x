@@ -8,7 +8,8 @@ import {
   detectSessionReplay,
   analyzeASNReputation,
   analyzeKernelForensics,
-  analyzePeerProximity
+  analyzePeerProximity,
+  analyzeSecureEnclave
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -93,6 +94,7 @@ export function enrichWithForensics(transaction: any): any {
   const asnReputation = analyzeASNReputation(geolocation.isp === 'Verizon' ? 701 : 4134);
   const kernelForensics = analyzeKernelForensics();
   const peerAnalysis = analyzePeerProximity(geolocation.ip);
+  const secureEnclave = analyzeSecureEnclave();
   
   return {
     ...transaction,
@@ -108,7 +110,8 @@ export function enrichWithForensics(transaction: any): any {
       crossChainLinks,
       sessionReplay,
       kernelForensics,
-      peerAnalysis
+      peerAnalysis,
+      secureEnclave
     }
   };
 }
