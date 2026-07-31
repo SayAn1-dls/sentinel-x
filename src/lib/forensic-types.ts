@@ -89,6 +89,15 @@ export interface ASNReputation {
   abuseScore: number;
 }
 
+export interface SecureEnclaveForensics {
+  isEnclaveActive: boolean;
+  enclaveType: 'Apple_SEP' | 'Intel_SGX' | 'ARM_TrustZone' | 'None';
+  attestationTokenPresent: boolean;
+  keyIsolationVerified: boolean;
+  memoryEncryptionActive: boolean;
+  tamperResistanceScore: number;
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
@@ -103,4 +112,5 @@ export interface ForensicIntelligence {
   sessionReplay?: SessionReplaySignal;
   kernelForensics?: KernelForensics;
   peerAnalysis?: PeerNetworkAnalysis;
+  secureEnclave?: SecureEnclaveForensics;
 }

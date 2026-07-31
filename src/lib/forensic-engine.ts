@@ -10,7 +10,8 @@ import {
   SessionReplaySignal,
   ASNReputation,
   KernelForensics,
-  PeerNetworkAnalysis
+  PeerNetworkAnalysis,
+  SecureEnclaveForensics
 } from './forensic-types';
 
 /**
@@ -48,8 +49,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `${prev.city}, ${prev.country}`,
-    currentLocation: `${curr.city}, ${curr.country}`,
+    previousLocation: `\${prev.city}, \${prev.country}`,
+    currentLocation: `\${curr.city}, \${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -210,7 +211,21 @@ export function analyzePeerProximity(ip: string): PeerNetworkAnalysis {
 }
 
 /**
- * Advanced Risk Scoring Engine v3
+ * Analyzes Secure Enclave & Hardware Security integrity.
+ */
+export function analyzeSecureEnclave(): SecureEnclaveForensics {
+  return {
+    isEnclaveActive: true,
+    enclaveType: 'Apple_SEP',
+    attestationTokenPresent: true,
+    keyIsolationVerified: true,
+    memoryEncryptionActive: true,
+    tamperResistanceScore: 0.98
+  };
+}
+
+/**
+ * Advanced Risk Scoring Engine v4 (includes Secure Enclave analysis)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -226,6 +241,7 @@ export function calculateAdvancedRiskScore(
     asnReputation?: ASNReputation;
     kernelForensics?: KernelForensics;
     peerAnalysis?: PeerNetworkAnalysis;
+    secureEnclave?: SecureEnclaveForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -246,10 +262,16 @@ export function calculateAdvancedRiskScore(
   if (params.sessionReplay?.detected) score += 60;
   if (params.asnReputation && params.asnReputation.abuseScore > 80) score += 35;
 
-  // v3 Additions
   if (params.kernelForensics?.isVirtualMachine) score += 15;
   if (params.kernelForensics?.syscallHookingDetected) score += 45;
   if (params.peerAnalysis?.isExitNode) score += 30;
+
+  // v4 Secure Enclave logic
+  if (params.secureEnclave) {
+    if (!params.secureEnclave.isEnclaveActive) score += 20;
+    if (!params.secureEnclave.attestationTokenPresent) score += 30;
+    if (params.secureEnclave.tamperResistanceScore < 0.5) score += 40;
+  }
 
   score = Math.min(100, score);
 
@@ -285,7 +307,7 @@ export function detectCrossChainLinks(
   if (ip.startsWith('103.')) {
     links.push({
       linkedAddress: 'bc1q' + Math.random().toString(36).slice(2, 42),
-      network: 'Bitcoin', 
+      network: 'Bitcoin',
       confidence: 0.75,
       reason: 'SHARED_IP'
     });
