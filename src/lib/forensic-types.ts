@@ -113,4 +113,14 @@ export interface ForensicIntelligence {
   kernelForensics?: KernelForensics;
   peerAnalysis?: PeerNetworkAnalysis;
   secureEnclave?: SecureEnclaveForensics;
+  browserIntegrity?: BrowserIntegritySignal;
+}
+
+export interface BrowserIntegritySignal {
+  isAutomationDetected: boolean;
+  webdriverPresent: boolean;
+  inconsistentPermissions: boolean;
+  cdcPropsPresent: boolean;
+  chromeObjectMissing: boolean;
+  automationScore: number;
 }
