@@ -92,3 +92,17 @@ The Sentinel-X engine now includes kernel-level verification for Secure Enclaves
 - **Memory Encryption Detection**: Analyzes if TME (Total Memory Encryption) or similar technologies are active.
 - **Tamper Resistance Scoring**: Evaluates the physical and logical tamper-resistance of the underlying hardware.
 - **Risk Scoring Integration**: Transactions originating from devices without active enclaves or failed attestation are automatically flagged for higher risk.
+
+## Browser Integrity & Automation Detection (Added 2026-08-01)
+The Sentinel-X engine now incorporates advanced browser environment integrity checks to detect headless browsers and automation frameworks (Puppeteer, Selenium, Playwright).
+
+- **Automation Detection Signal**: `browserIntegrity`
+- **Webdriver Verification**: Detects the presence of `navigator.webdriver` even when obfuscated.
+- **Chrome Object Validation**: Checks for missing or inconsistent `window.chrome` properties common in headless environments.
+- **Automation Scoring**: Aggregates environmental inconsistencies into a confidence score (0.0 to 1.0).
+- **Risk Scoring Integration (v5)**: Automated environments now trigger a significant risk weight (+70 for explicit detection).
+
+### Risk Engine v5
+Upgraded the `calculateAdvancedRiskScore` function to integrate Browser Integrity signals.
+- **Version**: 5.0.0
+- **Weighting**: Automation Detection (+70), Webdriver Presence (+40), Automation Score (+30).

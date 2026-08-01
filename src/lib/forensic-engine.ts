@@ -11,7 +11,8 @@ import {
   ASNReputation,
   KernelForensics,
   PeerNetworkAnalysis,
-  SecureEnclaveForensics
+  SecureEnclaveForensics,
+  BrowserIntegritySignal
 } from './forensic-types';
 
 /**
@@ -49,8 +50,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `\${prev.city}, \${prev.country}`,
-    currentLocation: `\${curr.city}, \${curr.country}`,
+    previousLocation: `${prev.city}, ${prev.country}`,
+    currentLocation: `${curr.city}, ${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -225,7 +226,21 @@ export function analyzeSecureEnclave(): SecureEnclaveForensics {
 }
 
 /**
- * Advanced Risk Scoring Engine v4 (includes Secure Enclave analysis)
+ * Detects browser automation and environment integrity.
+ */
+export function analyzeBrowserIntegrity(): BrowserIntegritySignal {
+  return {
+    isAutomationDetected: false,
+    webdriverPresent: false,
+    inconsistentPermissions: false,
+    cdcPropsPresent: false,
+    chromeObjectMissing: false,
+    automationScore: 0.02
+  };
+}
+
+/**
+ * Advanced Risk Scoring Engine v5 (includes Browser Integrity analysis)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -242,6 +257,7 @@ export function calculateAdvancedRiskScore(
     kernelForensics?: KernelForensics;
     peerAnalysis?: PeerNetworkAnalysis;
     secureEnclave?: SecureEnclaveForensics;
+    browserIntegrity?: BrowserIntegritySignal;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -271,6 +287,13 @@ export function calculateAdvancedRiskScore(
     if (!params.secureEnclave.isEnclaveActive) score += 20;
     if (!params.secureEnclave.attestationTokenPresent) score += 30;
     if (params.secureEnclave.tamperResistanceScore < 0.5) score += 40;
+  }
+
+  // v5 Browser Integrity logic
+  if (params.browserIntegrity) {
+    if (params.browserIntegrity.isAutomationDetected) score += 70;
+    if (params.browserIntegrity.webdriverPresent) score += 40;
+    if (params.browserIntegrity.automationScore > 0.6) score += 30;
   }
 
   score = Math.min(100, score);

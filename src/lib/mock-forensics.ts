@@ -3,13 +3,14 @@ import {
   detectTemporalAnomaly, 
   detectCrossChainLinks, 
   calculateFingerprintEntropy,
-  analyzeBehavioralBiometrics,
+  analyzeBehavioralBiometrics, 
   analyzeTransactionVelocity,
   detectSessionReplay,
   analyzeASNReputation,
   analyzeKernelForensics,
   analyzePeerProximity,
-  analyzeSecureEnclave
+  analyzeSecureEnclave,
+  analyzeBrowserIntegrity
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -76,7 +77,7 @@ export function enrichWithForensics(transaction: any): any {
   const velocityMetrics = analyzeTransactionVelocity([
     { amount: transaction.amount || 1000, timestamp: Date.now() },
     { amount: 500, timestamp: Date.now() - 10000 },
-    { amount: 2000, timestamp: Date.now() - 20000 } 
+    { amount: 2000, timestamp: Date.now() - 20000 }
   ]);
 
   const crossChainLinks = detectCrossChainLinks(
@@ -95,6 +96,7 @@ export function enrichWithForensics(transaction: any): any {
   const kernelForensics = analyzeKernelForensics();
   const peerAnalysis = analyzePeerProximity(geolocation.ip);
   const secureEnclave = analyzeSecureEnclave();
+  const browserIntegrity = analyzeBrowserIntegrity();
   
   return {
     ...transaction,
@@ -111,7 +113,8 @@ export function enrichWithForensics(transaction: any): any {
       sessionReplay,
       kernelForensics,
       peerAnalysis,
-      secureEnclave
+      secureEnclave,
+      browserIntegrity
     }
   };
 }
