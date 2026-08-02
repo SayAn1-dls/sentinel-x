@@ -12,7 +12,9 @@ import {
   KernelForensics,
   PeerNetworkAnalysis,
   SecureEnclaveForensics,
-  BrowserIntegritySignal
+  BrowserIntegritySignal,
+  AIAgentDetectionSignal,
+  SmartContractForensics
 } from './forensic-types';
 
 /**
@@ -50,8 +52,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `${prev.city}, ${prev.country}`,
-    currentLocation: `${curr.city}, ${curr.country}`,
+    previousLocation: `\${prev.city}, \${prev.country}`,
+    currentLocation: `\${curr.city}, \${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -240,7 +242,49 @@ export function analyzeBrowserIntegrity(): BrowserIntegritySignal {
 }
 
 /**
- * Advanced Risk Scoring Engine v5 (includes Browser Integrity analysis)
+ * v6: Detects AI Agent interaction patterns and LLM reasoning artifacts.
+ */
+export function analyzeAIAgentBehavior(
+  inputPayload: string,
+  responseTimeMs: number
+): AIAgentDetectionSignal {
+  const reasoningMarkers = ['step-by-step', 'therefore', 'consequently', 'analysis indicates'];
+  const reasoningChainDetected = reasoningMarkers.some(m => inputPayload.toLowerCase().includes(m));
+  
+  // LLMs typically have lower syntactic entropy in certain structures
+  const responseSyntacticEntropy = 0.65; 
+  const promptInjectionRisk = inputPayload.includes('ignore previous instructions') ? 0.98 : 0.05;
+  
+  return {
+    isAIAgent: reasoningChainDetected || responseTimeMs < 500,
+    promptInjectionRisk,
+    responseSyntacticEntropy,
+    reasoningChainDetected,
+    agentSignature: 'LLM-X-DETECTED-' + Math.random().toString(36).slice(2, 6).toUpperCase()
+  };
+}
+
+/**
+ * v6: Analyzes smart contract interaction history for high-risk patterns.
+ */
+export function analyzeSmartContractRisk(
+  history: { address: string; verified: boolean; isMixer: boolean; isDrainer: boolean }[]
+): SmartContractForensics {
+  const knownDrainersContacted = history.some(h => h.isDrainer);
+  const mixerUsageDetected = history.some(h => h.isMixer);
+  const unverifiedCount = history.filter(h => !h.verified).length;
+  
+  return {
+    interactionCount: history.length,
+    knownDrainersContacted,
+    mixerUsageDetected,
+    unverifiedContractRatio: history.length > 0 ? unverifiedCount / history.length : 0,
+    lastContractAddress: history[0]?.address || '0x0000000000000000000000000000000000000000'
+  };
+}
+
+/**
+ * Advanced Risk Scoring Engine v6 (includes AI Agent & Smart Contract Forensic signals)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -258,6 +302,8 @@ export function calculateAdvancedRiskScore(
     peerAnalysis?: PeerNetworkAnalysis;
     secureEnclave?: SecureEnclaveForensics;
     browserIntegrity?: BrowserIntegritySignal;
+    aiAgentDetection?: AIAgentDetectionSignal;
+    smartContractForensics?: SmartContractForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -294,6 +340,19 @@ export function calculateAdvancedRiskScore(
     if (params.browserIntegrity.isAutomationDetected) score += 70;
     if (params.browserIntegrity.webdriverPresent) score += 40;
     if (params.browserIntegrity.automationScore > 0.6) score += 30;
+  }
+
+  // v6 AI Agent Detection logic
+  if (params.aiAgentDetection) {
+    if (params.aiAgentDetection.isAIAgent) score += 55;
+    if (params.aiAgentDetection.promptInjectionRisk > 0.8) score += 80;
+  }
+
+  // v6 Smart Contract Forensics logic
+  if (params.smartContractForensics) {
+    if (params.smartContractForensics.knownDrainersContacted) score += 100;
+    if (params.smartContractForensics.mixerUsageDetected) score += 65;
+    if (params.smartContractForensics.unverifiedContractRatio > 0.5) score += 35;
   }
 
   score = Math.min(100, score);
