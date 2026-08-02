@@ -106,3 +106,25 @@ The Sentinel-X engine now incorporates advanced browser environment integrity ch
 Upgraded the `calculateAdvancedRiskScore` function to integrate Browser Integrity signals.
 - **Version**: 5.0.0
 - **Weighting**: Automation Detection (+70), Webdriver Presence (+40), Automation Score (+30).
+
+## AI Agent & Smart Contract Forensic Profiling (Added 2026-08-02)
+The Sentinel-X engine now includes advanced detection for AI-agentic behavior and deep-analysis of smart contract interaction history.
+
+### AI Agent Interaction Analysis
+Detects LLM-driven interactions by analyzing syntactic entropy, reasoning chain artifacts, and response timing.
+- **Signal**: `aiAgentDetection`
+- **Metric**: `promptInjectionRisk` and `reasoningChainDetected`.
+- **Detection**: Flags inputs containing reasoning markers ("step-by-step", "consequently") or suspiciously fast interaction patterns.
+
+### Smart Contract Forensic Profiling
+Analyzes the historical footprint of a wallet's interactions with DeFi protocols and known malicious contracts.
+- **Signal**: `smartContractForensics`
+- **Checks**: 
+  - **Mixer Usage**: Detection of interactions with privacy mixers (e.g., Tornado Cash).
+  - **Drainer Contact**: High-risk flag for interactions with known wallet drainers.
+  - **Unverified Contracts**: Calculates the ratio of unverified vs. verified smart contract interactions.
+
+### Risk Engine v6
+Upgraded the `calculateAdvancedRiskScore` function to integrate AI and Smart Contract signals.
+- **Version**: 6.0.0
+- **Weighting**: Known Drainer Contact (+100 - Critical), Prompt Injection Risk (+80), AI Agent Detection (+55), Mixer Usage (+65).
