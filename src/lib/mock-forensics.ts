@@ -10,7 +10,9 @@ import {
   analyzeKernelForensics,
   analyzePeerProximity,
   analyzeSecureEnclave,
-  analyzeBrowserIntegrity
+  analyzeBrowserIntegrity,
+  analyzeAIAgentBehavior,
+  analyzeSmartContractRisk
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -98,6 +100,16 @@ export function enrichWithForensics(transaction: any): any {
   const secureEnclave = analyzeSecureEnclave();
   const browserIntegrity = analyzeBrowserIntegrity();
   
+  const aiAgentDetection = analyzeAIAgentBehavior(
+    transaction.memo || 'Standard treasury transfer execution.',
+    450
+  );
+
+  const smartContractForensics = analyzeSmartContractRisk([
+    { address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e', verified: true, isMixer: false, isDrainer: false },
+    { address: '0x2222222222222222222222222222222222222222', verified: false, isMixer: true, isDrainer: false }
+  ]);
+  
   return {
     ...transaction,
     forensics: {
@@ -114,7 +126,9 @@ export function enrichWithForensics(transaction: any): any {
       kernelForensics,
       peerAnalysis,
       secureEnclave,
-      browserIntegrity
+      browserIntegrity,
+      aiAgentDetection,
+      smartContractForensics
     }
   };
 }
