@@ -98,6 +98,31 @@ export interface SecureEnclaveForensics {
   tamperResistanceScore: number;
 }
 
+export interface AIAgentDetectionSignal {
+  isAIAgent: boolean;
+  promptInjectionRisk: number;
+  responseSyntacticEntropy: number;
+  reasoningChainDetected: boolean;
+  agentSignature: string;
+}
+
+export interface SmartContractForensics {
+  interactionCount: number;
+  knownDrainersContacted: boolean;
+  mixerUsageDetected: boolean;
+  unverifiedContractRatio: number;
+  lastContractAddress: string;
+}
+
+export interface BrowserIntegritySignal {
+  isAutomationDetected: boolean;
+  webdriverPresent: boolean;
+  inconsistentPermissions: boolean;
+  cdcPropsPresent: boolean;
+  chromeObjectMissing: boolean;
+  automationScore: number;
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
@@ -114,13 +139,6 @@ export interface ForensicIntelligence {
   peerAnalysis?: PeerNetworkAnalysis;
   secureEnclave?: SecureEnclaveForensics;
   browserIntegrity?: BrowserIntegritySignal;
-}
-
-export interface BrowserIntegritySignal {
-  isAutomationDetected: boolean;
-  webdriverPresent: boolean;
-  inconsistentPermissions: boolean;
-  cdcPropsPresent: boolean;
-  chromeObjectMissing: boolean;
-  automationScore: number;
+  aiAgentDetection?: AIAgentDetectionSignal;
+  smartContractForensics?: SmartContractForensics;
 }
