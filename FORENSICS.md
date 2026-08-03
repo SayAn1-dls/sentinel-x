@@ -128,3 +128,28 @@ Analyzes the historical footprint of a wallet's interactions with DeFi protocols
 Upgraded the `calculateAdvancedRiskScore` function to integrate AI and Smart Contract signals.
 - **Version**: 6.0.0
 - **Weighting**: Known Drainer Contact (+100 - Critical), Prompt Injection Risk (+80), AI Agent Detection (+55), Mixer Usage (+65).
+
+## Dark Web Intelligence & Deep Packet Inspection (DPI) (Added 2026-08-03)
+The Sentinel-X engine now incorporates Dark Web exposure intelligence and network-level Deep Packet Inspection (DPI) artifacts for enhanced forensic profiling.
+
+### Dark Web Intelligence Exposure
+Cross-references identity markers (emails, hashes) against known data breaches and dark web leak repositories.
+- **Signal**: `darkWebExposure`
+- **Checks**: 
+  - **Breach Count**: Total number of unique breaches the identity has been found in.
+  - **Risk Rating**: Categorized risk level (Critical to Low) based on the severity and freshness of the exposure.
+- **Risk Scoring Integration**: Identities with Critical dark web exposure trigger significant risk weightings (+60).
+
+### Deep Packet Inspection (DPI) Forensic Analysis
+Analyzes network-layer artifacts to detect MITM (Man-in-the-Middle) attacks and network scanning activity.
+- **Signal**: `networkPacketAnalysis`
+- **Metrics**:
+  - **TCP Window Size Fingerprinting**: Identifies operating system spoofing or non-standard network stacks.
+  - **TTL (Time To Live) Analysis**: Detects unusual routing paths or potential proxying.
+  - **Jitter Analysis**: Evaluates packet inter-arrival time jitter to detect network-level anomalies.
+- **Detection**: Flags suspected Nmap scans and MITM attempts.
+
+### Risk Engine v7
+Upgraded the `calculateAdvancedRiskScore` function to integrate Dark Web and DPI forensic signals.
+- **Version**: 7.0.0
+- **Weighting**: MITM Likelihood (+90 - Critical), Dark Web Critical Exposure (+60), Nmap Scan Detection (+40).

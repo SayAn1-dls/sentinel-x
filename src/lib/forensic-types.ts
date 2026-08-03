@@ -123,6 +123,22 @@ export interface BrowserIntegritySignal {
   automationScore: number;
 }
 
+export interface DarkWebExposure {
+  isExposed: boolean;
+  breachCount: number;
+  lastExposureDate?: string;
+  exposureSource?: string;
+  riskRating: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+}
+
+export interface NetworkPacketAnalysis {
+  tcpWindowSize: number;
+  ttlValue: number;
+  isNmapScanDetected: boolean;
+  isMitmLikely: boolean;
+  packetInterArrivalTimeJitter: number;
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
@@ -141,4 +157,6 @@ export interface ForensicIntelligence {
   browserIntegrity?: BrowserIntegritySignal;
   aiAgentDetection?: AIAgentDetectionSignal;
   smartContractForensics?: SmartContractForensics;
+  darkWebExposure?: DarkWebExposure;
+  networkPacketAnalysis?: NetworkPacketAnalysis;
 }

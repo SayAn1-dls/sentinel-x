@@ -12,7 +12,9 @@ import {
   analyzeSecureEnclave,
   analyzeBrowserIntegrity,
   analyzeAIAgentBehavior,
-  analyzeSmartContractRisk
+  analyzeSmartContractRisk,
+  analyzeDarkWebExposure,
+  analyzeNetworkPackets
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -109,6 +111,9 @@ export function enrichWithForensics(transaction: any): any {
     { address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e', verified: true, isMixer: false, isDrainer: false },
     { address: '0x2222222222222222222222222222222222222222', verified: false, isMixer: true, isDrainer: false }
   ]);
+
+  const darkWebExposure = analyzeDarkWebExposure(transaction.senderEmail || 'user@example.com');
+  const networkPacketAnalysis = analyzeNetworkPackets();
   
   return {
     ...transaction,
@@ -128,7 +133,9 @@ export function enrichWithForensics(transaction: any): any {
       secureEnclave,
       browserIntegrity,
       aiAgentDetection,
-      smartContractForensics
+      smartContractForensics,
+      darkWebExposure,
+      networkPacketAnalysis
     }
   };
 }
