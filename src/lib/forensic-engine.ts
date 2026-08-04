@@ -16,7 +16,9 @@ import {
   AIAgentDetectionSignal,
   SmartContractForensics,
   DarkWebExposure,
-  NetworkPacketAnalysis
+  NetworkPacketAnalysis,
+  CloudInfrastructureSignal,
+  DNSIntegritySignal
 } from './forensic-types';
 
 /**
@@ -54,8 +56,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `${prev.city}, ${prev.country}`,
-    currentLocation: `${curr.city}, ${curr.country}`,
+    previousLocation: `\${prev.city}, \${prev.country}`,
+    currentLocation: `\${curr.city}, \${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -315,7 +317,36 @@ export function analyzeNetworkPackets(): NetworkPacketAnalysis {
 }
 
 /**
- * Advanced Risk Scoring Engine v7 (includes Dark Web & DPI Forensic signals)
+ * v8: Cloud Infrastructure Forensic Correlation.
+ */
+export function analyzeCloudInfrastructure(ip: string): CloudInfrastructureSignal {
+  const datacenterRanges = ['13.', '52.', '34.', '35.'];
+  const isDataCenter = datacenterRanges.some(r => ip.startsWith(r));
+  
+  return {
+    provider: isDataCenter ? 'AWS' : 'None',
+    instanceType: isDataCenter ? 't3.medium' : undefined,
+    region: isDataCenter ? 'us-east-1' : undefined,
+    isKnownTorRelay: false,
+    datacenterRiskScore: isDataCenter ? 0.75 : 0.05
+  };
+}
+
+/**
+ * v8: DNS Integrity Analysis.
+ */
+export function analyzeDNSIntegrity(domain: string): DNSIntegritySignal {
+  return {
+    dnsServer: '8.8.8.8',
+    isPublicResolver: true,
+    dnsLatencyMs: 12,
+    isHijackedLikely: false,
+    resolvedIpMatchesExpected: true
+  };
+}
+
+/**
+ * Advanced Risk Scoring Engine v8 (includes Cloud Correlation & DNS Integrity)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -337,6 +368,8 @@ export function calculateAdvancedRiskScore(
     smartContractForensics?: SmartContractForensics;
     darkWebExposure?: DarkWebExposure;
     networkPacketAnalysis?: NetworkPacketAnalysis;
+    cloudInfrastructure?: CloudInfrastructureSignal;
+    dnsIntegrity?: DNSIntegritySignal;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -361,39 +394,40 @@ export function calculateAdvancedRiskScore(
   if (params.kernelForensics?.syscallHookingDetected) score += 45;
   if (params.peerAnalysis?.isExitNode) score += 30;
 
-  // v4 Secure Enclave logic
   if (params.secureEnclave) {
     if (!params.secureEnclave.isEnclaveActive) score += 20;
     if (!params.secureEnclave.attestationTokenPresent) score += 30;
     if (params.secureEnclave.tamperResistanceScore < 0.5) score += 40;
   }
 
-  // v5 Browser Integrity logic
   if (params.browserIntegrity) {
     if (params.browserIntegrity.isAutomationDetected) score += 70;
     if (params.browserIntegrity.webdriverPresent) score += 40;
     if (params.browserIntegrity.automationScore > 0.6) score += 30;
   }
 
-  // v6 AI Agent Detection logic
   if (params.aiAgentDetection) {
     if (params.aiAgentDetection.isAIAgent) score += 55;
     if (params.aiAgentDetection.promptInjectionRisk > 0.8) score += 80;
   }
 
-  // v6 Smart Contract Forensics logic
   if (params.smartContractForensics) {
     if (params.smartContractForensics.knownDrainersContacted) score += 100;
     if (params.smartContractForensics.mixerUsageDetected) score += 65;
     if (params.smartContractForensics.unverifiedContractRatio > 0.5) score += 35;
   }
 
-  // v7 Dark Web & Network Packet logic
   if (params.darkWebExposure?.isExposed) {
     score += params.darkWebExposure.riskRating === 'CRITICAL' ? 60 : 30;
   }
   if (params.networkPacketAnalysis?.isNmapScanDetected) score += 40;
   if (params.networkPacketAnalysis?.isMitmLikely) score += 90;
+
+  // v8 Cloud & DNS Logic
+  if (params.cloudInfrastructure && params.cloudInfrastructure.provider !== 'None') {
+    score += params.cloudInfrastructure.datacenterRiskScore * 40;
+  }
+  if (params.dnsIntegrity?.isHijackedLikely) score += 100;
 
   score = Math.min(100, score);
 

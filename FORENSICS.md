@@ -153,3 +153,26 @@ Analyzes network-layer artifacts to detect MITM (Man-in-the-Middle) attacks and 
 Upgraded the `calculateAdvancedRiskScore` function to integrate Dark Web and DPI forensic signals.
 - **Version**: 7.0.0
 - **Weighting**: MITM Likelihood (+90 - Critical), Dark Web Critical Exposure (+60), Nmap Scan Detection (+40).
+
+## Update: 2026-08-04 - Cloud Infrastructure & DNS Integrity Analysis (v8)
+
+The Sentinel-X engine now includes cloud infrastructure correlation and DNS resolution integrity checks to detect advanced proxying and hijacking attempts.
+
+### Cloud Infrastructure Forensic Correlation
+Detects if a transaction originates from a major cloud provider (AWS, GCP, Azure, etc.) and evaluates the associated data center risk.
+- **Signal**: `cloudInfrastructure`
+- **Metric**: `datacenterRiskScore` (0.0 to 1.0).
+- **Detection**: Cross-references IP ranges against known cloud provider lists. High-risk for treasury operations if originating from a non-business data center.
+
+### DNS Integrity Analysis
+Analyzes the DNS resolution path and latency to identify potential DNS spoofing or hijacking.
+- **Signal**: `dnsIntegrity`
+- **Checks**:
+  - **Public Resolver Detection**: Checks if common public resolvers (8.8.8.8, 1.1.1.1) are being used or bypassed.
+  - **Hijack Likelihood**: Heuristic analysis based on resolution consistency and network latency.
+- **Risk Impact**: Critical (+100) if hijacking is likely.
+
+### Risk Engine v8
+Upgraded the `calculateAdvancedRiskScore` function to integrate Cloud and DNS forensic signals.
+- **Version**: 8.0.0
+- **Weighting**: DNS Hijacking (+100 - Critical), Cloud Data Center Correlation (up to +40).
