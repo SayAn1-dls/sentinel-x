@@ -14,7 +14,9 @@ import {
   analyzeAIAgentBehavior,
   analyzeSmartContractRisk,
   analyzeDarkWebExposure,
-  analyzeNetworkPackets
+  analyzeNetworkPackets,
+  analyzeCloudInfrastructure,
+  analyzeDNSIntegrity
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -49,6 +51,17 @@ export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
     isp: 'M247 Ltd',
     proxy: false,
     vpn: true,
+    tor: false
+  },
+  {
+    ip: '13.233.191.2',
+    country: 'IN',
+    city: 'Mumbai',
+    latitude: 19.0760,
+    longitude: 72.8777,
+    isp: 'Amazon.com',
+    proxy: false,
+    vpn: false,
     tor: false
   }
 ];
@@ -115,6 +128,10 @@ export function enrichWithForensics(transaction: any): any {
   const darkWebExposure = analyzeDarkWebExposure(transaction.senderEmail || 'user@example.com');
   const networkPacketAnalysis = analyzeNetworkPackets();
   
+  // v8 new signals
+  const cloudInfrastructure = analyzeCloudInfrastructure(geolocation.ip);
+  const dnsIntegrity = analyzeDNSIntegrity('sentinel-x.io');
+  
   return {
     ...transaction,
     forensics: {
@@ -135,7 +152,9 @@ export function enrichWithForensics(transaction: any): any {
       aiAgentDetection,
       smartContractForensics,
       darkWebExposure,
-      networkPacketAnalysis
+      networkPacketAnalysis,
+      cloudInfrastructure,
+      dnsIntegrity
     }
   };
 }

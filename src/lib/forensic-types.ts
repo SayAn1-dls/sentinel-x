@@ -139,6 +139,22 @@ export interface NetworkPacketAnalysis {
   packetInterArrivalTimeJitter: number;
 }
 
+export interface CloudInfrastructureSignal {
+  provider: 'AWS' | 'GCP' | 'Azure' | 'DigitalOcean' | 'Oracle' | 'None';
+  instanceType?: string;
+  region?: string;
+  isKnownTorRelay: boolean;
+  datacenterRiskScore: number;
+}
+
+export interface DNSIntegritySignal {
+  dnsServer: string;
+  isPublicResolver: boolean;
+  dnsLatencyMs: number;
+  isHijackedLikely: boolean;
+  resolvedIpMatchesExpected: boolean;
+}
+
 export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
@@ -159,4 +175,6 @@ export interface ForensicIntelligence {
   smartContractForensics?: SmartContractForensics;
   darkWebExposure?: DarkWebExposure;
   networkPacketAnalysis?: NetworkPacketAnalysis;
+  cloudInfrastructure?: CloudInfrastructureSignal;
+  dnsIntegrity?: DNSIntegritySignal;
 }
