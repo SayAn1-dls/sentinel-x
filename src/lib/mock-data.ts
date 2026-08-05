@@ -1,1 +1,64 @@
-YVcxd2IzSjBJSHNnVkhKaGJuTmhZM1JwYjI0c0lFSnBiMjFsZEhKcFkxTnBaMjVoYkN3Z1RtVjBkMjl5YTBadmNtVnVjMmxqY3l3Z1NXUmxiblJwZEhsUWNtOXZaaXdnVG1WMWNtRnNVMmxuYm1GMGRYSmxMQ0JDWldoaGRtbHZjbUZzVkdWc1pXMWxkSEo1TENCTFpYSnVaV3hHYjNKbGJuTnBZM01zSUUxbGJXOXllVkJoWjJVc0lFMWxiVzl5ZVZCaFoyVlRkR0YwZFhNc0lGTmxZM1Z5WlVKdmIzUlRkR0YwWlN3Z1MyVnlibVZzU1c1MFpXZHlhWFI1Vm1WeVpHbGpkQ3dnVW1semEweGxkbVZzTENCRmJuUnBkSGxVZVhCbExDQlVjbUZ1YzJGamRHbHZibE4wWVhSMWN5QjlJR1p5YjIwZ0p5NHZkSGx3WlhNbk93b0tZMjl1YzNRZ1UwVk9SRVZTVXlBOUlGc0tJQ0FuUzJsdVpYaDVjeUJVY21WaGMzVnllU0JQY0hNbkxDQW5SMjlzWkcxaGJpQlRZV05vY3lCSmJuUmNKMnduTENBblRXOXlaMkZ1SUZOMFlXNXNaWGtnUmxnZ1JHVnpheWNzQ2lBZ0owSnNZV05yVW05amF5QkJiR0ZrWkdsdUp5d2dKME5wZEdGa1pXd2dVMlZqZFhKcGRHbGxjeWNzSUNkQ2NtbGtaMlYzWVhSbGNpQkJjM052WTJsaGRHVnpKeXdLSUNBblZIZHZJRk5wWjIxaElFbHVkbVZ6ZEcxbGJuUnpKeXdnSjFKbGJtRnBjM05oYm1ObElGUmxZMmh1YjJ4dloybGxjeWNzSUNkRVJTQlRhR0YzSUNZZ1EyOG5MQW9nSUNkUWIybHVkRGN5SUVGemMyVjBJRTFuYlhRbkxDQW5RVkZTSUVOaGNHbDBZV3duTENBblNtRnVaU0JUZEhKbFpYUWdRMkZ3YVhSaGJDY3NDaUFnSjFacGNuUjFJRVpwYm1GdVkybGhiQ2NzSUNkVGRYTnhkV1ZvWVc1dVlTQkpiblJjSjJ3bkxDQW5TblZ0Y0NCVWNtRmthVzVuSUV4TVF5Y3NDaUFnSjBSU1Z5QkliMnhrYVc1bmN5Y3NJQ2RKVFVNZ1ZISmhaR2x1Wnljc0lDZEdiRzkzSUZSeVlXUmxjbk1uTEFvZ0lDZFBjSFJwZG1WeUlFSldKeXdnSjFSdmQyVnlJRkpsYzJWaGNtTm9JRU5oY0dsMFlXd25DbDA3Q2dwamIyNXpkQ0JTUlVORlNWWkZVbE1nUFNCYkNpQWdKMHBRVFNCTWIyNWtiMjRnUTJ4bFlYSnBibWNuTENBblNGTkNReUJJYjI1bklFdHZibWNuTENBblJHVjFkSE5qYUdVZ1FtRnVheUJCUnljc0NpQWdKMEpoY21Oc1lYbHpJRU5oY0dsMFlXd25MQ0FuUWs1UUlGQmhjbWxpWVhNZ1UwRW5MQ0FuVlVKVElFZHliM1Z3SUVGSEp5d0tJQ0FuUTNKbFpHbDBJRk4xYVhOelpTQkpiblJjSjJ3bkxDQW5UbTl0ZFhKaElFaHZiR1JwYm1kekp5d2dKMU4wWVc1a1lYSmtJRU5vWVhKMFpYSmxaQ2NzQ2lBZ0owTnBkR2xuY205MWNDQkhiRzlpWVd3bkxDQW5RbUZ1YXlCdlppQkJiV1Z5YVdOaEp5d2dKMWRsYkd4eklFWmhjbWR2SUZObFkzVnlhWFJwWlhNbkxBb2dJQ2RTUWtNZ1EyRndhWFJoYkNCTllYSnJaWFJ6Snl3Z0oxUkVJRk5sWTNWeWFYUnBaWE1uTENBblRXbDZkV2h2SUZObFkzVnlhWFJwWlhNbkxBb2dJQ2ROVlVaSElFSmhibXNnVEhSa0p5d2dKMU52WTJuRHFYVERxU0JIdzZsdXc2bHlZV3hsSnl3Z0owTnZiVzFsY25waVlXNXJJRUZISnl3S0lDQW5RVTVhSUVKaGJtdHBibWNnUjNKdmRYQW5MQ0FuVFdGamNYVmhjbWxsSUVkeWIzVndKd3BkT3dvS1kyOXVjM1FnUTA5U1VrbEVUMUpUSUQwZ1d3b2dJQ2RWVTBRZzRvYVNJRVZWVWljc0lDZFZVMFFnNG9hU0lFZENVQ2NzSUNkVlUwUWc0b2FTSUVwUVdTY3NJQ2RGVlZJZzRvYVNJRlZUUkNjc0lDZEhRbEFnNG9hU0lGVlRSQ2NzQ2lBZ0oxVlRSQ0RpaHBJZ1EwaEdKeXdnSjBWVlVpRGlocElnUjBKUUp5d2dKMVZUUkNEaWhwSWdVMGRFSnl3Z0oxVlRSQ0RpaHBJZ1NFdEVKeXdnSjBWVlVpRGlocElnU2xCWkp5d0tJQ0FuUjBKUUlPS0draUJGVlZJbkxDQW5WVk5FSU9LR2tpQkJWVVFuTENBblZWTkVJT0tHa2lCRFFVUW5MQ0FuUTBoR0lPS0draUJGVlZJbkxDQW5VMGRFSU9LR2tpQlZVMFFuQ2wwN0NncGpiMjV6ZENCT1JWUlhUMUpMVXlBOUlGc25TMmx1WlhoNWN5Qk5ZV2x1Ym1WMEp5d2dKMU5YU1VaVUlHZHdhU2NzSUNkR1pXUk9iM2NuTENBblZFRlNSMFZVTWljc0lDZERTRUZRVXlkZE93b0tZMjl1YzNRZ1RVVk5UMU1nUFNCYkNpQWdKMFpZSUZOd2IzUWdVMlYwZEd4bGJXVnVkQ0JVS3pFbkxDQW5RM0p2YzNNdFltOXlaR1Z5SUhKbGNHOGdkVzUzYVc1a0p5d2dKMDFoY21kcGJpQmpZV3hzSUhObGRIUnNaVzFsYm5RbkxBb2dJQ2REYjJ4c1lYUmxjbUZzSUhSeVlXNXpabVZ5SUMwZ1ExTkJKeXdnSjBKdmJtUWdZMjkxY0c5dUlIQmhlVzFsYm5RbkxDQW5SR2wyYVdSbGJtUWdjbVZ3WVhSeWFXRjBhVzl1Snl3S0lDQW5WSEpoWkdVZ1ptbHVZVzVqWlNCTVF5Y3NJQ2RKYm5SeVlXUmhlU0JzYVhGMWFXUnBkSGtnYzNkbFpYQW5MQ0FuVG05emRISnZJSEpsWTI5dVkybHNhV0YwYVc5dUp5d0tJQ0FuUTB4VElITmxkSFJzWlcxbGJuUWdiR1ZuSnl3Z0oxQnlhVzFsSUdKeWIydGxjbUZuWlNCdFlYSm5hVzRuTENBblUyVmpkWEpwZEdsbGN5QnNaVzVrYVc1bklISmxkSFZ5Ymljc0NpQWdKMDlVUXlCa1pYSnBkbUYwYVhabElITmxkSFJzWlcxbGJuUW5MQ0FuVTNSeWRXTjBkWEpsWkNCd2NtOWtkV04wSUhCaGVXOW1aaWNzSUNkVGVXNWthV05oZEdWa0lHeHZZVzRnWkhKaGQyUnZkMjRuQ2wwN0NncGpiMjV6ZENCR1RFRkhVMTlRVDA5TUlEMGdXd29nSUNkVVpXMXdiM0poYkNCaGJtOXRZV3g1SUdSbGRHVmpkR1ZrSnl3Z0owdGxlWE4wY205clpTQndZWFIwWlhKdUlHbHljbVZuZFd4aGNpY3NJQ2RUWlhOemFXOXVJSEpsY0d4aGVTQnpkWE53WldOMFpXUW5MQW9nSUNkV1pXeHZZMmwwZVNCaWNtVmhZMmdnS0RQUGd5a25MQ0FuUjJWdmJHOWpZWFJwYjI0Z2JXbHpiV0YwWTJnbkxDQW5SR1YyYVdObElHWnBibWRsY25CeWFXNTBJRzV2ZG1Wc0p5d0tJQ0FuUW1Wb1lYWnBiM0poYkNCa2NtbG1kQ0JrWlhSbFkzUmxaQ2NzSUNkQlVFa2diR0YwWlc1amVTQmhibTl0WVd4dmRYTW5MQ0FuVkV4VElHTmxjblFnYldsemJXRjBZMmduTEFvZ0lDZENjbTkzYzJWeUlHRjFkRzl0WVhScGIyNGdiV0Z5YTJWeWN5Y3NJQ2REYkdsd1ltOWhjbVFnYVc1cVpXTjBhVzl1SUdSbGRHVmpkR1ZrSnl3Z0oxZGxZa2RNSUdacGJtZGxjbkJ5YVc1MElITndiMjltWldRbkxBb2dJQ2REWVc1MllYTWdhR0Z6YUNCaGJtOXRZV3g1Snl3Z0owMXZkWE5sSUcxdmRtVnRaVzUwSUd4cGJtVmhjaWNzSUNkVWVYQnBibWNnWTJGa1pXNWpaU0J5YjJKdmRHbGpKeXdLSUNBblNWQWdjbVZ3ZFhSaGRHbHZiaUJqY21sMGFXTmhiQ2NzSUNkQlUwNGdZMmhoYm1kbElHMXBaQzF6WlhOemFXOXVKeXdnSjBOdmIydHBaU0JxWVhJZ2RHRnRjR1Z5YVc1bk93b2dJR04xY25KbGJtTjVPaUJ6ZEhKcGJtYzdDaUFnWTI5eWNtbGtiM0k2SUhOMGNtbHVaenNLSUNCbGJuUnBkSGxVZVhCbE9pQkZiblJwZEhsVWVYQmxPd29nSUhKcGMydE1aWFpsYkRvZ1VtbHphMHhsZG1Wc093b2dJSE4wWVhSMWN6b2dWSEpoYm1OaFkzUnBiMjVUZEdGMGRYTTdDaUFnWTI5dVptbGtaVzVqWlRvZ2JuVnRZbVZ5T3dvZ0lHSnBiMjFsZEhKcFkzTTZJRUpwYjIxbGRISnBZMU5wWjI1aGJEc0tJQ0J1WlhSM2IzSnJSbTl5Wlc1emFXTnpPaUJPWlhSM2IzSnJSbTl5Wlc1emFXTnpPd29nSUdsa1pXNTBhWFI1VUhKdmIyWTZJRWxrWlc1MGFYUjVVSEp2YjJZN0NpQWdibVYxY21Gc1UybG5ibUYwZFhKbE9pQk9aWFZ5WVd4VGFXZHVZWFIxY21VN0NpQWdZbVZvWVhacGIzSmhiRlJsYkdWdFpYUnllVG9nUW1Wb1lYWnBiM0poYkZSbGJHVnRaWFJ5ZVRzS0lDQnJaWEp1Wld4R2IzSmxibk5wWTNNNklFdGxjbTVsYkVadmNtVnVjMmxqY3pzS0lDQm1iR0ZuY3pvZ2MzUnlhVzVuWzEwN0NpQWdibVYwZDI5eWF6b2djM1J5YVc1bk93b2dJSE5sZEhSc1pXMWxiblJVYVcxbE9pQnpkSEpwYm1jN0NpQWdiV1Z0YnpvZ2MzUnlhVzVuT3dwOUNnPT0=
+import { Transaction, AuditLog, ThreatAlert, NetworkGateway, ForensicScan } from './types';
+import { generateId, getRiskLevel } from './utils';
+
+const SENDERS = ['ALPHA-CORP', 'NEXUS-LLC', 'DARK-POOL-7', 'GHOST-WALLET', 'SIGMA-FUND', 'OMEGA-TRUST'];
+const RECEIVERS = ['CAYMAN-VAULT', 'SWISS-RESERVE', 'PANTERA-PRIME', 'LEDGER-X', 'COLD-STORAGE-9'];
+
+export function generateMockTransaction(overrides?: Partial<Transaction>): Transaction {
+  const riskScore = Math.floor(Math.random() * 100);
+  return {
+    id: generateId(),
+    timestamp: Date.now() - Math.floor(Math.random() * 86400000),
+    amount: Math.floor(Math.random() * 9000000) + 1000,
+    currency: ['USD', 'EUR', 'BTC', 'ETH'][Math.floor(Math.random() * 4)],
+    sender: SENDERS[Math.floor(Math.random() * SENDERS.length)],
+    receiver: RECEIVERS[Math.floor(Math.random() * RECEIVERS.length)],
+    status: riskScore > 80 ? 'BLOCKED' : riskScore > 60 ? 'FLAGGED' : riskScore > 40 ? 'PENDING' : 'CLEAN',
+    threatLevel: getRiskLevel(riskScore),
+    riskScore,
+    flags: riskScore > 70 ? ['VELOCITY_BREACH', 'GEO_ANOMALY'] : riskScore > 50 ? ['PATTERN_MATCH'] : [],
+    metadata: { region: 'OFFSHORE', channel: 'WIRE', encrypted: true },
+    ...overrides,
+  };
+}
+
+export const MOCK_TRANSACTIONS: Transaction[] = Array.from({ length: 50 }, () => generateMockTransaction());
+
+export const MOCK_AUDIT_LOGS: AuditLog[] = Array.from({ length: 100 }, (_, i) => ({
+  id: generateId(),
+  timestamp: Date.now() - i * 3600000,
+  action: ['LOGIN', 'SCAN_INIT', 'FLAG_TRANSACTION', 'BLOCK_GATEWAY', 'EXPORT_REPORT'][i % 5],
+  actor: `AGENT-${String(i % 10 + 1).padStart(3, '0')}`,
+  target: `TX-${generateId()}`,
+  severity: (['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'CLEAR'] as const)[i % 5],
+  details: `Forensic trace event #${i + 1} recorded`,
+  ipAddress: `10.${i % 255}.${(i * 3) % 255}.${(i * 7) % 255}`,
+  sessionId: generateId(),
+}));
+
+export const MOCK_ALERTS: ThreatAlert[] = [
+  { id: generateId(), timestamp: Date.now() - 300000, level: 'CRITICAL', message: 'Velocity breach detected on TX-ALPHA-7', source: 'ENGINE_V4', resolved: false },
+  { id: generateId(), timestamp: Date.now() - 900000, level: 'HIGH', message: 'Geographic anomaly: 14 countries in 2 hours', source: 'GEO_MODULE', resolved: false },
+  { id: generateId(), timestamp: Date.now() - 1800000, level: 'MEDIUM', message: 'Pattern match on known laundering signature', source: 'AI_SCANNER', resolved: true },
+];
+
+export const MOCK_GATEWAYS: NetworkGateway[] = [
+  { id: 'GW-001', name: 'PRIMARY-VAULT', protocol: 'TLS_1_3', status: 'ONLINE', latency: 12, encryptionBits: 256, lastChecked: Date.now() },
+  { id: 'GW-002', name: 'BACKUP-NODE', protocol: 'TLS_1_2', status: 'ONLINE', latency: 34, encryptionBits: 256, lastChecked: Date.now() },
+  { id: 'GW-003', name: 'OFFSHORE-RELAY', protocol: 'ENCRYPTED', status: 'DEGRADED', latency: 189, encryptionBits: 128, lastChecked: Date.now() - 60000 },
+];
+
+export const MOCK_SCANS: ForensicScan[] = [
+  {
+    id: generateId(),
+    timestamp: Date.now() - 600000,
+    target: 'DARK-POOL-7',
+    status: 'COMPLETE',
+    threatLevel: 'HIGH',
+    confidence: 92,
+    findings: [
+      { id: generateId(), type: 'LAYERING', description: 'Complex transaction layering detected', severity: 'HIGH', evidence: ['TX-001', 'TX-007', 'TX-023'] },
+      { id: generateId(), type: 'STRUCTURING', description: 'Structured deposits below reporting threshold', severity: 'MEDIUM', evidence: ['TX-041', 'TX-045'] },
+    ],
+  },
+];
