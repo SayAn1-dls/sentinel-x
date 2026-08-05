@@ -1,23 +1,22 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "SENTINEL-X | The Forensic Guard",
-  description: "AI-Powered Transaction Forensics for Institutional Finance — Kinexys Division",
-  icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>",
-  },
+  title: 'SENTINEL-X | Forensic Guard Platform',
+  description: 'Institutional-grade AI-powered forensic transaction monitoring and threat intelligence platform.',
+  keywords: ['forensic', 'threat intelligence', 'transaction monitoring', 'AML', 'compliance'],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        {children}
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-black min-h-screen scanline`}>
+        <div className="relative z-10">
+          {children}
+        </div>
       </body>
     </html>
   );
