@@ -11,18 +11,19 @@
   --color-gold: #FFD700;
   --color-surface: rgba(10,10,10,0.6);
   --silicon-blur: 60px;
+  --border-color: rgba(255,255,255,0.08);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
 
 body {
   background: var(--color-bg);
   color: #fff;
-  font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 body::before {
@@ -31,7 +32,8 @@ body::before {
   inset: 0;
   background:
     radial-gradient(ellipse 80% 50% at 20% 20%, rgba(255,107,0,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,207,255,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,207,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 50%, rgba(0,0,0,0.8) 0%, transparent 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -45,30 +47,42 @@ body::before {
   background: var(--color-surface);
   backdrop-filter: blur(var(--silicon-blur));
   -webkit-backdrop-filter: blur(var(--silicon-blur));
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--border-color);
 }
 
 .neon-text-orange { color: var(--color-orange); text-shadow: 0 0 20px rgba(255,107,0,0.5); }
 .neon-text-red { color: var(--color-red); text-shadow: 0 0 20px rgba(255,0,51,0.5); }
 .neon-text-cyan { color: var(--color-cyan); text-shadow: 0 0 20px rgba(0,207,255,0.5); }
+.neon-text-green { color: var(--color-green); text-shadow: 0 0 20px rgba(0,255,136,0.5); }
 
 @keyframes scanline {
-  0% { transform: translateY(-100%); }
+  0% { transform: translateY(-100vh); }
   100% { transform: translateY(100vh); }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  50% { opacity: 0.6; filter: brightness(1.5); }
+}
+
+@keyframes data-flow {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .scanline::after {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,107,0,0.3), transparent);
-  animation: scanline 6s linear infinite;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,107,0,0.4), transparent);
+  animation: scanline 8s linear infinite;
   pointer-events: none;
   z-index: 9999;
+}
+
+.data-row-enter { animation: data-flow 0.3s ease-out; }
+
+@media (max-width: 768px) {
+  .silicon { backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); }
 }
