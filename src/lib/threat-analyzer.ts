@@ -1,17 +1,21 @@
 import { Transaction, ThreatAlert, ThreatLevel } from './types';
 import { generateId, getRiskLevel } from './utils';
-import { RISK_THRESHOLDS } from './constants';
+
+const SEVERITY_WEIGHT: Record<ThreatLevel, number> = {
+  CRITICAL: 100,
+  HIGH: 75,
+  MEDIUM: 50,
+  LOW: 25,
+  CLEAR: 0,
+};
 
 export class ThreatAnalyzer {
   private alerts: ThreatAlert[] = [];
 
   analyze(transactions: Transaction[]): ThreatAlert[] {
-    const newAlerts: ThreatAlert[] = [];
-    transactions.forEach(tx => {
-      if (tx.threatLevel === 'CRITICAL' || tx.threatLevel === 'HIGH') {
-        newAlerts.push(this.createAlert(tx));
-      }
-    });
+    const newAlerts: ThreatAlert[] = transactions
+      .filter(tx => tx.threatLevel === 'CRITICAL' || tx.threatLevel === 'HIGH')
+      .map(tx => this.createAlert(tx));
     this.alerts = [...newAlerts, ...this.alerts];
     return newAlerts;
   }
@@ -30,19 +34,18 @@ export class ThreatAnalyzer {
 
   private buildAlertMessage(tx: Transaction): string {
     const msgs: Record<ThreatLevel, string> = {
-      CRITICAL: `CRITICAL: Transaction ${tx.id} from ${tx.sender} — risk score ${tx.riskScore}/100`,
-      HIGH: `HIGH ALERT: Suspicious transfer of ${tx.amount} ${tx.currency} detected`,
-      MEDIUM: `MEDIUM: Pattern anomaly in transaction ${tx.id}`,
-      LOW: `LOW: Minor flag on ${tx.id}`,
-      CLEAR: `CLEAR: Transaction ${tx.id} passed all checks`,
+      CRITICAL: `CRITICAL: TX ${tx.id.slice(0, 16)} from ${tx.sender} — risk ${tx.riskScore}/100`,
+      HIGH: `HIGH ALERT: Suspicious transfer of ${tx.amount} ${tx.currency}`,
+      MEDIUM: `MEDIUM: Pattern anomaly in TX ${tx.id.slice(0, 16)}`,
+      LOW: `LOW: Minor flag on TX ${tx.id.slice(0, 16)}`,
+      CLEAR: `CLEAR: TX ${tx.id.slice(0, 16)} passed all checks`,
     };
     return msgs[tx.threatLevel];
   }
 
   computeGlobalThreatIndex(transactions: Transaction[]): number {
     if (!transactions.length) return 0;
-    const weights: Record<ThreatLevel, number> = { CRITICAL: 100, HIGH: 75, MEDIUM: 50, LOW: 25, CLEAR: 0 };
-    const total = transactions.reduce((sum, tx) => sum + weights[tx.threatLevel], 0);
+    const total = transactions.reduce((sum, tx) => sum + SEVERITY_WEIGHT[tx.threatLevel], 0);
     return Math.round(total / transactions.length);
   }
 
@@ -56,6 +59,13 @@ export class ThreatAnalyzer {
 
   getBySeverity(level: ThreatLevel): ThreatAlert[] {
     return this.alerts.filter(a => a.level === level);
+  }
+
+  getStats(): Record<ThreatLevel, number> {
+    return this.alerts.reduce((acc, a) => {
+      acc[a.level] = (acc[a.level] || 0) + 1;
+      return acc;
+    }, {} as Record<ThreatLevel, number>);
   }
 
   get all(): ThreatAlert[] { return this.alerts; }
