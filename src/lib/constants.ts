@@ -26,6 +26,7 @@ export const RISK_THRESHOLDS = {
 export const PLATFORM_NAME = 'SENTINEL-X';
 export const PLATFORM_VERSION = '4.0.0';
 export const PLATFORM_CODENAME = 'FORENSIC GUARD';
+export const PLATFORM_BUILD = `${PLATFORM_NAME}-${PLATFORM_VERSION}-BUILD-${Date.now().toString(36).toUpperCase()}`;
 
 export const API_ENDPOINTS = {
   TRANSACTIONS: '/api/transactions',
@@ -51,3 +52,15 @@ export const STATUS_LABELS = {
   PENDING: 'PENDING',
   BLOCKED: 'BLOCKED',
 } as const;
+
+export const KNOWN_ENTITIES = {
+  SUSPICIOUS: ['GHOST-WALLET', 'DARK-POOL', 'SHADOW-FUND', 'ANON-VAULT'],
+  CLEAN: ['ALPHA-CORP', 'NEXUS-LLC', 'SIGMA-FUND', 'LEDGER-X'],
+} as const;
+
+export const SIDEBAR_LINKS = [
+  { href: '/dashboard', label: 'DASHBOARD', icon: '⚡' },
+  { href: '/audit', label: 'AUDIT LOG', icon: '📋' },
+  { href: '/network', label: 'NETWORK', icon: '🔒' },
+  { href: '/analysis', label: 'AI LAB', icon: '🧠' },
+] as const;
