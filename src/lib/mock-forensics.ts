@@ -1,4 +1,4 @@
-import { IPGeolocation, ForensicIntelligence, DeviceFingerprint } from './forensic-types';
+import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics } from './forensic-types';
 import { 
   detectTemporalAnomaly, 
   detectCrossChainLinks, 
@@ -110,7 +110,16 @@ export function enrichWithForensics(transaction: any): any {
   ]);
 
   const asnReputation = analyzeASNReputation(geolocation.isp === 'Verizon' ? 701 : 4134);
-  const kernelForensics = analyzeKernelForensics();
+  
+  // Enriched Kernel Forensics
+  const kernelForensics: KernelForensics = {
+    ...analyzeKernelForensics(),
+    heapSprayDetected: Math.random() > 0.98,
+    stackCanaryCorrupted: Math.random() > 0.99,
+    aslrDisabled: Math.random() > 0.95,
+    codeInjectionDetected: Math.random() > 0.995
+  };
+
   const peerAnalysis = analyzePeerProximity(geolocation.ip);
   const secureEnclave = analyzeSecureEnclave();
   const browserIntegrity = analyzeBrowserIntegrity();

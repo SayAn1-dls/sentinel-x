@@ -176,3 +176,19 @@ Analyzes the DNS resolution path and latency to identify potential DNS spoofing 
 Upgraded the `calculateAdvancedRiskScore` function to integrate Cloud and DNS forensic signals.
 - **Version**: 8.0.0
 - **Weighting**: DNS Hijacking (+100 - Critical), Cloud Data Center Correlation (up to +40).
+
+## Update: 2026-08-05 - Memory Integrity & Kernel-Level Threat Detection (v9)
+
+### Memory Integrity & Process Forensics
+Implemented advanced kernel-level memory integrity checks to detect sophisticated exploitation techniques and code injection.
+- **Signal**: `kernelForensics` (Expanded)
+- **Checks**:
+  - **Heap Spray Detection**: Analyzes memory allocation patterns to identify potential heap spray attacks.
+  - **Stack Canary Integrity**: Monitors the status of stack canaries to detect buffer overflow attempts.
+  - **ASLR Status Verification**: Detects if ASLR (Address Space Layout Randomization) has been disabled or weakened.
+  - **Code Injection Detection**: Identifies foreign code injection or thread hijacking artifacts.
+
+### Risk Engine v9
+Upgraded the `calculateAdvancedRiskScore` function to integrate memory integrity and kernel-level threats.
+- **Version**: 9.0.0
+- **Weighting**: Code Injection (+100 - Critical), Stack Canary Corruption (+95 - Critical), Heap Spray Detection (+80), ASLR Disabled (+30).

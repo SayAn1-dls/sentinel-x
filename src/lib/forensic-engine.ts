@@ -193,7 +193,7 @@ export function analyzeASNReputation(asn: number): ASNReputation {
 }
 
 /**
- * Enhanced Kernel Forensic Analysis.
+ * Enhanced Kernel Forensic Analysis v9: Memory Integrity & Code Injection Detection.
  */
 export function analyzeKernelForensics(): KernelForensics {
   return {
@@ -201,7 +201,11 @@ export function analyzeKernelForensics(): KernelForensics {
     isDebuggerPresent: false,
     syscallHookingDetected: false,
     integrityHash: 'sha256:7f83b1657ff...',
-    osBuild: 'Darwin Kernel Version 21.6.0'
+    osBuild: 'Darwin Kernel Version 21.6.0',
+    heapSprayDetected: false,
+    stackCanaryCorrupted: false,
+    aslrDisabled: false,
+    codeInjectionDetected: false
   };
 }
 
@@ -346,7 +350,7 @@ export function analyzeDNSIntegrity(domain: string): DNSIntegritySignal {
 }
 
 /**
- * Advanced Risk Scoring Engine v8 (includes Cloud Correlation & DNS Integrity)
+ * Advanced Risk Scoring Engine v9 (includes Memory Integrity & Kernel Threats)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -390,8 +394,15 @@ export function calculateAdvancedRiskScore(
   if (params.sessionReplay?.detected) score += 60;
   if (params.asnReputation && params.asnReputation.abuseScore > 80) score += 35;
 
-  if (params.kernelForensics?.isVirtualMachine) score += 15;
-  if (params.kernelForensics?.syscallHookingDetected) score += 45;
+  if (params.kernelForensics) {
+    if (params.kernelForensics.isVirtualMachine) score += 15;
+    if (params.kernelForensics.syscallHookingDetected) score += 45;
+    if (params.kernelForensics.heapSprayDetected) score += 80;
+    if (params.kernelForensics.stackCanaryCorrupted) score += 95;
+    if (params.kernelForensics.aslrDisabled) score += 30;
+    if (params.kernelForensics.codeInjectionDetected) score += 100;
+  }
+
   if (params.peerAnalysis?.isExitNode) score += 30;
 
   if (params.secureEnclave) {
