@@ -1,64 +1,52 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        obsidian: "#0A0A0A",
-        "obsidian-light": "#111111",
-        "obsidian-card": "#141414",
-        "obsidian-border": "#1E1E1E",
-        "obsidian-hover": "#1A1A1A",
-        vermilion: "#E63946",
-        "vermilion-dark": "#C62D38",
-        "vermilion-glow": "rgba(230,57,70,0.15)",
-        emerald: "#10B981",
-        "emerald-dark": "#059669",
-        "emerald-glow": "rgba(16,185,129,0.15)",
-        "off-white": "#FCFAF9",
-        "off-white-muted": "#A3A3A3",
-        "off-white-dim": "#6B6B6B",
-        amber: "#F59E0B",
-        "amber-glow": "rgba(245,158,11,0.15)",
-        "jp-blue": "#003A70",
+        'neon-orange': '#FF6B00',
+        'neon-red': '#FF0033',
+        'neon-cyan': '#00CFFF',
+        'neon-green': '#00FF88',
+        'neon-gold': '#FFD700',
+        'silicon': 'rgba(10,10,10,0.6)',
+        'hud-border': 'rgba(255,255,255,0.08)',
+      },
+      backdropBlur: {
+        'silicon': '60px',
       },
       fontFamily: {
-        heading: ['"Libre Baskerville"', "Georgia", "serif"],
-        body: ["Inter", "system-ui", "sans-serif"],
-        mono: ['"JetBrains Mono"', "Consolas", "monospace"],
-      },
-      animation: {
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "scan-line": "scanLine 2s linear infinite",
-        "fade-in": "fadeIn 0.5s ease-out forwards",
-        "slide-up": "slideUp 0.5s ease-out forwards",
-        "glow-pulse": "glowPulse 2s ease-in-out infinite",
+        mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace'],
       },
       keyframes: {
-        scanLine: {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(100%)" },
+        scanline: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(100vh)' },
         },
-        fadeIn: {
-          from: { opacity: "0" },
-          to: { opacity: "1" },
+        'neon-pulse': {
+          '0%, 100%': { opacity: '1', filter: 'brightness(1)' },
+          '50%': { opacity: '0.6', filter: 'brightness(1.5)' },
         },
-        slideUp: {
-          from: { opacity: "0", transform: "translateY(20px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
+        'data-scroll': {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-50%)' },
         },
-        glowPulse: {
-          "0%, 100%": { opacity: "0.4" },
-          "50%": { opacity: "1" },
-        },
+      },
+      animation: {
+        scanline: 'scanline 6s linear infinite',
+        'neon-pulse': 'neon-pulse 2s ease-in-out infinite',
+        'data-scroll': 'data-scroll 20s linear infinite',
       },
     },
   },
   plugins: [],
 };
+
 export default config;
