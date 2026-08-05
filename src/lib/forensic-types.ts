@@ -66,6 +66,10 @@ export interface KernelForensics {
   syscallHookingDetected: boolean;
   integrityHash: string;
   osBuild: string;
+  heapSprayDetected: boolean;
+  stackCanaryCorrupted: boolean;
+  aslrDisabled: boolean;
+  codeInjectionDetected: boolean;
 }
 
 export interface PeerNetworkAnalysis {
