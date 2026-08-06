@@ -177,18 +177,18 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate Cloud and DNS fo
 - **Version**: 8.0.0
 - **Weighting**: DNS Hijacking (+100 - Critical), Cloud Data Center Correlation (up to +40).
 
-## Update: 2026-08-05 - Memory Integrity & Kernel-Level Threat Detection (v9)
+## Update: 2026-08-06 - Steganographic Forensic Discovery & Data Leak Prevention (v10)
 
-### Memory Integrity & Process Forensics
-Implemented advanced kernel-level memory integrity checks to detect sophisticated exploitation techniques and code injection.
-- **Signal**: `kernelForensics` (Expanded)
-- **Checks**:
-  - **Heap Spray Detection**: Analyzes memory allocation patterns to identify potential heap spray attacks.
-  - **Stack Canary Integrity**: Monitors the status of stack canaries to detect buffer overflow attempts.
-  - **ASLR Status Verification**: Detects if ASLR (Address Space Layout Randomization) has been disabled or weakened.
-  - **Code Injection Detection**: Identifies foreign code injection or thread hijacking artifacts.
+### Steganographic Forensic Analysis
+Implemented detection for steganographic data exfiltration where sensitive information is hidden within innocuous carriers like images or audio files.
+- **Signal**: `steganography`
+-	**Checks**:
+  - **Carrier Integrity**: Analyzes LSB (Least Significant Bit) variance in image/audio headers.
+  - **Encryption Detection**: Identifies high-entropy blocks within carrier files indicating encrypted payloads.
+  - **Tool Signature**: Matches known steganography tool artifacts (e.g., LsbSteg, OutGuess).
+- **Risk Impact**: High (`leakLikelihood` weighting).
 
-### Risk Engine v9
-Upgraded the `calculateAdvancedRiskScore` function to integrate memory integrity and kernel-level threats.
-- **Version**: 9.0.0
-- **Weighting**: Code Injection (+100 - Critical), Stack Canary Corruption (+95 - Critical), Heap Spray Detection (+80), ASLR Disabled (+30).
+### Risk Engine v10
+Upgraded the `calculateAdvancedRiskScore` function to integrate steganographic forensic signals.
+- **Version**: 10.0.0
+- **Weighting**: Steganographic Detection (up to +85), Encrypted Payload (+20).
