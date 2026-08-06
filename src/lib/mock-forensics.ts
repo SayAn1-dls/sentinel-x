@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity
+  analyzeDNSIntegrity, analyzeSteganography
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -140,6 +140,7 @@ export function enrichWithForensics(transaction: any): any {
   // v8 new signals
   const cloudInfrastructure = analyzeCloudInfrastructure(geolocation.ip);
   const dnsIntegrity = analyzeDNSIntegrity('sentinel-x.io');
+  const steganography = analyzeSteganography();
   
   return {
     ...transaction,
@@ -163,7 +164,7 @@ export function enrichWithForensics(transaction: any): any {
       darkWebExposure,
       networkPacketAnalysis,
       cloudInfrastructure,
-      dnsIntegrity
+      dnsIntegrity, steganography
     }
   };
 }
