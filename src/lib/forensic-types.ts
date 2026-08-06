@@ -181,4 +181,14 @@ export interface ForensicIntelligence {
   networkPacketAnalysis?: NetworkPacketAnalysis;
   cloudInfrastructure?: CloudInfrastructureSignal;
   dnsIntegrity?: DNSIntegritySignal;
+  steganography?: SteganographyAnalysis;
+}
+
+export interface SteganographyAnalysis {
+  detected: boolean;
+  carrierType: 'IMAGE' | 'AUDIO' | 'DOCUMENT' | 'NETWORK_PACKET';
+  hiddenPayloadSize?: number;
+  encryptionDetected: boolean;
+  stegoToolSignature?: string;
+  leakLikelihood: number;
 }
