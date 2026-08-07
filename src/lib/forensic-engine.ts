@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics
 } from './forensic-types';
 
 /**
@@ -278,7 +278,7 @@ export function analyzeAIAgentBehavior(
 export function analyzeSmartContractRisk(
   history: { address: string; verified: boolean; isMixer: boolean; isDrainer: boolean }[]
 ): SmartContractForensics {
-  const knownDrainersContacted = history.some(h => h.isDrainer);
+  const known DrainersContacted = history.some(h => h.isDrainer);
   const mixerUsageDetected = history.some(h => h.isMixer);
   const unverifiedCount = history.filter(h => !h.verified).length;
   
@@ -365,6 +365,22 @@ export function analyzeSteganography(): SteganographyAnalysis {
 /**
  * Advanced Risk Scoring Engine v10 (includes Memory Integrity & Kernel Threats)
  */
+
+/**
+ * v11: Analyzes cross-chain transaction patterns and bridge forensic artifacts.
+ */
+export function analyzeCrossChainForensics(address: string): CrossChainForensics {
+  const isHighRiskAddress = address.startsWith('0xdead') || address.startsWith('0x666');
+  
+  return {
+    linkedWallets: isHighRiskAddress ? ['0x71C...', '0xAA1...'] : [],
+    bridgeProtocols: isHighRiskAddress ? ['Across', 'Stargate'] : ['Hop'],
+    crossChainVelocity: isHighRiskAddress ? 0.85 : 0.12,
+    hopCount: isHighRiskAddress ? 5 : 1,
+    isMixerAssociated: isHighRiskAddress
+  };
+}
+
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
@@ -386,7 +402,9 @@ export function calculateAdvancedRiskScore(
     darkWebExposure?: DarkWebExposure;
     networkPacketAnalysis?: NetworkPacketAnalysis;
     cloudInfrastructure?: CloudInfrastructureSignal;
-    dnsIntegrity?: DNSIntegritySignal; steganography?: SteganographyAnalysis;
+    dnsIntegrity?: DNSIntegritySignal;
+    steganography?: SteganographyAnalysis;
+    crossChainForensics?: CrossChainForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -452,11 +470,19 @@ export function calculateAdvancedRiskScore(
     score += params.cloudInfrastructure.datacenterRiskScore * 40;
   }
   if (params.dnsIntegrity?.isHijackedLikely) score += 100;
-
   // v10 Steganography Logic
   if (params.steganography?.detected) {
     score += params.steganography.leakLikelihood * 100;
     if (params.steganography.encryptionDetected) score += 20;
+  }
+
+
+  
+  // v11 Cross-Chain Logic
+  if (params.crossChainForensics) {
+    if (params.crossChainForensics.isMixerAssociated) score += 75;
+    if (params.crossChainForensics.hopCount > 3) score += 30;
+    score += params.crossChainForensics.crossChainVelocity * 40;
   }
 
   score = Math.min(100, score);

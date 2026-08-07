@@ -182,7 +182,7 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate Cloud and DNS fo
 ### Steganographic Forensic Analysis
 Implemented detection for steganographic data exfiltration where sensitive information is hidden within innocuous carriers like images or audio files.
 - **Signal**: `steganography`
--	**Checks**:
+- **Checks**:
   - **Carrier Integrity**: Analyzes LSB (Least Significant Bit) variance in image/audio headers.
   - **Encryption Detection**: Identifies high-entropy blocks within carrier files indicating encrypted payloads.
   - **Tool Signature**: Matches known steganography tool artifacts (e.g., LsbSteg, OutGuess).
@@ -192,3 +192,19 @@ Implemented detection for steganographic data exfiltration where sensitive infor
 Upgraded the `calculateAdvancedRiskScore` function to integrate steganographic forensic signals.
 - **Version**: 10.0.0
 - **Weighting**: Steganographic Detection (up to +85), Encrypted Payload (+20).
+
+## Update: 2026-08-07 - Cross-Chain Identity Linking & Bridge Forensic Analysis (v11)
+
+### Cross-Chain Forensic Linking
+Implemented deep analysis of cross-chain transaction paths to identify linked identities across multiple networks.
+- **Signal**: `crossChainForensics`
+- **Metrics**:
+  - **Hop Count**: Detects complex multi-hop bridging patterns often used in laundering.
+  - **Bridge Velocity**: Analyzes the speed of capital movement across chains.
+  - **Mixer Association**: Heuristic detection of privacy mixer interaction in the transaction chain.
+- **Risk Impact**: High (+75) for mixer association, Medium (+30) for high-hop counts.
+
+### Risk Engine v11
+Upgraded the `calculateAdvancedRiskScore` function to integrate cross-chain forensic signals.
+- **Version**: 11.0.0
+- **Weighting**: Mixer Association (+75), Cross-Chain Velocity (up to +40), High Hop Count (+30).

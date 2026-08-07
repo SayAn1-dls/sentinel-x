@@ -159,7 +159,17 @@ export interface DNSIntegritySignal {
   resolvedIpMatchesExpected: boolean;
 }
 
+
+export interface CrossChainForensics {
+  linkedWallets: string[];
+  bridgeProtocols: string[];
+  crossChainVelocity: number;
+  hopCount: number;
+  isMixerAssociated: boolean;
+}
+
 export interface ForensicIntelligence {
+  crossChainForensics?: CrossChainForensics;
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;
