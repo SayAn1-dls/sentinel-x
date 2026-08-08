@@ -15,12 +15,16 @@ export async function GET(req: NextRequest) {
   const gateways = await col.find({}, { projection: { _id: 0 } }).toArray();
 
   const updated = gateways.map(gw => {
+    if (gw.locked) return { ...gw, status: 'OFFLINE', lastChecked: Date.now() };
     const latency = Math.max(5, Math.min(250, gw.latency + Math.floor((Math.random() - 0.5) * 14)));
     let status = gw.status;
     if (Math.random() < 0.04) status = status === 'ONLINE' ? 'DEGRADED' : 'ONLINE';
     return { ...gw, latency, status, lastChecked: Date.now() };
   });
-  if (!updated.some(g => g.status === 'ONLINE')) updated[0].status = 'ONLINE';
+  if (!updated.some(g => g.status === 'ONLINE') && updated.some(g => !g.locked)) {
+    const unlocked = updated.find(g => !g.locked);
+    if (unlocked) unlocked.status = 'ONLINE';
+  }
 
   await Promise.all(updated.map(gw =>
     col.updateOne({ id: gw.id }, { $set: { latency: gw.latency, status: gw.status, lastChecked: gw.lastChecked } })

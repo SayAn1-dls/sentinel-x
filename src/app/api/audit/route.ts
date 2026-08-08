@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/server/mongo';
-import { getSessionUser } from '@/lib/server/auth';
+import { getSessionUser, getClientIp } from '@/lib/server/auth';
 import { ensureSeeded } from '@/lib/server/seed';
+import { recordAudit } from '@/lib/server/audit';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,4 +29,27 @@ export async function GET(req: NextRequest) {
   ]);
 
   return NextResponse.json({ data, total, timestamp: Date.now() });
+}
+
+const ALLOWED_CLIENT_ACTIONS = ['EXPORT_REPORT'];
+
+export async function POST(req: NextRequest) {
+  const db = await getDb();
+  const user = await getSessionUser(db, req);
+  if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+
+  const body = await req.json().catch(() => ({}));
+  if (!ALLOWED_CLIENT_ACTIONS.includes(body.action)) {
+    return NextResponse.json({ error: 'Action not permitted' }, { status: 400 });
+  }
+
+  await recordAudit(db, {
+    action: body.action,
+    actor: user.email,
+    target: 'FORENSIC_REPORT',
+    severity: 'LOW',
+    details: typeof body.details === 'string' ? body.details.slice(0, 300) : 'Forensic report exported',
+    ipAddress: getClientIp(req),
+  });
+  return NextResponse.json({ ok: true });
 }

@@ -30,11 +30,13 @@
 - Frontend: /auth login page, AuthGate protection on all app pages, HUD user chip + logout, security console, rewired all hooks (useForensic/useThreat/useNetwork/useAudit/useAI) from mocks to API polling
 - Testing: iteration_1 — 24/24 backend, 100% frontend incl. full WebAuthn cycle via CDP virtual authenticator
 
+## What's Been Implemented (2026-06-08, session 2)
+- Quick Actions wired (dashboard): FULL SCAN (POST /api/scan target FULL-LEDGER, shows level/findings/confidence), LOCK/UNLOCK GATEWAYS (POST /api/network/lock toggle, locked gateways pinned OFFLINE in heartbeat), CLEAR ALERTS (POST /api/alerts/clear resolves non-critical), EXPORT REPORT (client-side jsPDF + autotable at src/lib/report-pdf.ts: summary, active alerts, top-20 risk txs, audit trail; logged via POST /api/audit EXPORT_REPORT whitelist)
+- All actions audit-logged; verified via curl + live UI clicks (PDF download confirmed)
+
 ## Prioritized Backlog
-- P1: Quick Actions buttons on dashboard are decorative (FULL SCAN / LOCK GATEWAYS / EXPORT REPORT / CLEAR ALERTS not wired)
-- P1: PDF forensic report export (jspdf already installed, pdf-generator.ts exists unused)
 - P2: SystemHealth / PacketMonitor panels are client-side visualizations (not DB-backed)
-- P2: Orphan components (LandingPage.tsx, Dashboard.tsx, TransactionRow.tsx, ThreatLandscapeMap, RiskScoringEngine, SignalPulseWidget) unused by pages; jest suite untouched
+- P2: Orphan components (LandingPage.tsx, Dashboard.tsx, TransactionRow.tsx, ThreatLandscapeMap, RiskScoringEngine, SignalPulseWidget, pdf-generator.ts) unused by pages; jest suite untouched
 - P2: Session management UI (list/revoke active sessions)
 - P3: Real-time push (websockets) instead of polling; email alerts for CRITICAL threats
 
