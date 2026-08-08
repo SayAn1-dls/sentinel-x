@@ -3,6 +3,6 @@
   "private": true,
   "scripts": {
     "start": "yarn --cwd /app dev",
-    "build": "yarn --cwd /app build"
+    "build": "yarn --cwd /app install && yarn --cwd /app build"
   }
 }
