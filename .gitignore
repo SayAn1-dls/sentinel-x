@@ -38,6 +38,11 @@ Thumbs.db
 coverage/
 .nyc_output/
 
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # Forensic artifacts (never commit scan results)
 scan-results/
 forensic-exports/
