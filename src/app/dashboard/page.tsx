@@ -1,7 +1,8 @@
 'use client';
 import { useForensic } from '@/lib/hooks/useForensic';
 import { useThreat } from '@/lib/hooks/useThreat';
-import { MOCK_AUDIT_LOGS } from '@/lib/mock-data';
+import { useAuditFeed } from '@/lib/hooks/useAudit';
+import { AuthGate } from '@/components/auth/AuthGate';
 import { ForensicHUD } from '@/components/hud/ForensicHUD';
 import { LiveStats } from '@/components/hud/LiveStats';
 import { AlertBanner } from '@/components/hud/AlertBanner';
@@ -12,12 +13,13 @@ import { RiskHeatmap } from '@/components/dashboard/RiskHeatmap';
 import { ActivityTimeline } from '@/components/dashboard/ActivityTimeline';
 import { QuickActions } from '@/components/dashboard/QuickActions';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { transactions, stats, blockTransaction } = useForensic();
   const { active, resolve, dismiss } = useThreat();
+  const auditLogs = useAuditFeed(12);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" data-testid="dashboard-page">
       <ForensicHUD />
       <main className="pt-16 px-6 pb-8 max-w-7xl mx-auto">
         <div className="py-6 flex items-end justify-between">
@@ -53,7 +55,7 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <RiskHeatmap transactions={transactions} />
-          <ActivityTimeline logs={MOCK_AUDIT_LOGS} />
+          <ActivityTimeline logs={auditLogs} />
         </div>
 
         <div className="mt-6">
@@ -61,5 +63,13 @@ export default function DashboardPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <AuthGate>
+      <DashboardContent />
+    </AuthGate>
   );
 }

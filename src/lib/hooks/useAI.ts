@@ -1,8 +1,6 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ForensicScan } from '../types';
-import { aiScanner } from '../ai-scanner';
-import { MOCK_TRANSACTIONS } from '../mock-data';
 
 export function useAI() {
   const [scanning, setScanning] = useState(false);
@@ -15,10 +13,17 @@ export function useAI() {
     setScanning(true);
     setError(null);
     try {
-      const scan = await aiScanner.scan(target.toUpperCase(), MOCK_TRANSACTIONS);
-      setCurrentScan(scan);
-      setScans(prev => [scan, ...prev]);
-    } catch (err) {
+      const res = await fetch('/api/scan', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target }),
+      });
+      if (!res.ok) throw new Error('Scan failed');
+      const { data } = await res.json();
+      setCurrentScan(data);
+      setScans(prev => [data, ...prev]);
+    } catch {
       setError('Scan failed. Please retry.');
     } finally {
       setScanning(false);
@@ -31,4 +36,25 @@ export function useAI() {
   }, []);
 
   return { scanning, scans, currentScan, error, runScan, clearScan };
+}
+
+export function useScans(pollMs = 15000) {
+  const [scans, setScans] = useState<ForensicScan[]>([]);
+
+  const reload = useCallback(async () => {
+    try {
+      const res = await fetch('/api/scan', { credentials: 'include' });
+      if (res.ok) setScans((await res.json()).recentScans ?? []);
+    } catch {
+      // keep last known state
+    }
+  }, []);
+
+  useEffect(() => {
+    reload();
+    const interval = setInterval(reload, pollMs);
+    return () => clearInterval(interval);
+  }, [reload, pollMs]);
+
+  return { scans, reload };
 }

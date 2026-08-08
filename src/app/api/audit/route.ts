@@ -1,24 +1,31 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { MOCK_AUDIT_LOGS } from '@/lib/mock-data';
+import { NextRequest, NextResponse } from 'next/server';
+import { getDb } from '@/lib/server/mongo';
+import { getSessionUser } from '@/lib/server/auth';
+import { ensureSeeded } from '@/lib/server/seed';
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const limit = parseInt(searchParams.get('limit') || '50');
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
+  const db = await getDb();
+  const user = await getSessionUser(db, req);
+  if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  await ensureSeeded(db);
+
+  const { searchParams } = new URL(req.url);
+  const limit = Math.min(parseInt(searchParams.get('limit') || '100'), 500);
   const severity = searchParams.get('severity');
   const actor = searchParams.get('actor');
   const from = searchParams.get('from') ? parseInt(searchParams.get('from')!) : 0;
   const to = searchParams.get('to') ? parseInt(searchParams.get('to')!) : Date.now();
 
-  let logs = [...MOCK_AUDIT_LOGS];
+  const query: Record<string, unknown> = { timestamp: { $gte: from, $lte: to } };
+  if (severity) query.severity = severity.toUpperCase();
+  if (actor) query.actor = { $regex: actor, $options: 'i' };
 
-  if (severity) logs = logs.filter(l => l.severity === severity.toUpperCase());
-  if (actor) logs = logs.filter(l => l.actor.toLowerCase().includes(actor.toLowerCase()));
-  logs = logs.filter(l => l.timestamp >= from && l.timestamp <= to);
+  const [data, total] = await Promise.all([
+    db.collection('audit_logs').find(query, { projection: { _id: 0 } }).sort({ timestamp: -1 }).limit(limit).toArray(),
+    db.collection('audit_logs').countDocuments(query),
+  ]);
 
-  return NextResponse.json({
-    data: logs.slice(0, limit),
-    total: logs.length,
-    timestamp: Date.now(),
-  });
+  return NextResponse.json({ data, total, timestamp: Date.now() });
 }

@@ -1,27 +1,31 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { MOCK_ALERTS } from '@/lib/mock-data';
+import { NextRequest, NextResponse } from 'next/server';
+import { getDb } from '@/lib/server/mongo';
+import { getSessionUser } from '@/lib/server/auth';
+import { ensureSeeded } from '@/lib/server/seed';
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
+  const db = await getDb();
+  const user = await getSessionUser(db, req);
+  if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  await ensureSeeded(db);
+
+  const { searchParams } = new URL(req.url);
   const activeOnly = searchParams.get('active') === 'true';
   const level = searchParams.get('level');
 
-  let alerts = [...MOCK_ALERTS];
+  const query: Record<string, unknown> = {};
+  if (activeOnly) query.resolved = false;
+  if (level) query.level = level.toUpperCase();
 
-  if (activeOnly) alerts = alerts.filter(a => !a.resolved);
-  if (level) alerts = alerts.filter(a => a.level === level.toUpperCase());
+  const data = await db.collection('alerts').find(query, { projection: { _id: 0 } }).sort({ timestamp: -1 }).limit(100).toArray();
+  const [total, active, critical, high] = await Promise.all([
+    db.collection('alerts').countDocuments(),
+    db.collection('alerts').countDocuments({ resolved: false }),
+    db.collection('alerts').countDocuments({ resolved: false, level: 'CRITICAL' }),
+    db.collection('alerts').countDocuments({ resolved: false, level: 'HIGH' }),
+  ]);
 
-  const summary = {
-    total: MOCK_ALERTS.length,
-    active: MOCK_ALERTS.filter(a => !a.resolved).length,
-    critical: MOCK_ALERTS.filter(a => a.level === 'CRITICAL' && !a.resolved).length,
-    high: MOCK_ALERTS.filter(a => a.level === 'HIGH' && !a.resolved).length,
-  };
-
-  return NextResponse.json({
-    data: alerts,
-    summary,
-    timestamp: Date.now(),
-  });
+  return NextResponse.json({ data, summary: { total, active, critical, high }, timestamp: Date.now() });
 }

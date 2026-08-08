@@ -1,19 +1,21 @@
 'use client';
+import { AuthGate } from '@/components/auth/AuthGate';
 import { ForensicHUD } from '@/components/hud/ForensicHUD';
 import { ScanEngine } from '@/components/ai/ScanEngine';
 import { AnomalyChart } from '@/components/ai/AnomalyChart';
 import { PatternDetector } from '@/components/ai/PatternDetector';
 import { SiliconCard } from '@/components/ui/SiliconCard';
 import { useForensic } from '@/lib/hooks/useForensic';
-import { MOCK_SCANS } from '@/lib/mock-data';
+import { useScans } from '@/lib/hooks/useAI';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { formatTimestamp } from '@/lib/utils';
 
-export default function AnalysisPage() {
+function AnalysisContent() {
   const { transactions } = useForensic();
+  const { scans, reload } = useScans();
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" data-testid="analysis-page">
       <ForensicHUD />
       <main className="pt-16 px-6 pb-8 max-w-7xl mx-auto">
         <div className="py-6 flex items-end justify-between">
@@ -29,15 +31,18 @@ export default function AnalysisPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <ScanEngine />
+            <ScanEngine onComplete={reload} />
             <AnomalyChart transactions={transactions} />
             <PatternDetector />
           </div>
           <div className="space-y-4">
             <SiliconCard>
               <h2 className="text-orange-500 font-black tracking-widest uppercase text-sm mb-4">RECENT SCANS</h2>
-              {MOCK_SCANS.map(scan => (
-                <div key={scan.id} className="p-3 rounded-lg border border-white/5 mb-3">
+              {scans.length === 0 && (
+                <p className="text-white/30 text-xs uppercase tracking-wider">No scans yet. Initiate one to build history.</p>
+              )}
+              {scans.map(scan => (
+                <div key={scan.id} className="p-3 rounded-lg border border-white/5 mb-3" data-testid="recent-scan-item">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-white/70 text-sm font-bold">{scan.target}</span>
                     <StatusBadge level={scan.threatLevel} />
@@ -73,5 +78,13 @@ export default function AnalysisPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function AnalysisPage() {
+  return (
+    <AuthGate>
+      <AnalysisContent />
+    </AuthGate>
   );
 }

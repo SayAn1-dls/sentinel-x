@@ -66,6 +66,27 @@ export interface ScanFinding {
   evidence: string[];
 }
 
+export type UserRole = 'ADMIN' | 'ANALYST';
+
+export interface User {
+  user_id: string;
+  email: string;
+  name: string;
+  picture?: string;
+  role: UserRole;
+  created_at?: string;
+  last_login?: string;
+  passkey_count?: number;
+}
+
+export type Alert = ThreatAlert;
+
+export interface NetworkNode {
+  id: string;
+  label: string;
+  risk: number;
+}
+
 export interface DashboardStats {
   totalTransactions: number;
   flaggedToday: number;

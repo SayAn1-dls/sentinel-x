@@ -1,4 +1,5 @@
 'use client';
+import { AuthGate } from '@/components/auth/AuthGate';
 import { ForensicHUD } from '@/components/hud/ForensicHUD';
 import { EncryptionStatus } from '@/components/network/EncryptionStatus';
 import { GatewayIndicator } from '@/components/network/GatewayIndicator';
@@ -9,11 +10,11 @@ import { useNetwork } from '@/lib/hooks/useNetwork';
 import { SiliconCard } from '@/components/ui/SiliconCard';
 import { RiskMeter } from '@/components/ui/RiskMeter';
 
-export default function NetworkPage() {
-  const { gateways, healthScore, avgLatency, online } = useNetwork();
+function NetworkContent() {
+  const { gateways, healthScore, online } = useNetwork();
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" data-testid="network-page">
       <ForensicHUD />
       <main className="pt-16 px-6 pb-8 max-w-7xl mx-auto">
         <div className="py-6 flex items-end justify-between">
@@ -48,5 +49,13 @@ export default function NetworkPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function NetworkPage() {
+  return (
+    <AuthGate>
+      <NetworkContent />
+    </AuthGate>
   );
 }
