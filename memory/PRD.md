@@ -45,6 +45,13 @@
 - deployment_agent final status: pass/warn (no blockers); testing iteration_3: 100% (install + clean build + backend/frontend smoke)
 - Note: preview URL alias https://identity-pro.internal.stage-preview.emergentagent.com == dfda38da-... URL; frontend/.env now uses the alias
 
+## What's Been Implemented (2026-06-08, session 5 — deployment restructure, FINAL fix)
+- Platform guidance (support_agent) revealed the true blocker: deployer detects /app/frontend + /app/backend pattern and builds /app/frontend in an ISOLATED Docker stage — the old shim (`yarn --cwd /app ...`) failed there because the repo root doesn't exist in that stage
+- RESTRUCTURED: the complete Next.js 16 app now lives self-contained in /app/frontend (package.json, yarn.lock, .yarnrc, node_modules, src/, next/tailwind/ts configs, .env with MONGO_URL/DB_NAME/OAUTH_BACKEND_URL/REACT_APP_BACKEND_URL). Root app files and /app/.env removed. /app/backend proxy unchanged
+- New runtime launcher /app/frontend/start.js ("start": "node start.js"): NODE_ENV=production → `next start`, else `next dev` (preview hot reload preserved). Verified both modes serve pages+API
+- deployment_agent: PASS (no blockers). testing iteration_4: 100% — self-contained install+build exit 0, 24/24 pytest, full frontend E2E, WebAuthn register+login still works post-restructure
+- IMPORTANT for future sessions: all app code is now under /app/frontend/src (NOT /app/src)
+
 ## Prioritized Backlog
 - P2: SystemHealth / PacketMonitor panels are client-side visualizations (not DB-backed)
 - P2: Orphan components (LandingPage.tsx, Dashboard.tsx, TransactionRow.tsx, ThreatLandscapeMap, RiskScoringEngine, SignalPulseWidget, pdf-generator.ts) unused by pages; jest suite untouched
