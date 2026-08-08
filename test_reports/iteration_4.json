@@ -1,0 +1,16 @@
+{
+  "summary": "Restructure regression (Next.js app moved into /app/frontend) fully verified. Deployment fix: `cd /app/frontend && yarn install` exit 0 (already-up-to-date, no engine errors on Node 20); `yarn build` exit 0 in 13.84s producing all 9 routes (/, /analysis, /audit, /auth, /dashboard, /network, /security + api/*). Frontend restarted after build; landing loads 200. Backend pytest suite: 24/24 PASSED in 6.6s (auth 401/Bearer/cookie/session exchange 400+401, transactions list/filters/live/block+audit, alerts list/resolve+dismiss, audit list/filters, stats, scan target+recent, network gateways, RBAC admin/analyst/self-role, passkey login options + register requires-auth). Quick Actions endpoints all green: POST /api/network/lock true->200 {locked:true,count:4}, false->200 {locked:false,count:4}; POST /api/alerts/clear->200 {resolved:0}; POST /api/audit {action:'EXPORT_REPORT'}->200 {ok:true}; {action:'X'}->400 {error:'Action not permitted'}. Frontend E2E via public URL: / has access-hq-btn; /auth has google-login-btn + biometric-login-btn; /dashboard without cookie redirects to /auth; with test_session_sentinel_001 cookie /dashboard shows hud-user-chip 'Test Admin ADMIN' + LIVE TRANSACTION FEED; /audit /network /analysis /security all render; qa-full-scan-btn -> qa-status-scan 'SWEEPING LEDGER...'; qa-export-report-btn triggers PDF download (SENTINEL-X_Forensic_Report_*.pdf) and qa-status-export shows 'COMPILING PDF...'. WebAuthn smoke via CDP virtual authenticator (ctap2/internal/UV): register-passkey-btn -> passkey-message 'Biometric passkey registered. You can now use quick login.'; cleared cookies; biometric-login-btn on /auth -> redirected to /dashboard as Test Admin ADMIN, confirming rpID derivation still works after restructure.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Reused test-admin-001 / test_session_sentinel_001 (session refreshed to +7d). Test passkey created during WebAuthn smoke was cleaned up; webauthn_challenges collection cleared. Original seeded passkey (created 2026-08-08 15:55) left intact.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "Session cookie / Bearer: test_session_sentinel_001 (user test-admin-001, ADMIN) - restored and valid for 7 days.",
+  "context_for_next_testing_agent": "Restructure to /app/frontend is production-ready. Files unchanged. Supervisor 'frontend' runs `yarn start` -> `node start.js` -> `next dev` in this preview env. If build is re-run manually, restart frontend (sudo supervisorctl restart frontend) so dev server picks up cleanly. External URL: https://identity-pro.internal.stage-preview.emergentagent.com.",
+  "rca_of_the_issue": "N/A - no defects found. Prior deployment failure (jest-dom engine mismatch on Node 20) remains fixed; the move of the app into /app/frontend did not introduce regressions in build, API routes, page routing, RBAC, or WebAuthn rpID derivation."
+}
