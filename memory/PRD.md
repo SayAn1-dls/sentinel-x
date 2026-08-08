@@ -52,6 +52,11 @@
 - deployment_agent: PASS (no blockers). testing iteration_4: 100% — self-contained install+build exit 0, 24/24 pytest, full frontend E2E, WebAuthn register+login still works post-restructure
 - IMPORTANT for future sessions: all app code is now under /app/frontend/src (NOT /app/src)
 
+## What's Been Implemented (2026-06-08, session 6 — Render deploy support)
+- User tried deploying on Render pointing a Node service at backend/ (Python — no package.json) → npm ENOENT. Fix: /app/render.yaml blueprint (single web service, runtime node, rootDir frontend, build `yarn install && yarn build`, start `yarn start`, envVars NODE_ENV/MONGO_URL/DB_NAME/OAUTH_BACKEND_URL) + /app/RENDER_DEPLOY.md guide
+- Key insight documented: backend/ FastAPI proxy is ONLY for Emergent preview ingress; on Render (or any single-port host) the Next.js service serves UI + all /api routes alone
+- testing iteration_5: 100% — simulated Render exactly (prod build + start on arbitrary PORT, no proxy): pages, authed API, WebAuthn options with host-derived rpID all working; preview stack unaffected
+
 ## Prioritized Backlog
 - P2: SystemHealth / PacketMonitor panels are client-side visualizations (not DB-backed)
 - P2: Orphan components (LandingPage.tsx, Dashboard.tsx, TransactionRow.tsx, ThreatLandscapeMap, RiskScoringEngine, SignalPulseWidget, pdf-generator.ts) unused by pages; jest suite untouched
