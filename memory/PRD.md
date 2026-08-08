@@ -57,6 +57,14 @@
 - Key insight documented: backend/ FastAPI proxy is ONLY for Emergent preview ingress; on Render (or any single-port host) the Next.js service serves UI + all /api routes alone
 - testing iteration_5: 100% — simulated Render exactly (prod build + start on arbitrary PORT, no proxy): pages, authed API, WebAuthn options with host-derived rpID all working; preview stack unaffected
 
+## What's Been Implemented (2026-06-08, session 7 — LIVE deployments via CLI/API)
+- Deployed BOTH platforms using user's credentials:
+  - Vercel: https://sentinel-x-alpha-puce.vercel.app (project sentinel-x, account sayan1-dls; env vars MONGO_URL/DB_NAME/OAUTH_BACKEND_URL set for production; deployed from local workspace via CLI)
+  - Render: https://sentinel-x-4ga7.onrender.com (service srv-d9rob3m7bikc738qs06g, node runtime, rootDir frontend, free plan, autoDeploy on push; old broken python service deleted via API)
+- Fixed during rollout: NODE_ENV=production made Render's yarn install skip devDeps → 'Cannot find module tailwindcss'. Fixed Render buildCommand to `yarn install --production=false && yarn build` (also in render.yaml) AND moved build-critical packages (tailwindcss, postcss, autoprefixer, typescript, @types/*) into dependencies permanently
+- ⚠️ OUTSTANDING (user action): MongoDB Atlas Network Access still blocks all external IPs — both live apps serve pages but API/DB calls 500 after ~30s timeout. User must add 0.0.0.0/0 in Atlas → Network Access. Atlas: cluster0.bwurlbb.mongodb.net, db sentinel_x
+- User should push to GitHub again (Save to GitHub) so Render picks up yarn.lock + package.json dependency moves on next auto-deploy
+
 ## Prioritized Backlog
 - P2: SystemHealth / PacketMonitor panels are client-side visualizations (not DB-backed)
 - P2: Orphan components (LandingPage.tsx, Dashboard.tsx, TransactionRow.tsx, ThreatLandscapeMap, RiskScoringEngine, SignalPulseWidget, pdf-generator.ts) unused by pages; jest suite untouched
