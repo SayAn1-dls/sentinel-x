@@ -39,6 +39,12 @@
 - Deployment hygiene: OAuth backend URL moved to OAUTH_BACKEND_URL env (/app/.env), removed `.env` from .gitignore (was blocking deploy secret management), frontend shim gained build script, root start binds 0.0.0.0
 - deployment_agent: no blockers remaining (only WARN on readonly preview supervisor + intentional REACT_APP_BACKEND_URL tooling var); testing iteration_2: 100% regression pass, yarn build exit 0
 
+## What's Been Implemented (2026-06-08, session 4 — deployment root cause)
+- TRUE root cause of repeated Docker build failures: plain `yarn install` (as run in the build image) exited 1 on Yarn engine check — @testing-library/jest-dom@6.10.0 requires Node >=22, build image runs Node 20
+- Fixes: downgraded @testing-library/jest-dom to 6.6.3 (plain install now exits 0 with NO flags — proven by testing agent with .yarnrc disabled), added /app/.yarnrc `--ignore-engines true` as armor, frontend shim build = `yarn --cwd /app install && yarn --cwd /app build`, memory/test_credentials.md added to .gitignore
+- deployment_agent final status: pass/warn (no blockers); testing iteration_3: 100% (install + clean build + backend/frontend smoke)
+- Note: preview URL alias https://identity-pro.internal.stage-preview.emergentagent.com == dfda38da-... URL; frontend/.env now uses the alias
+
 ## Prioritized Backlog
 - P2: SystemHealth / PacketMonitor panels are client-side visualizations (not DB-backed)
 - P2: Orphan components (LandingPage.tsx, Dashboard.tsx, TransactionRow.tsx, ThreatLandscapeMap, RiskScoringEngine, SignalPulseWidget, pdf-generator.ts) unused by pages; jest suite untouched
