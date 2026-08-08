@@ -34,6 +34,11 @@
 - Quick Actions wired (dashboard): FULL SCAN (POST /api/scan target FULL-LEDGER, shows level/findings/confidence), LOCK/UNLOCK GATEWAYS (POST /api/network/lock toggle, locked gateways pinned OFFLINE in heartbeat), CLEAR ALERTS (POST /api/alerts/clear resolves non-critical), EXPORT REPORT (client-side jsPDF + autotable at src/lib/report-pdf.ts: summary, active alerts, top-20 risk txs, audit trail; logged via POST /api/audit EXPORT_REPORT whitelist)
 - All actions audit-logged; verified via curl + live UI clicks (PDF download confirmed)
 
+## What's Been Implemented (2026-06-08, session 3 — deployment fix)
+- Production `next build` failure resolved (was killing Docker build step): deleted corrupted orphan dead code (TransactionRow.tsx, Dashboard.tsx, pdf-generator.ts, ForensicReportPanel.tsx — none reachable from any route), fixed old-schema files graph-engine.ts/velocity-engine.ts (from/to → sender/receiver), fixed debounce generics, typed gateway docs in /api/network, excluded jest configs + __tests__ from tsconfig type-check
+- Deployment hygiene: OAuth backend URL moved to OAUTH_BACKEND_URL env (/app/.env), removed `.env` from .gitignore (was blocking deploy secret management), frontend shim gained build script, root start binds 0.0.0.0
+- deployment_agent: no blockers remaining (only WARN on readonly preview supervisor + intentional REACT_APP_BACKEND_URL tooling var); testing iteration_2: 100% regression pass, yarn build exit 0
+
 ## Prioritized Backlog
 - P2: SystemHealth / PacketMonitor panels are client-side visualizations (not DB-backed)
 - P2: Orphan components (LandingPage.tsx, Dashboard.tsx, TransactionRow.tsx, ThreatLandscapeMap, RiskScoringEngine, SignalPulseWidget, pdf-generator.ts) unused by pages; jest suite untouched
