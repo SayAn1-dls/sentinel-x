@@ -1,0 +1,16 @@
+{
+  "summary": "Narrow verification of the Docker-build/yarn-engine deployment fix + regression smoke. Renamed /app/.yarnrc -> .yarnrc.bak and ran a plain `yarn install` on Node v20.20.2: exited 0 with no 'incompatible module'/engine errors (proves @testing-library/jest-dom@6.6.3 downgrade fixes the root cause even without the ignore-engines shim). Restored .yarnrc. Ran clean production build (`yarn build`): exited 0 in ~13s, all 9 routes generated. Backend regression: /api/auth/me returns 401 without token and 200 with Test Admin/ADMIN via test_session_sentinel_001; /api/stats, /api/transactions?limit=5, /api/alerts, /api/network all 200 with data; POST /api/scan {target:'DARK-POOL-7'} returns HIGH threat findings. Frontend regression: /auth renders google-login-btn + biometric-login-btn; /dashboard with session cookie renders dashboard-page, hud-user-chip shows 'Test Admin ADMIN', LIVE TRANSACTION FEED populated (7 rows visible in screenshot), qa-full-scan-btn click surfaces qa-status-scan ('SWEEPING LEDGER...'). Services left RUNNING; /app/.yarnrc restored.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/iteration_2.json"],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "None - reused existing test-admin-001 / test_session_sentinel_001",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "Session cookie: test_session_sentinel_001 (user test-admin-001, ADMIN)",
+  "context_for_next_testing_agent": "Deployment fix verified: plain `yarn install` works on Node 20 with no .yarnrc thanks to jest-dom 6.6.3. `yarn build` clean succeeds. All prior functionality intact. External URL used: https://identity-pro.internal.stage-preview.emergentagent.com (from frontend/.env; differs from the URL in the request payload).",
+  "rca_of_the_issue": "Prior failure was caused by @testing-library/jest-dom@6.10.0 declaring engines.node >=22 while the Docker build image runs Node 20, tripping Yarn's engine check and failing the install step. Pinning jest-dom to 6.6.3 (which supports Node 20) removes the incompatibility at the source; the /app/.yarnrc --ignore-engines flag and the frontend shim script provide belt-and-suspenders coverage. Verified by running install with the .yarnrc temporarily disabled - install still exits 0 cleanly."
+}
