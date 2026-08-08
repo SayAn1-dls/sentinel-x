@@ -1,17 +1,31 @@
 'use client';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { AuditLog, ThreatLevel } from '../types';
-import { MOCK_AUDIT_LOGS } from '../mock-data';
 
 export function useAudit() {
-  const [logs] = useState<AuditLog[]>(MOCK_AUDIT_LOGS);
+  const [allLogs, setAllLogs] = useState<AuditLog[]>([]);
   const [severityFilter, setSeverityFilter] = useState<ThreatLevel | 'ALL'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 20;
 
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch('/api/audit?limit=300', { credentials: 'include' });
+      if (res.ok) setAllLogs((await res.json()).data);
+    } catch {
+      // keep last known state
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+    const interval = setInterval(load, 15000);
+    return () => clearInterval(interval);
+  }, [load]);
+
   const filtered = useMemo(() => {
-    let result = logs;
+    let result = allLogs;
     if (severityFilter !== 'ALL') result = result.filter(l => l.severity === severityFilter);
     if (searchTerm) result = result.filter(l =>
       l.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -19,7 +33,7 @@ export function useAudit() {
       l.details.toLowerCase().includes(searchTerm.toLowerCase())
     );
     return result;
-  }, [logs, severityFilter, searchTerm]);
+  }, [allLogs, severityFilter, searchTerm]);
 
   const paginated = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
@@ -41,5 +55,26 @@ export function useAudit() {
     a.click();
   }, [filtered]);
 
-  return { logs: paginated, total: filtered.length, page, totalPages, setPage, severityFilter, setSeverityFilter, searchTerm, setSearchTerm, exportCSV };
+  return { logs: paginated, allLogs, total: filtered.length, page, totalPages, setPage, severityFilter, setSeverityFilter, searchTerm, setSearchTerm, exportCSV };
+}
+
+export function useAuditFeed(limit = 15) {
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await fetch(`/api/audit?limit=${limit}`, { credentials: 'include' });
+        if (res.ok && mounted) setLogs((await res.json()).data);
+      } catch {
+        // keep last known state
+      }
+    };
+    load();
+    const interval = setInterval(load, 10000);
+    return () => { mounted = false; clearInterval(interval); };
+  }, [limit]);
+
+  return logs;
 }

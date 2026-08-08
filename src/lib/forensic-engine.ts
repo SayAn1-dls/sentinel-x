@@ -278,7 +278,7 @@ export function analyzeAIAgentBehavior(
 export function analyzeSmartContractRisk(
   history: { address: string; verified: boolean; isMixer: boolean; isDrainer: boolean }[]
 ): SmartContractForensics {
-  const known DrainersContacted = history.some(h => h.isDrainer);
+  const knownDrainersContacted = history.some(h => h.isDrainer);
   const mixerUsageDetected = history.some(h => h.isMixer);
   const unverifiedCount = history.filter(h => !h.verified).length;
   

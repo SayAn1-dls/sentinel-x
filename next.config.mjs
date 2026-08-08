@@ -3,6 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  allowedDevOrigins: [
+    '*.emergentagent.com',
+    '*.preview.emergentagent.com',
+    '*.internal.stage-preview.emergentagent.com',
+    'localhost',
+  ],
   images: {
     formats: ['image/webp', 'image/avif'],
   },
@@ -10,10 +16,8 @@ const nextConfig = {
     {
       source: '/(.*)',
       headers: [
-        { key: 'X-Frame-Options', value: 'DENY' },
         { key: 'X-Content-Type-Options', value: 'nosniff' },
         { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        { key: 'X-Powered-By', value: 'SENTINEL-X FORENSIC GUARD' },
       ],
     },
   ],

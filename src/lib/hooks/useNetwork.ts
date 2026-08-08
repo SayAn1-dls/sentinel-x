@@ -1,22 +1,35 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { NetworkGateway } from '../types';
-import { networkMonitor } from '../network-security';
 
 export function useNetwork() {
-  const [gateways, setGateways] = useState<NetworkGateway[]>(networkMonitor.getAll());
-  const [healthScore, setHealthScore] = useState(networkMonitor.getHealthScore());
-  const [avgLatency, setAvgLatency] = useState(networkMonitor.getAverageLatency());
+  const [gateways, setGateways] = useState<NetworkGateway[]>([]);
+  const [healthScore, setHealthScore] = useState(100);
+  const [avgLatency, setAvgLatency] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      networkMonitor.simulateHeartbeat();
-      setGateways([...networkMonitor.getAll()]);
-      setHealthScore(networkMonitor.getHealthScore());
-      setAvgLatency(networkMonitor.getAverageLatency());
-    }, 5000);
-    return () => clearInterval(interval);
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch('/api/network', { credentials: 'include' });
+      if (!res.ok) return;
+      const payload = await res.json();
+      setGateways(payload.gateways);
+      setHealthScore(payload.stats.healthScore);
+      setAvgLatency(payload.stats.avgLatency);
+    } catch {
+      // keep last known state
+    }
   }, []);
 
-  return { gateways, healthScore, avgLatency, online: networkMonitor.getOnline() };
+  useEffect(() => {
+    load();
+    const interval = setInterval(load, 5000);
+    return () => clearInterval(interval);
+  }, [load]);
+
+  return {
+    gateways,
+    healthScore,
+    avgLatency,
+    online: gateways.filter(g => g.status === 'ONLINE'),
+  };
 }

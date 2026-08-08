@@ -1,0 +1,7 @@
+{
+  "name": "sentinel-x-frontend-shim",
+  "private": true,
+  "scripts": {
+    "start": "yarn --cwd /app dev"
+  }
+}
