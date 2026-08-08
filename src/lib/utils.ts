@@ -48,12 +48,12 @@ export function getThreatColor(level: ThreatLevel): string {
   return THREAT_COLORS[level];
 }
 
-export function debounce<T extends (...args: unknown[]) => void>(fn: T, ms: number): T {
+export function debounce<Args extends unknown[]>(fn: (...args: Args) => void, ms: number): (...args: Args) => void {
   let timer: ReturnType<typeof setTimeout>;
-  return ((...args: unknown[]) => {
+  return (...args: Args) => {
     clearTimeout(timer);
     timer = setTimeout(() => fn(...args), ms);
-  }) as T;
+  };
 }
 
 export function clamp(value: number, min: number, max: number): number {

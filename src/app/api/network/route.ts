@@ -5,6 +5,17 @@ import { ensureSeeded } from '@/lib/server/seed';
 
 export const dynamic = 'force-dynamic';
 
+interface GatewayDoc {
+  id: string;
+  name: string;
+  protocol: string;
+  status: string;
+  latency: number;
+  encryptionBits: number;
+  lastChecked: number;
+  locked?: boolean;
+}
+
 export async function GET(req: NextRequest) {
   const db = await getDb();
   const user = await getSessionUser(db, req);
@@ -12,9 +23,9 @@ export async function GET(req: NextRequest) {
   await ensureSeeded(db);
 
   const col = db.collection('gateways');
-  const gateways = await col.find({}, { projection: { _id: 0 } }).toArray();
+  const gateways = (await col.find({}, { projection: { _id: 0 } }).toArray()) as unknown as GatewayDoc[];
 
-  const updated = gateways.map(gw => {
+  const updated: GatewayDoc[] = gateways.map(gw => {
     if (gw.locked) return { ...gw, status: 'OFFLINE', lastChecked: Date.now() };
     const latency = Math.max(5, Math.min(250, gw.latency + Math.floor((Math.random() - 0.5) * 14)));
     let status = gw.status;

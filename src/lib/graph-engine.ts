@@ -1,4 +1,13 @@
-import type { Transaction, NetworkNode } from './types';
+import type { Transaction } from './types';
+
+export interface GraphNode {
+  id: string;
+  address: string;
+  txCount: number;
+  totalVolume: number;
+  riskLevel: string;
+  connections: string[];
+}
 
 export interface GraphEdge {
   from: string;
@@ -8,7 +17,7 @@ export interface GraphEdge {
 }
 
 export interface GraphAnalysisResult {
-  nodes: NetworkNode[];
+  nodes: GraphNode[];
   edges: GraphEdge[];
   cycles: string[][];
   layeringScore: number;
@@ -16,28 +25,28 @@ export interface GraphAnalysisResult {
 }
 
 export class GraphEngine {
-  buildGraph(transactions: Transaction[]): { nodes: Map<string, NetworkNode>; edges: Map<string, GraphEdge> } {
-    const nodes = new Map<string, NetworkNode>();
+  buildGraph(transactions: Transaction[]): { nodes: Map<string, GraphNode>; edges: Map<string, GraphEdge> } {
+    const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
 
     for (const tx of transactions) {
-      if (!nodes.has(tx.from)) {
-        nodes.set(tx.from, { id: tx.from, address: tx.from, txCount: 0, totalVolume: 0, riskLevel: 'LOW', connections: [] });
+      if (!nodes.has(tx.sender)) {
+        nodes.set(tx.sender, { id: tx.sender, address: tx.sender, txCount: 0, totalVolume: 0, riskLevel: 'LOW', connections: [] });
       }
-      if (!nodes.has(tx.to)) {
-        nodes.set(tx.to, { id: tx.to, address: tx.to, txCount: 0, totalVolume: 0, riskLevel: 'LOW', connections: [] });
+      if (!nodes.has(tx.receiver)) {
+        nodes.set(tx.receiver, { id: tx.receiver, address: tx.receiver, txCount: 0, totalVolume: 0, riskLevel: 'LOW', connections: [] });
       }
 
-      const fromNode = nodes.get(tx.from)!;
-      const toNode = nodes.get(tx.to)!;
+      const fromNode = nodes.get(tx.sender)!;
+      const toNode = nodes.get(tx.receiver)!;
       fromNode.txCount++;
       fromNode.totalVolume += tx.amount;
       toNode.txCount++;
       toNode.totalVolume += tx.amount;
 
-      const edgeKey = `${tx.from}->${tx.to}`;
+      const edgeKey = `${tx.sender}->${tx.receiver}`;
       if (!edges.has(edgeKey)) {
-        edges.set(edgeKey, { from: tx.from, to: tx.to, weight: 0, count: 0 });
+        edges.set(edgeKey, { from: tx.sender, to: tx.receiver, weight: 0, count: 0 });
       }
       const edge = edges.get(edgeKey)!;
       edge.weight += tx.amount;
