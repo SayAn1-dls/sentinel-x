@@ -18,15 +18,15 @@ export class VelocityEngine {
     const now = Date.now();
     const window = transactions.filter(
       (tx) =>
-        (tx.from === address || tx.to === address) &&
+        (tx.sender === address || tx.receiver === address) &&
         now - new Date(tx.timestamp).getTime() < this.windowMs
     );
 
     const txCount = window.length;
     const totalVolume = window.reduce((sum, tx) => sum + tx.amount, 0);
     const uniqueCounterparties = new Set([
-      ...window.map((tx) => tx.from),
-      ...window.map((tx) => tx.to),
+      ...window.map((tx) => tx.sender),
+      ...window.map((tx) => tx.receiver),
     ]).size;
     const indicators: string[] = [];
 

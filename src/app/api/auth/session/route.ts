@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'session_id required' }, { status: 400 });
   }
 
-  const authRes = await fetch('https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data', {
+  const authRes = await fetch(`${process.env.OAUTH_BACKEND_URL}/auth/v1/env/oauth/session-data`, {
     headers: { 'X-Session-ID': sessionId },
   });
   if (!authRes.ok) {
