@@ -9,7 +9,11 @@ const uri = process.env.MONGO_URL!;
 const dbName = process.env.DB_NAME!;
 
 if (!global._mongoClient) {
-  global._mongoClient = new MongoClient(uri, { maxPoolSize: 20 });
+  global._mongoClient = new MongoClient(uri, {
+    maxPoolSize: 20,
+    serverSelectionTimeoutMS: 6000,
+    connectTimeoutMS: 8000,
+  });
 }
 const client = global._mongoClient;
 
