@@ -64,6 +64,7 @@
 - Fixed during rollout: NODE_ENV=production made Render's yarn install skip devDeps → 'Cannot find module tailwindcss'. Fixed Render buildCommand to `yarn install --production=false && yarn build` (also in render.yaml) AND moved build-critical packages (tailwindcss, postcss, autoprefixer, typescript, @types/*) into dependencies permanently
 - ⚠️ OUTSTANDING (user action): MongoDB Atlas Network Access still blocks all external IPs — both live apps serve pages but API/DB calls 500 after ~30s timeout. User must add 0.0.0.0/0 in Atlas → Network Access. Atlas: cluster0.bwurlbb.mongodb.net, db sentinel_x
 - User should push to GitHub again (Save to GitHub) so Render picks up yarn.lock + package.json dependency moves on next auto-deploy
+- Session 7 addendum: mongo.ts now uses serverSelectionTimeoutMS 6s / connectTimeoutMS 8s (fail fast in serverless); Vercel redeployed with all fixes. Atlas STILL blocked as of last check — user has not completed Network Access step (declined API-key route too). Everything else verified live.
 
 ## Prioritized Backlog
 - P2: SystemHealth / PacketMonitor panels are client-side visualizations (not DB-backed)
