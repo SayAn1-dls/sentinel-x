@@ -178,7 +178,16 @@ export interface ZKPForensics {
   isSoundnessRiskDetected: boolean;
 }
 
+export interface MemorySwapForensics {
+  isSwapEnabled: boolean;
+  swapEncrypted: boolean;
+  sensitiveDataInSwap: boolean;
+  swapUsagePercentage: number;
+  unauthorizedAccessDetected: boolean;
+}
+
 export interface ForensicIntelligence {
+  memorySwap?: MemorySwapForensics;
   zkpForensics?: ZKPForensics;
   crossChainForensics?: CrossChainForensics;
   geolocation: IPGeolocation;
