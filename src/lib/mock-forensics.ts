@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -143,6 +143,7 @@ export function enrichWithForensics(transaction: any): any {
   const steganography = analyzeSteganography();
   const zkpForensics = analyzeZKPForensics('Groth16');
   const memorySwap = analyzeMemorySwap();
+  const hidForensics = analyzeHIDForensics();
   
   return {
     ...transaction,
@@ -169,7 +170,8 @@ export function enrichWithForensics(transaction: any): any {
       dnsIntegrity, 
       steganography, 
       zkpForensics,
-      memorySwap
+      memorySwap,
+      hidForensics
     }
   };
 }
