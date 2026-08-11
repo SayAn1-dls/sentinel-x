@@ -188,6 +188,7 @@ export interface MemorySwapForensics {
 
 export interface ForensicIntelligence {
   memorySwap?: MemorySwapForensics;
+  hidForensics?: HIDForensics;
   zkpForensics?: ZKPForensics;
   crossChainForensics?: CrossChainForensics;
   geolocation: IPGeolocation;
@@ -221,4 +222,13 @@ export interface SteganographyAnalysis {
   encryptionDetected: boolean;
   stegoToolSignature?: string;
   leakLikelihood: number;
+}
+
+export interface HIDForensics {
+  suspiciousHIDDeviceDetected: boolean;
+  keystrokeTimingAnomaly: boolean;
+  pollingRateHertz: number;
+  isVirtualKeyboard: boolean;
+  unrecognizedVendorId: boolean;
+  hidReportDescriptorIntegrity: boolean;
 }
