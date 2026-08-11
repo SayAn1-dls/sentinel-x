@@ -51,40 +51,40 @@ Enhanced logic to differentiate between human jitter and bot-generated event seq
 
 ### Session Replay Detection
 Introduced heuristic-based detection of session replay tools. The engine now analyzes event stream variance to identify robotic or pre-recorded mouse movements.
-- **Signal**: sessionReplay
-- **Metric**: replayLikelihood (0.0 to 1.0)
+- **Signal**: `sessionReplay`
+- **Metric**: `replayLikelihood` (0.0 to 1.0)
 - **Detection**: Flags variance < 5ms as high-confidence replay.
 
 ### ASN Reputation Analysis
 The risk scoring engine now incorporates ASN (Autonomous System Number) reputation data.
-- **Signal**: asnReputation
+- **Signal**: `asnReputation`
 - **Scoring**: Differentiates between Tier 1 ISPs and high-risk hosting/proxy providers.
-- **Abuse Score**: Integrated into the calculateAdvancedRiskScore v2.
+- **Abuse Score**: Integrated into the `calculateAdvancedRiskScore` v2.
 
 ### Risk Engine v2
-Updated the calculateAdvancedRiskScore function to include new weightings for session replay and ASN abuse scores, providing a more comprehensive security posture.
+Updated the `calculateAdvancedRiskScore` function to include new weightings for session replay and ASN abuse scores, providing a more comprehensive security posture.
 
 ## Update: 2026-07-30 - Kernel-Level & Network Proximity Analysis (v3)
 
 ### Kernel Forensic Attestation
 Implemented mock kernel integrity verification to detect virtualized environments, debuggers, and system call hooks.
-- **Signal**: kernelForensics
-- **Check**: Detects 0xDEAD memory page hashes and identifies OS build integrity.
+- **Signal**: `kernelForensics`
+- **Check**: Detects `0xDEAD` memory page hashes and identifies OS build integrity.
 - **Risk Impact**: High (Critical weighting for syscall hooking).
 
 ### Peer-to-Peer Network Proximity
 Added analysis for peer network positioning and exit node detection.
-- **Signal**: peerAnalysis
-- **Metric**: proximityScore and peerCount correlation.
+- **Signal**: `peerAnalysis`
+- **Metric**: `proximityScore` and `peerCount` correlation.
 - **Detection**: Flags nodes identified as high-risk exit points in P2P networks.
 
 ### Risk Engine v3
-Upgraded the calculateAdvancedRiskScore function to integrate kernel-level signals and network proximity metrics.
+Upgraded the `calculateAdvancedRiskScore` function to integrate kernel-level signals and network proximity metrics.
 - **Version**: 3.0.0
 - **Weighting**: Syscall hooking (+45), Exit nodes (+30), VM detection (+15).
 
 ### Functional Restoration & Logic Enrichment
-Fixed critical compilation issues in the mock data pipeline by implementing missing analyzeBehavioralBiometrics and analyzeTransactionVelocity utility functions.
+Fixed critical compilation issues in the mock data pipeline by implementing missing `analyzeBehavioralBiometrics` and `analyzeTransactionVelocity` utility functions.
 
 ## Secure Enclave & Hardware Security Module (HSM) Analysis (Added 2026-07-31)
 The Sentinel-X engine now includes kernel-level verification for Secure Enclaves (Apple SEP, Intel SGX, ARM TrustZone). 
@@ -96,14 +96,14 @@ The Sentinel-X engine now includes kernel-level verification for Secure Enclaves
 ## Browser Integrity & Automation Detection (Added 2026-08-01)
 The Sentinel-X engine now incorporates advanced browser environment integrity checks to detect headless browsers and automation frameworks (Puppeteer, Selenium, Playwright).
 
-- **Automation Detection Signal**: browserIntegrity
-- **Webdriver Verification**: Detects the presence of navigator.webdriver even when obfuscated.
-- **Chrome Object Validation**: Checks for missing or inconsistent window.chrome properties common in headless environments.
+- **Automation Detection Signal**: `browserIntegrity`
+- **Webdriver Verification**: Detects the presence of `navigator.webdriver` even when obfuscated.
+- **Chrome Object Validation**: Checks for missing or inconsistent `window.chrome` properties common in headless environments.
 - **Automation Scoring**: Aggregates environmental inconsistencies into a confidence score (0.0 to 1.0).
 - **Risk Scoring Integration (v5)**: Automated environments now trigger a significant risk weight (+70 for explicit detection).
 
 ### Risk Engine v5
-Upgraded the calculateAdvancedRiskScore function to integrate Browser Integrity signals.
+Upgraded the `calculateAdvancedRiskScore` function to integrate Browser Integrity signals.
 - **Version**: 5.0.0
 - **Weighting**: Automation Detection (+70), Webdriver Presence (+40), Automation Score (+30).
 
@@ -112,20 +112,20 @@ The Sentinel-X engine now includes advanced detection for AI-agentic behavior an
 
 ### AI Agent Interaction Analysis
 Detects LLM-driven interactions by analyzing syntactic entropy, reasoning chain artifacts, and response timing.
-- **Signal**: aiAgentDetection
-- **Metric**: promptInjectionRisk and reasoningChainDetected.
+- **Signal**: `aiAgentDetection`
+- **Metric**: `promptInjectionRisk` and `reasoningChainDetected`.
 - **Detection**: Flags inputs containing reasoning markers ("step-by-step", "consequently") or suspiciously fast interaction patterns.
 
 ### Smart Contract Forensic Profiling
 Analyzes the historical footprint of a wallet's interactions with DeFi protocols and known malicious contracts.
-- **Signal**: smartContractForensics
+- **Signal**: `smartContractForensics`
 - **Checks**: 
   - **Mixer Usage**: Detection of interactions with privacy mixers (e.g., Tornado Cash).
   - **Drainer Contact**: High-risk flag for interactions with known wallet drainers.
   - **Unverified Contracts**: Calculates the ratio of unverified vs. verified smart contract interactions.
 
 ### Risk Engine v6
-Upgraded the calculateAdvancedRiskScore function to integrate AI and Smart Contract signals.
+Upgraded the `calculateAdvancedRiskScore` function to integrate AI and Smart Contract signals.
 - **Version**: 6.0.0
 - **Weighting**: Known Drainer Contact (+100 - Critical), Prompt Injection Risk (+80), AI Agent Detection (+55), Mixer Usage (+65).
 
@@ -134,7 +134,7 @@ The Sentinel-X engine now incorporates Dark Web exposure intelligence and networ
 
 ### Dark Web Intelligence Exposure
 Cross-references identity markers (emails, hashes) against known data breaches and dark web leak repositories.
-- **Signal**: darkWebExposure
+- **Signal**: `darkWebExposure`
 - **Checks**: 
   - **Breach Count**: Total number of unique breaches the identity has been found in.
   - **Risk Rating**: Categorized risk level (Critical to Low) based on the severity and freshness of the exposure.
@@ -142,7 +142,7 @@ Cross-references identity markers (emails, hashes) against known data breaches a
 
 ### Deep Packet Inspection (DPI) Forensic Analysis
 Analyzes network-layer artifacts to detect MITM (Man-in-the-Middle) attacks and network scanning activity.
-- **Signal**: networkPacketAnalysis
+- **Signal**: `networkPacketAnalysis`
 - **Metrics**:
   - **TCP Window Size Fingerprinting**: Identifies operating system spoofing or non-standard network stacks.
   - **TTL (Time To Live) Analysis**: Detects unusual routing paths or potential proxying.
@@ -150,7 +150,7 @@ Analyzes network-layer artifacts to detect MITM (Man-in-the-Middle) attacks and 
 - **Detection**: Flags suspected Nmap scans and MITM attempts.
 
 ### Risk Engine v7
-Upgraded the calculateAdvancedRiskScore function to integrate Dark Web and DPI forensic signals.
+Upgraded the `calculateAdvancedRiskScore` function to integrate Dark Web and DPI forensic signals.
 - **Version**: 7.0.0
 - **Weighting**: MITM Likelihood (+90 - Critical), Dark Web Critical Exposure (+60), Nmap Scan Detection (+40).
 
@@ -160,20 +160,20 @@ The Sentinel-X engine now includes cloud infrastructure correlation and DNS reso
 
 ### Cloud Infrastructure Forensic Correlation
 Detects if a transaction originates from a major cloud provider (AWS, GCP, Azure, etc.) and evaluates the associated data center risk.
-- **Signal**: cloudInfrastructure
-- **Metric**: datacenterRiskScore (0.0 to 1.0).
+- **Signal**: `cloudInfrastructure`
+- **Metric**: `datacenterRiskScore` (0.0 to 1.0).
 - **Detection**: Cross-references IP ranges against known cloud provider lists. High-risk for treasury operations if originating from a non-business data center.
 
 ### DNS Integrity Analysis
 Analyzes the DNS resolution path and latency to identify potential DNS spoofing or hijacking.
-- **Signal**: dnsIntegrity
+- **Signal**: `dnsIntegrity`
 - **Checks**:
   - **Public Resolver Detection**: Checks if common public resolvers (8.8.8.8, 1.1.1.1) are being used or bypassed.
   - **Hijack Likelihood**: Heuristic analysis based on resolution consistency and network latency.
 - **Risk Impact**: Critical (+100) if hijacking is likely.
 
 ### Risk Engine v8
-Upgraded the calculateAdvancedRiskScore function to integrate Cloud and DNS forensic signals.
+Upgraded the `calculateAdvancedRiskScore` function to integrate Cloud and DNS forensic signals.
 - **Version**: 8.0.0
 - **Weighting**: DNS Hijacking (+100 - Critical), Cloud Data Center Correlation (up to +40).
 
@@ -181,15 +181,15 @@ Upgraded the calculateAdvancedRiskScore function to integrate Cloud and DNS fore
 
 ### Steganographic Forensic Analysis
 Implemented detection for steganographic data exfiltration where sensitive information is hidden within innocuous carriers like images or audio files.
-- **Signal**: steganography
+- **Signal**: `steganography`
 - **Checks**:
   - **Carrier Integrity**: Analyzes LSB (Least Significant Bit) variance in image/audio headers.
   - **Encryption Detection**: Identifies high-entropy blocks within carrier files indicating encrypted payloads.
   - **Tool Signature**: Matches known steganography tool artifacts (e.g., LsbSteg, OutGuess).
-- **Risk Impact**: High (leakLikelihood weighting).
+- **Risk Impact**: High (`leakLikelihood` weighting).
 
 ### Risk Engine v10
-Upgraded the calculateAdvancedRiskScore function to integrate steganographic forensic signals.
+Upgraded the `calculateAdvancedRiskScore` function to integrate steganographic forensic signals.
 - **Version**: 10.0.0
 - **Weighting**: Steganographic Detection (up to +85), Encrypted Payload (+20).
 
@@ -197,7 +197,7 @@ Upgraded the calculateAdvancedRiskScore function to integrate steganographic for
 
 ### Cross-Chain Forensic Linking
 Implemented deep analysis of cross-chain transaction paths to identify linked identities across multiple networks.
-- **Signal**: crossChainForensics
+- **Signal**: `crossChainForensics`
 - **Metrics**:
   - **Hop Count**: Detects complex multi-hop bridging patterns often used in laundering.
   - **Bridge Velocity**: Analyzes the speed of capital movement across chains.
@@ -205,7 +205,7 @@ Implemented deep analysis of cross-chain transaction paths to identify linked id
 - **Risk Impact**: High (+75) for mixer association, Medium (+30) for high-hop counts.
 
 ### Risk Engine v11
-Upgraded the calculateAdvancedRiskScore function to integrate cross-chain forensic signals.
+Upgraded the `calculateAdvancedRiskScore` function to integrate cross-chain forensic signals.
 - **Version**: 11.0.0
 - **Weighting**: Mixer Association (+75), Cross-Chain Velocity (up to +40), High Hop Count (+30).
 
@@ -213,7 +213,7 @@ Upgraded the calculateAdvancedRiskScore function to integrate cross-chain forens
 
 ### ZKP Forensic Analysis
 Implemented analysis for Zero-Knowledge Proof (ZKP) integrity and circuit-level forensics. This is critical for verifying the soundness of proofs used in privacy-preserving and scaling protocols.
-- **Signal**: zkpForensics
+- **Signal**: `zkpForensics`
 - **Metrics**:
   - **Proof Type**: Identifies the proving system used (Groth16, Plonk, STARK, etc.).
   - **Trusted Setup Integrity**: Evaluates the risk associated with proofs requiring a trusted setup (e.g., Groth16 soundness risks).
@@ -221,6 +221,22 @@ Implemented analysis for Zero-Knowledge Proof (ZKP) integrity and circuit-level 
 - **Risk Impact**: High (+45) for soundness risks, Critical (+100) for invalid proofs.
 
 ### Risk Engine v12
-Upgraded the calculateAdvancedRiskScore function to integrate ZKP forensic signals.
+Upgraded the `calculateAdvancedRiskScore` function to integrate ZKP forensic signals.
 - **Version**: 12.0.0
 - **Weighting**: Invalid ZK Proof (+100 - Critical), Soundness Risk Detected (+45), Verification Latency Anomaly (+20).
+
+## Update: 2026-08-11 - USB HID Forensic Analysis & Hardware Keylogger Detection (v14)
+
+### Hardware-Level HID Forensics
+Implemented analysis of USB Human Interface Device (HID) descriptors and event timing to detect hardware-level keyloggers and suspicious peripherals.
+- **Signal**: `hidForensics`
+- **Checks**:
+  - **HID Report Descriptor Integrity**: Verifies the structure of HID reports against known valid patterns.
+  - **Keystroke Timing Anomaly**: Detects robotic or fixed-interval keystroke injection common in hardware keyloggers.
+  - **Vendor ID (VID) Reputation**: Cross-references device vendor IDs against a whitelist of trusted manufacturers.
+- **Risk Impact**: High (+80) for descriptor tampering, Medium (+40) for timing anomalies.
+
+### Risk Engine v14
+Upgraded the `calculateAdvancedRiskScore` function to integrate HID forensic signals.
+- **Version**: 14.0.0
+- **Weighting**: HID Descriptor Tampering (+80), Suspicious HID Device Detected (+65), Keystroke Timing Anomaly (+40).
