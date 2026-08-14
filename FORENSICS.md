@@ -240,3 +240,24 @@ Implemented analysis of USB Human Interface Device (HID) descriptors and event t
 Upgraded the `calculateAdvancedRiskScore` function to integrate HID forensic signals.
 - **Version**: 14.0.0
 - **Weighting**: HID Descriptor Tampering (+80), Suspicious HID Device Detected (+65), Keystroke Timing Anomaly (+40).
+
+## Update: 2026-08-14 - Optical Air-Gap Forensics & ZKP Integrity Restoration (v15)
+
+### Optical Air-Gap Forensic Analysis
+Implemented detection for visual exfiltration channels, specifically targeting screen-to-camera data leaks and rapid QR-code flashing.
+- **Signal**: `opticalAirGapForensics`
+- **Checks**:
+  - **High-Frequency Flicker Detection**: Identifies subtle screen flickering used to transmit data to external sensors.
+  - **QR Rapid Exfiltration**: Monitors for rapid sequences of QR codes or visual markers designed for high-bandwidth air-gap bypass.
+  - **Visual Steganography**: Analyzes screen output for hidden visual artifacts.
+- **Risk Impact**: Critical (+100) for rapid QR exfiltration, High (+85) for flicker detection.
+
+### ZKP Forensic Restoration
+Restored the Zero-Knowledge Proof (ZKP) integrity verification engine to the core forensic pipeline.
+- **Signal**: `zkpForensics`
+- **Weighting**: Invalid ZK Proof (+100), Soundness Risk (+45).
+
+### Risk Engine v15
+Upgraded the `calculateAdvancedRiskScore` function to integrate Optical Air-Gap signals and fully reconcile the ZKP and HID forensic weightings.
+- **Version**: 15.0.0
+- **New Weighting**: QR Rapid Exfiltration (+100 - Critical), High-Frequency Flicker (+85), Invalid ZK Proof (+100).

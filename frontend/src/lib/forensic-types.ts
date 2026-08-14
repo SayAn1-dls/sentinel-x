@@ -159,7 +159,6 @@ export interface DNSIntegritySignal {
   resolvedIpMatchesExpected: boolean;
 }
 
-
 export interface CrossChainForensics {
   linkedWallets: string[];
   bridgeProtocols: string[];
@@ -168,7 +167,42 @@ export interface CrossChainForensics {
   isMixerAssociated: boolean;
 }
 
+export interface SteganographyAnalysis {
+  detected: boolean;
+  carrierType: 'IMAGE' | 'AUDIO' | 'DOCUMENT' | 'NETWORK_PACKET';
+  hiddenPayloadSize?: number;
+  encryptionDetected: boolean;
+  stegoToolSignature?: string;
+  leakLikelihood: number;
+}
+
+export interface HIDForensics {
+  isKeystrokeInjectionDetected: boolean;
+  reportingRateAnomaly: boolean;
+  pollingRateHz: number;
+  isRubberDuckySignaturePresent: boolean;
+  syntheticEventRatio: number;
+}
+
+export interface ZKPForensics {
+  proofSystem: 'Groth16' | 'Plonk' | 'STARK' | 'Bulletproofs';
+  isSoundnessRiskDetected: boolean;
+  trustedSetupHash?: string;
+  verificationLatencyMs: number;
+  isInvalidProof: boolean;
+}
+
+export interface OpticalAirGapForensics {
+  screenBrightnessAnomalies: boolean;
+  highFrequencyFlickerDetected: boolean;
+  qrRapidExfiltrationLikely: boolean;
+  visualSteganographyConfidence: number;
+}
+
 export interface ForensicIntelligence {
+  zkpForensics?: ZKPForensics;
+  opticalAirGapForensics?: OpticalAirGapForensics;
+  hidForensics?: HIDForensics;
   crossChainForensics?: CrossChainForensics;
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
@@ -192,13 +226,4 @@ export interface ForensicIntelligence {
   cloudInfrastructure?: CloudInfrastructureSignal;
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
-}
-
-export interface SteganographyAnalysis {
-  detected: boolean;
-  carrierType: 'IMAGE' | 'AUDIO' | 'DOCUMENT' | 'NETWORK_PACKET';
-  hiddenPayloadSize?: number;
-  encryptionDetected: boolean;
-  stegoToolSignature?: string;
-  leakLikelihood: number;
 }
