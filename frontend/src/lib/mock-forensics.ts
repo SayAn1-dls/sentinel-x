@@ -16,7 +16,11 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography
+  analyzeDNSIntegrity, 
+  analyzeSteganography,
+  analyzeHIDForensics,
+  analyzeZKPForensics,
+  analyzeOpticalAirGap
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -137,10 +141,31 @@ export function enrichWithForensics(transaction: any): any {
   const darkWebExposure = analyzeDarkWebExposure(transaction.senderEmail || 'user@example.com');
   const networkPacketAnalysis = analyzeNetworkPackets();
   
-  // v8 new signals
   const cloudInfrastructure = analyzeCloudInfrastructure(geolocation.ip);
   const dnsIntegrity = analyzeDNSIntegrity('sentinel-x.io');
   const steganography = analyzeSteganography();
+  
+  // v14 HID Forensics
+  const hidForensics = {
+    ...analyzeHIDForensics(),
+    isKeystrokeInjectionDetected: Math.random() > 0.99,
+    isRubberDuckySignaturePresent: Math.random() > 0.995,
+    reportingRateAnomaly: Math.random() > 0.97
+  };
+
+  // v12 ZKP Restoration
+  const zkpForensics = {
+    ...analyzeZKPForensics(),
+    isInvalidProof: Math.random() > 0.999,
+    isSoundnessRiskDetected: Math.random() > 0.98
+  };
+
+  // v15 Optical Air-Gap
+  const opticalAirGapForensics = {
+    ...analyzeOpticalAirGap(),
+    qrRapidExfiltrationLikely: Math.random() > 0.997,
+    highFrequencyFlickerDetected: Math.random() > 0.99
+  };
   
   return {
     ...transaction,
@@ -164,7 +189,11 @@ export function enrichWithForensics(transaction: any): any {
       darkWebExposure,
       networkPacketAnalysis,
       cloudInfrastructure,
-      dnsIntegrity, steganography
+      dnsIntegrity, 
+      steganography,
+      hidForensics,
+      zkpForensics,
+      opticalAirGapForensics
     }
   };
 }
