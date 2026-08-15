@@ -1,4 +1,4 @@
-import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics } from './forensic-types';
+import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics, QuantumForensics } from './forensic-types';
 import { 
   detectTemporalAnomaly, 
   detectCrossChainLinks, 
@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -144,6 +144,7 @@ export function enrichWithForensics(transaction: any): any {
   const zkpForensics = analyzeZKPForensics('Groth16');
   const memorySwap = analyzeMemorySwap();
   const hidForensics = analyzeHIDForensics();
+  const quantumForensics = analyzeQuantumForensics(transaction.signature || "0xECDSA_SIG");
   
   return {
     ...transaction,
@@ -171,7 +172,8 @@ export function enrichWithForensics(transaction: any): any {
       steganography, 
       zkpForensics,
       memorySwap,
-      hidForensics
+      hidForensics,
+      quantumForensics
     }
   };
 }

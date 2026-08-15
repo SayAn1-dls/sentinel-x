@@ -213,6 +213,7 @@ export interface ForensicIntelligence {
   cloudInfrastructure?: CloudInfrastructureSignal;
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
+  quantumForensics?: QuantumForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -231,4 +232,12 @@ export interface HIDForensics {
   isVirtualKeyboard: boolean;
   unrecognizedVendorId: boolean;
   hidReportDescriptorIntegrity: boolean;
+}
+
+export interface QuantumForensics {
+  isQuantumResistant: boolean;
+  signatureAlgorithm: 'ECDSA' | 'Ed25519' | 'Dilithium' | 'Falcon' | 'SPHINCS+';
+  shorsAlgorithmVulnerability: number;
+  isGroverAttackResistant: boolean;
+  keySizeBits: number;
 }

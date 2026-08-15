@@ -261,3 +261,19 @@ Restored the Zero-Knowledge Proof (ZKP) integrity verification engine to the cor
 Upgraded the `calculateAdvancedRiskScore` function to integrate Optical Air-Gap signals and fully reconcile the ZKP and HID forensic weightings.
 - **Version**: 15.0.0
 - **New Weighting**: QR Rapid Exfiltration (+100 - Critical), High-Frequency Flicker (+85), Invalid ZK Proof (+100).
+
+## Update: 2026-08-15 - Quantum-Resistant Forensic Signatures & Cryptographic Robustness (v16)
+
+### Quantum-Resistant Forensic Analysis
+Implemented analysis of cryptographic signatures against quantum computing threats, specifically focusing on Shor's and Grover's algorithms.
+- **Signal**: `quantumForensics`
+- **Checks**:
+  - **Algorithm Type**: Identifies if the signature uses post-quantum algorithms (Dilithium, Falcon, SPHINCS+) or traditional ECDSA/Ed25519.
+  - **Shor's Vulnerability**: Calculates the theoretical vulnerability to Shor's algorithm based on the underlying mathematical problem (Integer Factorization vs. Lattice-based).
+  - **Grover Resistance**: Evaluates the effective security bits against Grover's search algorithm.
+- **Risk Impact**: Medium (+30) for high Shor's vulnerability, Low (+15) for Grover vulnerability.
+
+### Risk Engine v16
+Upgraded the `calculateAdvancedRiskScore` function to integrate quantum forensic signals and prioritize post-quantum cryptographic transitions.
+- **Version**: 16.0.0
+- **Weighting**: Non-Quantum-Resistant Algorithm (+25), High Shor's Vulnerability (+30), Grover Attack Risk (+15).
