@@ -23,6 +23,7 @@ import {
   CrossChainForensics,
   HIDForensics,
   ZKPForensics,
+  MemoryForensics,
   OpticalAirGapForensics
 } from './forensic-types';
 
@@ -450,6 +451,7 @@ export function calculateAdvancedRiskScore(
     hidForensics?: HIDForensics;
     zkpForensics?: ZKPForensics;
     opticalAirGapForensics?: OpticalAirGapForensics;
+    memoryForensics?: MemoryForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;

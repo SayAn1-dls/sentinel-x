@@ -199,7 +199,17 @@ export interface OpticalAirGapForensics {
   visualSteganographyConfidence: number;
 }
 
+export interface MemoryForensics {
+  ramScrapingDetected: boolean;
+  dmaAttackVectorFound: boolean;
+  coldBootVulnerabilityLikely: boolean;
+  kernelMemoryLeakage: boolean;
+  pagingIntegrityVerified: boolean;
+  anomalyScore: number;
+}
+
 export interface ForensicIntelligence {
+  memoryForensics?: MemoryForensics;
   zkpForensics?: ZKPForensics;
   opticalAirGapForensics?: OpticalAirGapForensics;
   hidForensics?: HIDForensics;
