@@ -277,3 +277,19 @@ Implemented analysis of cryptographic signatures against quantum computing threa
 Upgraded the `calculateAdvancedRiskScore` function to integrate quantum forensic signals and prioritize post-quantum cryptographic transitions.
 - **Version**: 16.0.0
 - **Weighting**: Non-Quantum-Resistant Algorithm (+25), High Shor's Vulnerability (+30), Grover Attack Risk (+15).
+
+## Update: 2026-08-16 - RAM Scraping & Memory Dump Detection (v17)
+
+### RAM Scraping & Memory Forensics
+Implemented kernel-level detection for RAM scraping, DMA (Direct Memory Access) attacks, and cold boot vulnerabilities. This ensures the integrity of sensitive data in volatile memory.
+- **Signal**: `memoryForensics`
+- **Checks**:
+  - **RAM Scraping Detection**: Identifies pattern-based memory scanning targeting sensitive cryptographic keys.
+  - **DMA Attack Vector**: Monitors for unauthorized hardware-level access to system memory.
+  - **Paging Integrity**: Verifies that virtual memory paging structures have not been tampered with.
+- **Risk Impact**: Critical (+95) for RAM scraping detection, High (+80) for DMA attacks.
+
+### Risk Engine v17
+Upgraded the `calculateAdvancedRiskScore` function to integrate Memory Forensic signals.
+- **Version**: 17.0.0
+- **Weighting**: RAM Scraping Detected (+95 - Critical), DMA Attack Vector Found (+80 - High), Paging Integrity Violation (+70).
