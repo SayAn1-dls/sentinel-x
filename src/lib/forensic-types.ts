@@ -186,6 +186,14 @@ export interface MemorySwapForensics {
   unauthorizedAccessDetected: boolean;
 }
 
+export interface TLSFingerprintSignal {
+  ja3Hash: string;
+  ja3sHash: string;
+  isCommonBrowser: boolean;
+  isKnownBot: boolean;
+  isSuspiciousMatch: boolean;
+}
+
 export interface ForensicIntelligence {
   memorySwap?: MemorySwapForensics;
   hidForensics?: HIDForensics;
@@ -214,6 +222,7 @@ export interface ForensicIntelligence {
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
   quantumForensics?: QuantumForensics;
+  tlsFingerprint?: TLSFingerprintSignal;
 }
 
 export interface SteganographyAnalysis {

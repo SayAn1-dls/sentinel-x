@@ -293,3 +293,20 @@ Implemented kernel-level detection for RAM scraping, DMA (Direct Memory Access) 
 Upgraded the `calculateAdvancedRiskScore` function to integrate Memory Forensic signals.
 - **Version**: 17.0.0
 - **Weighting**: RAM Scraping Detected (+95 - Critical), DMA Attack Vector Found (+80 - High), Paging Integrity Violation (+70).
+
+## Update: 2026-08-17 - TLS Handshake Fingerprinting (JA3/JA3S) (v18)
+
+### TLS Handshake Forensic Analysis
+Implemented JA3 and JA3S fingerprinting to identify clients and servers based on their TLS handshake parameters. This allows for precise identification of automated bots, scripts, and non-standard clients that may be impersonating legitimate browsers.
+- **Signal**: `tlsFingerprint`
+- **Metrics**:
+  - **JA3 Hash**: Client-side fingerprint based on SSL Version, Cipher Suites, Extensions, Elliptic Curves, and Point Formats.
+  - **JA3S Hash**: Server-side response fingerprint.
+  - **Common Browser Verification**: Compares the JA3 hash against a database of known legitimate browser fingerprints (Chrome, Firefox, Safari).
+- **Detection**: Flags fingerprints associated with known malicious bots, CLI tools (curl, wget), and headless browsers.
+- **Risk Impact**: Medium (+45) for suspicious JA3 matches, Medium (+30) for known bot fingerprints.
+
+### Risk Engine v18
+Upgraded the `calculateAdvancedRiskScore` function to integrate TLS Fingerprinting signals.
+- **Version**: 18.0.0
+- **Weighting**: Suspicious TLS Match (+45), Known Bot Fingerprint (+30).
