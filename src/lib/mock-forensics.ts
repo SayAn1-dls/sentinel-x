@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -145,6 +145,7 @@ export function enrichWithForensics(transaction: any): any {
   const memorySwap = analyzeMemorySwap();
   const hidForensics = analyzeHIDForensics();
   const quantumForensics = analyzeQuantumForensics(transaction.signature || "0xECDSA_SIG");
+  const tlsFingerprint = analyzeTLSFingerprint(mockFingerprint.userAgent);
   
   return {
     ...transaction,
@@ -173,7 +174,8 @@ export function enrichWithForensics(transaction: any): any {
       zkpForensics,
       memorySwap,
       hidForensics,
-      quantumForensics
+      quantumForensics,
+      tlsFingerprint
     }
   };
 }

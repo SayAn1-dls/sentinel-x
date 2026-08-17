@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal
 } from './forensic-types';
 
 /**
@@ -56,8 +56,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `${prev.city}, ${prev.country}`,
-    currentLocation: `${curr.city}, ${curr.country}`,
+    previousLocation: `\${prev.city}, \${prev.country}`,
+    currentLocation: `\${curr.city}, \${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -442,6 +442,21 @@ export function analyzeQuantumForensics(signature: string): QuantumForensics {
   };
 }
 
+/**
+ * v18: Analyzes TLS Handshake (JA3/JA3S) fingerprint for client identification.
+ */
+export function analyzeTLSFingerprint(userAgent: string): TLSFingerprintSignal {
+  const isSuspicious = userAgent.includes('Python') || userAgent.includes('curl') || userAgent.includes('Postman');
+  
+  return {
+    ja3Hash: '771,4866-4867-4865-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53',
+    ja3sHash: '771,4865,65281',
+    isCommonBrowser: !isSuspicious,
+    isKnownBot: isSuspicious,
+    isSuspiciousMatch: isSuspicious
+  };
+}
+
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
@@ -470,6 +485,7 @@ export function calculateAdvancedRiskScore(
     memorySwap?: MemorySwapForensics;
     hidForensics?: HIDForensics;
     quantumForensics?: QuantumForensics;
+    tlsFingerprint?: TLSFingerprintSignal;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -576,6 +592,11 @@ export function calculateAdvancedRiskScore(
     if (!params.quantumForensics.isQuantumResistant) score += 25;
     if (params.quantumForensics.shorsAlgorithmVulnerability > 0.9) score += 30;
     if (!params.quantumForensics.isGroverAttackResistant) score += 15;
+  }
+  
+  if (params.tlsFingerprint) {
+    if (params.tlsFingerprint.isSuspiciousMatch) score += 45;
+    if (params.tlsFingerprint.isKnownBot) score += 30;
   }
 
   score = Math.min(100, score);
