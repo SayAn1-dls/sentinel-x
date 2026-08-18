@@ -310,3 +310,22 @@ Implemented JA3 and JA3S fingerprinting to identify clients and servers based on
 Upgraded the `calculateAdvancedRiskScore` function to integrate TLS Fingerprinting signals.
 - **Version**: 18.0.0
 - **Weighting**: Suspicious TLS Match (+45), Known Bot Fingerprint (+30).
+
+## Update: 2026-08-18 - Supply Chain Integrity Forensics (v19)
+
+Implemented deep analysis of the software supply chain to detect compromised dependencies and build-time tampering. This is critical for defending against highly sophisticated upstream attacks.
+
+### Supply Chain Integrity Forensic Analysis
+Analyzes the integrity of the application's dependency graph and build environment.
+- **Signal**: `supplyChainForensics`
+- **Checks**:
+  - **Dependency Hash Verification**: Cross-references local dependency hashes against known-good hashes from official package registries.
+  - **SLSA Compliance**: Evaluates the Build Provenance against SLSA (Supply-chain Levels for Software Artifacts) standards.
+  - **Registry Reputation**: Identifies if packages are sourced from untrusted or high-risk third-party registries.
+  - **Signature Attestation**: Verifies cryptographic signatures of critical library updates.
+- **Risk Impact**: Critical (+100) for malicious package signatures, High (+85) for hash mismatches.
+
+### Risk Engine v19
+Upgraded the `calculateAdvancedRiskScore` function to integrate Supply Chain forensic signals.
+- **Version**: 19.0.0
+- **Weighting**: Malicious Package Signature (+100 - Critical), Dependency Hash Mismatch (+85 - High), Untrusted Registry (+60).

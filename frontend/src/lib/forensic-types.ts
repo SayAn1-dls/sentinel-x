@@ -210,6 +210,7 @@ export interface MemoryForensics {
 
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
+  supplyChainForensics?: SupplyChainForensics;
   zkpForensics?: ZKPForensics;
   opticalAirGapForensics?: OpticalAirGapForensics;
   hidForensics?: HIDForensics;
@@ -236,4 +237,13 @@ export interface ForensicIntelligence {
   cloudInfrastructure?: CloudInfrastructureSignal;
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
+}
+
+export interface SupplyChainForensics {
+  dependencyHashMismatch: boolean;
+  untrustedRegistryDetected: boolean;
+  slsaComplianceLevel: number;
+  maliciousPackageSignature: boolean;
+  versionPinningViolation: boolean;
+  vulnerabilityCount: number;
 }
