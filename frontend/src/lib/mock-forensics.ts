@@ -21,6 +21,7 @@ import {
   analyzeHIDForensics,
   analyzeZKPForensics,
   analyzeOpticalAirGap,
+  analyzeSupplyChainIntegrity
   analyzeMemoryForensics
 } from './forensic-engine';
 
@@ -206,6 +207,7 @@ export function enrichWithForensics(transaction: any): any {
       hidForensics,
       zkpForensics,
       opticalAirGapForensics,
+      supplyChainForensics
       memoryForensics
     }
   };
