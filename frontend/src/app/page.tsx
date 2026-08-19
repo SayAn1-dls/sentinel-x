@@ -11,7 +11,7 @@ import {
   LockKey,
   Bell,
   Graph,
-  ClipboardText,
+  Clipboard,
   MagnifyingGlass,
 } from '@phosphor-icons/react';
 
@@ -78,7 +78,7 @@ const FEATURES = [
   { icon: MagnifyingGlass, title: 'AI Forensics', desc: 'Neural pattern detection across transaction graphs with sub-second risk scoring.' },
   { icon: Bell, title: 'Real-time Alerts', desc: 'Instant threat notifications with severity-based routing and escalation protocols.' },
   { icon: Graph, title: 'Network Graph', desc: 'Interactive entity relationship mapping with anomaly clustering and flow analysis.' },
-  { icon: ClipboardText, title: 'Audit Trail', desc: 'Immutable, timestamped logs for every action, query, and system event.' },
+  { icon: Clipboard, title: 'Audit Trail', desc: 'Immutable, timestamped logs for every action, query, and system event.' },
   { icon: LockKey, title: 'Sanctions Screening', desc: 'Live PEP and sanctions list screening with fuzzy matching across global watchlists.' },
 ];
 

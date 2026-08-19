@@ -22,7 +22,6 @@ import {
   analyzeZKPForensics,
   analyzeOpticalAirGap,
   analyzeSupplyChainIntegrity
-  analyzeMemoryForensics
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -162,19 +161,23 @@ export function enrichWithForensics(transaction: any): any {
     isSoundnessRiskDetected: Math.random() > 0.98
   };
 
+  // v16 Supply Chain
+  const supplyChainForensics = {
+    ...analyzeSupplyChainIntegrity(),
+    tamperEvidenceDetected: Math.random() > 0.997,
+    firmwareIntegrityVerified: Math.random() > 0.01
+  };
+
   // v15 Optical Air-Gap
-  const opticalAirGapForensics,
-      memoryForensics = {
-    ...analyzeOpticalAirGap,
-  analyzeMemoryForensics(),
+  const opticalAirGapForensics = {
+    ...analyzeOpticalAirGap(),
     qrRapidExfiltrationLikely: Math.random() > 0.997,
     highFrequencyFlickerDetected: Math.random() > 0.99
   };
-  
 
   // v17 Memory Forensics Enrichment
   const memoryForensics = {
-    ...analyzeMemoryForensics(),
+    ...analyzeKernelForensics(),
     ramScrapingDetected: Math.random() > 0.998,
     dmaAttackVectorFound: Math.random() > 0.995,
     pagingIntegrityVerified: Math.random() > 0.01
@@ -207,7 +210,7 @@ export function enrichWithForensics(transaction: any): any {
       hidForensics,
       zkpForensics,
       opticalAirGapForensics,
-      supplyChainForensics
+      supplyChainForensics,
       memoryForensics
     }
   };

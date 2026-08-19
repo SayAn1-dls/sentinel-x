@@ -14,8 +14,8 @@ import {
   CheckCircle,
   User,
   Envelope,
-  CalendarBlank,
-  Activity,
+  Calendar,
+  Pulse,
 } from '@phosphor-icons/react';
 import { useAuth } from '@/lib/hooks/useAuth';
 
@@ -235,7 +235,7 @@ export default function UserDetailPage() {
                   <span className="terminal-text">{detail.email}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[rgba(148,163,184,0.5)]">
-                  <CalendarBlank size={14} className="text-[#00D4FF] opacity-50" />
+                  <Calendar size={14} className="text-[#00D4FF] opacity-50" />
                   <span className="terminal-text">Joined {detail.createdAt ? new Date(detail.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[rgba(148,163,184,0.5)]">
@@ -252,7 +252,7 @@ export default function UserDetailPage() {
           {/* ── Activity Timeline ── */}
           <div className="border border-[rgba(0,212,255,0.08)] bg-[rgba(10,15,30,0.6)] rounded-xl p-5 backdrop-blur-xl">
             <div className="flex items-center gap-2 mb-4">
-              <Activity size={16} className="text-[#00D4FF]" />
+              <Pulse size={16} className="text-[#00D4FF]" />
               <h3 className="terminal-text text-sm font-bold tracking-wide">Recent Activity</h3>
             </div>
 
