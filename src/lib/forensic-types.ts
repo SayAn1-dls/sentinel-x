@@ -194,7 +194,16 @@ export interface TLSFingerprintSignal {
   isSuspiciousMatch: boolean;
 }
 
+export interface BGPRouteLeakSignal {
+  isLeaked: boolean;
+  originASN: number;
+  detectedPath: number[];
+  expectedPath: number[];
+  leakSeverity: number;
+}
+
 export interface ForensicIntelligence {
+  bgpRouteLeak?: BGPRouteLeakSignal;
   memorySwap?: MemorySwapForensics;
   hidForensics?: HIDForensics;
   zkpForensics?: ZKPForensics;
