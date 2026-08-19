@@ -12,9 +12,9 @@ import {
   Eye,
   UserMinus,
   Trash,
-  Activity,
+  Pulse,
   Heartbeat,
-  Warning,
+  WarningCircle,
   SignOut,
   House,
 } from '@phosphor-icons/react';
@@ -46,7 +46,7 @@ const ADMIN_EMAIL = 'sayanbhatt2005@gmail.com';
 const NAV_ITEMS = [
   { icon: ChartBar, label: 'Dashboard', href: '/admin', active: true },
   { icon: Users, label: 'Users', href: '/admin', active: false },
-  { icon: Activity, label: 'Activity', href: '/admin', active: false },
+  { icon: Pulse, label: 'Activity', href: '/admin', active: false },
   { icon: Gear, label: 'Settings', href: '/admin', active: false },
 ];
 
@@ -210,7 +210,7 @@ export default function AdminDashboard() {
 
         {error && (
           <div className="mb-6 flex items-center gap-2 px-4 py-3 rounded-lg border border-[rgba(255,45,85,0.2)] bg-[rgba(255,45,85,0.06)]">
-            <Warning size={16} className="text-[#FF2D55]" />
+            <WarningCircle size={16} className="text-[#FF2D55]" />
             <span className="terminal-text text-sm text-[#FF2D55]">{error}</span>
             <button onClick={() => setError('')} className="ml-auto text-[#FF2D55] hover:text-white text-xs">dismiss</button>
           </div>
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
             { label: 'Total Users', value: stats.totalUsers, icon: Users, color: '#00D4FF' },
-            { label: 'Active Today', value: stats.activeToday, icon: Activity, color: '#00FFB3' },
+            { label: 'Active Today', value: stats.activeToday, icon: Pulse, color: '#00FFB3' },
             { label: 'Threats Blocked', value: stats.threatsBlocked, icon: ShieldCheck, color: '#FF2D55' },
             { label: 'System Health', value: stats.systemHealth, icon: Heartbeat, color: '#00FFB3' },
           ].map(stat => {

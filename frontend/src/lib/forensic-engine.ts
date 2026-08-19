@@ -24,7 +24,7 @@ import {
   HIDForensics,
   ZKPForensics,
   MemoryForensics,
-  OpticalAirGapForensics
+  OpticalAirGapForensics,
   SupplyChainForensics
 } from './forensic-types';
 
