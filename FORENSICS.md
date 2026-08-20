@@ -193,7 +193,154 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate steganographic f
 - **Version**: 10.0.0
 - **Weighting**: Steganographic Detection (up to +85), Encrypted Payload (+20).
 
+## Update: 2026-08-07 - Cross-Chain Identity Linking & Bridge Forensic Analysis (v11)
+
+### Cross-Chain Forensic Linking
+Implemented deep analysis of cross-chain transaction paths to identify linked identities across multiple networks.
+- **Signal**: `crossChainForensics`
+- **Metrics**:
+  - **Hop Count**: Detects complex multi-hop bridging patterns often used in laundering.
+  - **Bridge Velocity**: Analyzes the speed of capital movement across chains.
+  - **Mixer Association**: Heuristic detection of privacy mixer interaction in the transaction chain.
+- **Risk Impact**: High (+75) for mixer association, Medium (+30) for high-hop counts.
+
+### Risk Engine v11
+Upgraded the `calculateAdvancedRiskScore` function to integrate cross-chain forensic signals.
+- **Version**: 11.0.0
+- **Weighting**: Mixer Association (+75), Cross-Chain Velocity (up to +40), High Hop Count (+30).
+
+## Update: 2026-08-09 - Zero-Knowledge Proof (ZKP) Integrity & Circuit Forensics (v12)
+
+### ZKP Forensic Analysis
+Implemented analysis for Zero-Knowledge Proof (ZKP) integrity and circuit-level forensics. This is critical for verifying the soundness of proofs used in privacy-preserving and scaling protocols.
+- **Signal**: `zkpForensics`
+- **Metrics**:
+  - **Proof Type**: Identifies the proving system used (Groth16, Plonk, STARK, etc.).
+  - **Trusted Setup Integrity**: Evaluates the risk associated with proofs requiring a trusted setup (e.g., Groth16 soundness risks).
+  - **Verification Latency**: Monitors for unusual proving/verification times that might indicate side-channel attacks or proof forgery attempts.
+- **Risk Impact**: High (+45) for soundness risks, Critical (+100) for invalid proofs.
+
+### Risk Engine v12
+Upgraded the `calculateAdvancedRiskScore` function to integrate ZKP forensic signals.
+- **Version**: 12.0.0
+- **Weighting**: Invalid ZK Proof (+100 - Critical), Soundness Risk Detected (+45), Verification Latency Anomaly (+20).
+
+## Update: 2026-08-11 - USB HID Forensic Analysis & Hardware Keylogger Detection (v14)
+
+### Hardware-Level HID Forensics
+Implemented analysis of USB Human Interface Device (HID) descriptors and event timing to detect hardware-level keyloggers and suspicious peripherals.
+- **Signal**: `hidForensics`
+- **Checks**:
+  - **HID Report Descriptor Integrity**: Verifies the structure of HID reports against known valid patterns.
+  - **Keystroke Timing Anomaly**: Detects robotic or fixed-interval keystroke injection common in hardware keyloggers.
+  - **Vendor ID (VID) Reputation**: Cross-references device vendor IDs against a whitelist of trusted manufacturers.
+- **Risk Impact**: High (+80) for descriptor tampering, Medium (+40) for timing anomalies.
+
+### Risk Engine v14
+Upgraded the `calculateAdvancedRiskScore` function to integrate HID forensic signals.
+- **Version**: 14.0.0
+- **Weighting**: HID Descriptor Tampering (+80), Suspicious HID Device Detected (+65), Keystroke Timing Anomaly (+40).
+
+## Update: 2026-08-14 - Optical Air-Gap Forensics & ZKP Integrity Restoration (v15)
+
+### Optical Air-Gap Forensic Analysis
+Implemented detection for visual exfiltration channels, specifically targeting screen-to-camera data leaks and rapid QR-code flashing.
+- **Signal**: `opticalAirGapForensics`
+- **Checks**:
+  - **High-Frequency Flicker Detection**: Identifies subtle screen flickering used to transmit data to external sensors.
+  - **QR Rapid Exfiltration**: Monitors for rapid sequences of QR codes or visual markers designed for high-bandwidth air-gap bypass.
+  - **Visual Steganography**: Analyzes screen output for hidden visual artifacts.
+- **Risk Impact**: Critical (+100) for rapid QR exfiltration, High (+85) for flicker detection.
+
+### ZKP Forensic Restoration
+Restored the Zero-Knowledge Proof (ZKP) integrity verification engine to the core forensic pipeline.
+- **Signal**: `zkpForensics`
+- **Weighting**: Invalid ZK Proof (+100), Soundness Risk (+45).
+
+### Risk Engine v15
+Upgraded the `calculateAdvancedRiskScore` function to integrate Optical Air-Gap signals and fully reconcile the ZKP and HID forensic weightings.
+- **Version**: 15.0.0
+- **New Weighting**: QR Rapid Exfiltration (+100 - Critical), High-Frequency Flicker (+85), Invalid ZK Proof (+100).
+
+## Update: 2026-08-15 - Quantum-Resistant Forensic Signatures & Cryptographic Robustness (v16)
+
+### Quantum-Resistant Forensic Analysis
+Implemented analysis of cryptographic signatures against quantum computing threats, specifically focusing on Shor's and Grover's algorithms.
+- **Signal**: `quantumForensics`
+- **Checks**:
+  - **Algorithm Type**: Identifies if the signature uses post-quantum algorithms (Dilithium, Falcon, SPHINCS+) or traditional ECDSA/Ed25519.
+  - **Shor's Vulnerability**: Calculates the theoretical vulnerability to Shor's algorithm based on the underlying mathematical problem (Integer Factorization vs. Lattice-based).
+  - **Grover Resistance**: Evaluates the effective security bits against Grover's search algorithm.
+- **Risk Impact**: Medium (+30) for high Shor's vulnerability, Low (+15) for Grover vulnerability.
+
+### Risk Engine v16
+Upgraded the `calculateAdvancedRiskScore` function to integrate quantum forensic signals and prioritize post-quantum cryptographic transitions.
+- **Version**: 16.0.0
+- **Weighting**: Non-Quantum-Resistant Algorithm (+25), High Shor's Vulnerability (+30), Grover Attack Risk (+15).
+
+## Update: 2026-08-16 - RAM Scraping & Memory Dump Detection (v17)
+
+### RAM Scraping & Memory Forensics
+Implemented kernel-level detection for RAM scraping, DMA (Direct Memory Access) attacks, and cold boot vulnerabilities. This ensures the integrity of sensitive data in volatile memory.
+- **Signal**: `memoryForensics`
+- **Checks**:
+  - **RAM Scraping Detection**: Identifies pattern-based memory scanning targeting sensitive cryptographic keys.
+  - **DMA Attack Vector**: Monitors for unauthorized hardware-level access to system memory.
+  - **Paging Integrity**: Verifies that virtual memory paging structures have not been tampered with.
+- **Risk Impact**: Critical (+95) for RAM scraping detection, High (+80) for DMA attacks.
+
+### Risk Engine v17
+Upgraded the `calculateAdvancedRiskScore` function to integrate Memory Forensic signals.
+- **Version**: 17.0.0
+- **Weighting**: RAM Scraping Detected (+95 - Critical), DMA Attack Vector Found (+80 - High), Paging Integrity Violation (+70).
+
+## Update: 2026-08-17 - TLS Handshake Fingerprinting (JA3/JA3S) (v18)
+
+### TLS Handshake Forensic Analysis
+Implemented JA3 and JA3S fingerprinting to identify clients and servers based on their TLS handshake parameters. This allows for precise identification of automated bots, scripts, and non-standard clients that may be impersonating legitimate browsers.
+- **Signal**: `tlsFingerprint`
+- **Metrics**:
+  - **JA3 Hash**: Client-side fingerprint based on SSL Version, Cipher Suites, Extensions, Elliptic Curves, and Point Formats.
+  - **JA3S Hash**: Server-side response fingerprint.
+  - **Common Browser Verification**: Compares the JA3 hash against a database of known legitimate browser fingerprints (Chrome, Firefox, Safari).
+- **Detection**: Flags fingerprints associated with known malicious bots, CLI tools (curl, wget), and headless browsers.
+- **Risk Impact**: Medium (+45) for suspicious JA3 matches, Medium (+30) for known bot fingerprints.
+
+### Risk Engine v18
+Upgraded the `calculateAdvancedRiskScore` function to integrate TLS Fingerprinting signals.
+- **Version**: 18.0.0
+- **Weighting**: Suspicious TLS Match (+45), Known Bot Fingerprint (+30).
+
+## Update: 2026-08-18 - Supply Chain Integrity Forensics (v19)
+
+Implemented deep analysis of the software supply chain to detect compromised dependencies and build-time tampering. This is critical for defending against highly sophisticated upstream attacks.
+
+### Supply Chain Integrity Forensic Analysis
+Analyzes the integrity of the application's dependency graph and build environment.
+- **Signal**: `supplyChainForensics`
+- **Checks**:
+  - **Dependency Hash Verification**: Cross-references local dependency hashes against known-good hashes from official package registries.
+  - **SLSA Compliance**: Evaluates the Build Provenance against SLSA (Supply-chain Levels for Software Artifacts) standards.
+  - **Registry Reputation**: Identifies if packages are sourced from untrusted or high-risk third-party registries.
+  - **Signature Attestation**: Verifies cryptographic signatures of critical library updates.
+- **Risk Impact**: Critical (+100) for malicious package signatures, High (+85) for hash mismatches.
+
+### Risk Engine v19
+Upgraded the `calculateAdvancedRiskScore` function to integrate Supply Chain forensic signals.
+- **Version**: 19.0.0
+- **Weighting**: Malicious Package Signature (+100 - Critical), Dependency Hash Mismatch (+85 - High), Untrusted Registry (+60).
+
 ### BGP Route Leak Detection (v19)
 - **Model**: `BGPRouteLeakSignal`
 - **Logic**: Analyzes AS paths to detect potential traffic hijacking or route leaks.
 - **Risk Impact**: Critical (up to +90 risk score).
+
+### Behavioral Biometric Signatures (v20)
+- **Model**: `BehavioralBiometricForensics`
+- **Logic**: Analyzes keystroke dynamics entropy and mouse trajectory jitter to distinguish between human users and automated bots.
+- **Risk Impact**: High (+55 for bot signature detection).
+
+### Device Fingerprint Entropy (v20)
+- **Model**: `DeviceFingerprintForensics`
+- **Logic**: Calculates Shannon entropy across browser/hardware attributes and detects Virtual Machine environments via hardware forensic correlation.
+- **Risk Impact**: Medium (+25 for VM detection, +45 for OS kernel mismatch).
