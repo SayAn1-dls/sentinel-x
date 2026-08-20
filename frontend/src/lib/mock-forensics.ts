@@ -1,4 +1,4 @@
-import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics } from './forensic-types';
+import { IPGeolocation, DeviceFingerprint, KernelForensics } from './forensic-types';
 import { 
   detectTemporalAnomaly, 
   detectCrossChainLinks, 
@@ -21,7 +21,10 @@ import {
   analyzeHIDForensics,
   analyzeZKPForensics,
   analyzeOpticalAirGap,
-  analyzeSupplyChainIntegrity
+  analyzeSupplyChainIntegrity,
+  analyzeMemoryForensics,
+  analyzeBehavioralBiometricsAdvanced,
+  analyzeFingerprintForensics
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -116,7 +119,6 @@ export function enrichWithForensics(transaction: any): any {
 
   const asnReputation = analyzeASNReputation(geolocation.isp === 'Verizon' ? 701 : 4134);
   
-  // Enriched Kernel Forensics
   const kernelForensics: KernelForensics = {
     ...analyzeKernelForensics(),
     heapSprayDetected: Math.random() > 0.98,
@@ -146,7 +148,6 @@ export function enrichWithForensics(transaction: any): any {
   const dnsIntegrity = analyzeDNSIntegrity('sentinel-x.io');
   const steganography = analyzeSteganography();
   
-  // v14 HID Forensics
   const hidForensics = {
     ...analyzeHIDForensics(),
     isKeystrokeInjectionDetected: Math.random() > 0.99,
@@ -154,34 +155,37 @@ export function enrichWithForensics(transaction: any): any {
     reportingRateAnomaly: Math.random() > 0.97
   };
 
-  // v12 ZKP Restoration
   const zkpForensics = {
     ...analyzeZKPForensics(),
     isInvalidProof: Math.random() > 0.999,
     isSoundnessRiskDetected: Math.random() > 0.98
   };
 
-  // v16 Supply Chain
-  const supplyChainForensics = {
-    ...analyzeSupplyChainIntegrity(),
-    tamperEvidenceDetected: Math.random() > 0.997,
-    firmwareIntegrityVerified: Math.random() > 0.01
-  };
-
-  // v15 Optical Air-Gap
   const opticalAirGapForensics = {
     ...analyzeOpticalAirGap(),
     qrRapidExfiltrationLikely: Math.random() > 0.997,
     highFrequencyFlickerDetected: Math.random() > 0.99
   };
 
-  // v17 Memory Forensics Enrichment
   const memoryForensics = {
-    ...analyzeKernelForensics(),
+    ...analyzeMemoryForensics(),
     ramScrapingDetected: Math.random() > 0.998,
     dmaAttackVectorFound: Math.random() > 0.995,
     pagingIntegrityVerified: Math.random() > 0.01
   };
+  
+  const supplyChainForensics = {
+    ...analyzeSupplyChainIntegrity(),
+    tamperEvidenceDetected: Math.random() > 0.997,
+    firmwareIntegrityVerified: Math.random() > 0.01
+  };
+
+  const biometricForensics = analyzeBehavioralBiometricsAdvanced(
+    [120, 150, 110, 130],
+    [{x: 10, y: 20}, {x: 15, y: 25}, {x: 30, y: 40}]
+  );
+  
+  const fingerprintForensics = analyzeFingerprintForensics(mockFingerprint);
 
   return {
     ...transaction,
@@ -193,7 +197,9 @@ export function enrichWithForensics(transaction: any): any {
       fingerprintEntropy,
       behavioralBiometricSignature,
       behavioralBiometrics,
+      biometricForensics,
       deviceFingerprint: mockFingerprint,
+      fingerprintForensics,
       crossChainLinks,
       sessionReplay,
       kernelForensics,

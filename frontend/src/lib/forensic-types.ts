@@ -247,3 +247,22 @@ export interface SupplyChainForensics {
   versionPinningViolation: boolean;
   vulnerabilityCount: number;
 }
+
+export interface BehavioralBiometricForensics {
+  keystrokeDynamicsEntropy: number;
+  mouseTrajectoryJitter: number;
+  touchPressureVariance: number;
+  scrollSpeedConsistency: number;
+  isHumanProbability: number;
+  botSignatureDetected: boolean;
+}
+
+export interface DeviceFingerprintForensics {
+  canvasHashEntropy: number;
+  webGLRendererSignature: string;
+  audioContextFingerprint: number;
+  fontListLength: number;
+  timezoneOffsetMismatch: boolean;
+  isVirtualMachine: boolean;
+  osKernelVersionMismatch: boolean;
+}
