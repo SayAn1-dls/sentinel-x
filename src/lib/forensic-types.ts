@@ -202,7 +202,18 @@ export interface BGPRouteLeakSignal {
   leakSeverity: number;
 }
 
+
+export interface HardwareSupplyChainSignal {
+  isCompromised: boolean;
+  tamperEvidentSealBroken: boolean;
+  unexpectedPeripheralFound: boolean;
+  firmwareVersionMismatch: boolean;
+  factoryAttestationValid: boolean;
+  riskScore: number;
+}
+
 export interface ForensicIntelligence {
+  hardwareSupplyChain?: HardwareSupplyChainSignal;
   bgpRouteLeak?: BGPRouteLeakSignal;
   memorySwap?: MemorySwapForensics;
   hidForensics?: HIDForensics;

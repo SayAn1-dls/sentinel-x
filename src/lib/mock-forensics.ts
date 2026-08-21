@@ -1,4 +1,4 @@
-import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics, QuantumForensics, BGPRouteLeakSignal } from './forensic-types';
+import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics, QuantumForensics, BGPRouteLeakSignal, HardwareSupplyChainSignal } from './forensic-types';
 import { 
   detectTemporalAnomaly, 
   detectCrossChainLinks, 
@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -146,6 +146,7 @@ export function enrichWithForensics(transaction: any): any {
   const hidForensics = analyzeHIDForensics();
   const quantumForensics = analyzeQuantumForensics(transaction.signature || "0xECDSA_SIG");
   const bgpRouteLeak = analyzeBGPRouteLeak(asnReputation.asn);
+  const hardwareSupplyChain = analyzeHardwareSupplyChain();
   const tlsFingerprint = analyzeTLSFingerprint(mockFingerprint.userAgent);
   
   return {
@@ -177,7 +178,8 @@ export function enrichWithForensics(transaction: any): any {
       hidForensics,
       quantumForensics,
       tlsFingerprint,
-      bgpRouteLeak
+      bgpRouteLeak,
+      hardwareSupplyChain
     }
   };
 }
