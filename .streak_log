@@ -175,3 +175,4 @@
 2026-08-21T05:41:01Z >> feat: add alert correlation engine
 2026-08-21T06:00:29Z >> fix: incorrect score on burst detection
 2026-08-21T07:49:07Z >> refactor: clean up admin routes
+2026-08-21T08:58:54Z >> chore: add DB connection health monitor
