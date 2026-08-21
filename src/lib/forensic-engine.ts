@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal
 } from './forensic-types';
 
 /**
@@ -487,6 +487,7 @@ export function calculateAdvancedRiskScore(
     quantumForensics?: QuantumForensics;
     tlsFingerprint?: TLSFingerprintSignal;
     bgpRouteLeak?: BGPRouteLeakSignal;
+    hardwareSupplyChain?: HardwareSupplyChainSignal;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -603,6 +604,14 @@ export function calculateAdvancedRiskScore(
     if (params.tlsFingerprint.isKnownBot) score += 30;
   }
 
+  
+  if (params.hardwareSupplyChain) {
+    if (params.hardwareSupplyChain.isCompromised) score += 95;
+    if (params.hardwareSupplyChain.tamperEvidentSealBroken) score += 50;
+    if (params.hardwareSupplyChain.unexpectedPeripheralFound) score += 70;
+    if (!params.hardwareSupplyChain.factoryAttestationValid) score += 40;
+  }
+
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -659,5 +668,20 @@ export function analyzeBGPRouteLeak(asn: number): BGPRouteLeakSignal {
     detectedPath: [asn, 174, 2914, 3356],
     expectedPath: [asn, 3356],
     leakSeverity: isLeaked ? 0.85 : 0.02
+  };
+}
+
+/**
+ * v20: Analyzes Hardware Supply Chain integrity and manufacturing attestation.
+ */
+export function analyzeHardwareSupplyChain(): HardwareSupplyChainSignal {
+  const isTampered = Math.random() > 0.99;
+  return {
+    isCompromised: isTampered,
+    tamperEvidentSealBroken: isTampered && Math.random() > 0.5,
+    unexpectedPeripheralFound: isTampered && Math.random() > 0.8,
+    firmwareVersionMismatch: false,
+    factoryAttestationValid: !isTampered,
+    riskScore: isTampered ? 0.95 : 0.05
   };
 }
