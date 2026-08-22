@@ -179,3 +179,4 @@
 2026-08-21T09:17:09Z >> feat: real-time graph anomaly detection
 2026-08-21T10:52:41Z >> fix: passkey timeout handling on iOS
 2026-08-22T01:12:46Z feat: add adaptive risk threshold tuning
+2026-08-22T02:34:08Z fix: session hijack detection false positive patch
