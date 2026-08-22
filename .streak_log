@@ -200,3 +200,4 @@
 2026-08-22T20:33:43Z chore: update CI workflow for faster builds
 2026-08-22T21:16:54Z feat: add real-time seller rank tracker
 2026-08-22T22:41:34Z fix: incorrect pagination in admin user list
+2026-08-22T23:55:43Z refactor: unify error boundary across dashboard
