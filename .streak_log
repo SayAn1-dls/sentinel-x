@@ -194,3 +194,4 @@
 2026-08-22T14:36:20Z fix: XSS in alert message renderer
 2026-08-22T15:09:14Z refactor: streamline passkey verification flow
 2026-08-22T16:52:48Z chore: add pre-push lint enforcement
+2026-08-22T17:25:45Z feat: add forensic summary email digest
