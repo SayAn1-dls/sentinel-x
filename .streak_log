@@ -181,3 +181,4 @@
 2026-08-22T01:12:46Z feat: add adaptive risk threshold tuning
 2026-08-22T02:34:08Z fix: session hijack detection false positive patch
 2026-08-22T03:05:17Z refactor: improve forensic data normalization
+2026-08-22T04:47:16Z chore: update audit pipeline batch size config
