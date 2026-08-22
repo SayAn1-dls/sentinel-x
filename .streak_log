@@ -197,3 +197,4 @@
 2026-08-22T17:25:45Z feat: add forensic summary email digest
 2026-08-22T18:48:17Z fix: null reference in supply chain audit
 2026-08-22T19:07:45Z refactor: clean up unused forensic type exports
+2026-08-22T20:33:43Z chore: update CI workflow for faster builds
