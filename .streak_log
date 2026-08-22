@@ -189,3 +189,4 @@
 2026-08-22T09:03:46Z feat: implement dynamic pricing confidence bands
 2026-08-22T10:51:41Z fix: stale alert not clearing after resolution
 2026-08-22T11:28:36Z refactor: decouple notification service from core
+2026-08-22T12:44:20Z chore: add retry policy to Kafka consumer
