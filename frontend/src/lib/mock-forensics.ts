@@ -22,6 +22,7 @@ import {
   analyzeZKPForensics,
   analyzeOpticalAirGap,
   analyzeSupplyChainIntegrity,
+  analyzeSideChannelSignals,
   analyzeMemoryForensics,
   analyzeBehavioralBiometricsAdvanced,
   analyzeFingerprintForensics
@@ -174,6 +175,13 @@ export function enrichWithForensics(transaction: any): any {
     pagingIntegrityVerified: Math.random() > 0.01
   };
   
+  const sideChannelForensics = {
+    ...analyzeSideChannelSignals(),
+    cpuPowerAnalysisDetected: Math.random() > 0.999,
+    cacheTimingAttackLikely: Math.random() > 0.995,
+    speculativeExecutionRisk: Math.random() * 0.4
+  };
+
   const supplyChainForensics = {
     ...analyzeSupplyChainIntegrity(),
     tamperEvidenceDetected: Math.random() > 0.997,
@@ -217,6 +225,7 @@ export function enrichWithForensics(transaction: any): any {
       zkpForensics,
       opticalAirGapForensics,
       supplyChainForensics,
+      sideChannelForensics,
       memoryForensics
     }
   };
