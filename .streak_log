@@ -193,3 +193,4 @@
 2026-08-22T13:17:43Z feat: add competitor price delta alerting
 2026-08-22T14:36:20Z fix: XSS in alert message renderer
 2026-08-22T15:09:14Z refactor: streamline passkey verification flow
+2026-08-22T16:52:48Z chore: add pre-push lint enforcement
