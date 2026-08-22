@@ -206,3 +206,4 @@
 2026-08-22T02:04:48Z fix: biometric fallback loop on Safari iOS
 2026-08-22T03:29:14Z refactor: extract webhook handler to service layer
 2026-08-22T04:53:40Z chore: add Sentry error tracking integration stub
+2026-08-22T05:14:44Z feat: add cross-region latency monitor
