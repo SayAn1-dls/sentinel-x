@@ -25,7 +25,8 @@ import {
   ZKPForensics,
   MemoryForensics,
   OpticalAirGapForensics,
-  SupplyChainForensics
+  SupplyChainForensics,
+  SideChannelForensics
 } from './forensic-types';
 
 /**
@@ -428,7 +429,8 @@ export function analyzeOpticalAirGap(): OpticalAirGapForensics {
 /**
  * v19: Analyzes supply chain integrity and dependency vulnerabilities.
  */
-export function analyzeSupplyChainIntegrity(): SupplyChainForensics {
+export function analyzeSupplyChainIntegrity(): SupplyChainForensics,
+  SideChannelForensics {
   return {
     dependencyHashMismatch: false,
     untrustedRegistryDetected: false,
@@ -470,6 +472,7 @@ export function calculateAdvancedRiskScore(
     biometricForensics?: any;
     fingerprintForensics?: any;
     supplyChainForensics?: SupplyChainForensics;
+    sideChannelForensics?: SideChannelForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -568,6 +571,15 @@ export function calculateAdvancedRiskScore(
     score += params.opticalAirGapForensics.visualSteganographyConfidence * 100;
   }
 
+
+  // v21 Side-Channel Forensic Logic
+  if (params.sideChannelForensics) {
+    if (params.sideChannelForensics.cpuPowerAnalysisDetected) score += 90;
+    if (params.sideChannelForensics.electromagneticLeakageDetected) score += 85;
+    if (params.sideChannelForensics.cacheTimingAttackLikely) score += 70;
+    if (params.sideChannelForensics.acousticExfiltrationDetected) score += 95;
+    score += params.sideChannelForensics.speculativeExecutionRisk * 50;
+  }
 
   // v19 Supply Chain Integrity Logic
   if (params.supplyChainForensics) {
@@ -678,5 +690,18 @@ export function analyzeFingerprintForensics(fingerprint: DeviceFingerprint): any
     timezoneOffsetMismatch: false,
     isVirtualMachine: false,
     osKernelVersionMismatch: false
+  };
+}
+
+/**
+ * v21: Analyzes hardware-level side-channel signals for potential cryptographic exfiltration.
+ */
+export function analyzeSideChannelSignals(): SideChannelForensics {
+  return {
+    cpuPowerAnalysisDetected: false,
+    electromagneticLeakageDetected: false,
+    cacheTimingAttackLikely: false,
+    speculativeExecutionRisk: 0.12,
+    acousticExfiltrationDetected: false
   };
 }

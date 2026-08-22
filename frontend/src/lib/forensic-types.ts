@@ -210,6 +210,7 @@ export interface MemoryForensics {
 
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
+  sideChannelForensics?: SideChannelForensics;
   supplyChainForensics?: SupplyChainForensics;
   zkpForensics?: ZKPForensics;
   opticalAirGapForensics?: OpticalAirGapForensics;
@@ -265,4 +266,12 @@ export interface DeviceFingerprintForensics {
   timezoneOffsetMismatch: boolean;
   isVirtualMachine: boolean;
   osKernelVersionMismatch: boolean;
+}
+
+export interface SideChannelForensics {
+  cpuPowerAnalysisDetected: boolean;
+  electromagneticLeakageDetected: boolean;
+  cacheTimingAttackLikely: boolean;
+  speculativeExecutionRisk: number;
+  acousticExfiltrationDetected: boolean;
 }
