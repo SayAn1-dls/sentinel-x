@@ -227,3 +227,4 @@
 2026-08-23T16:04:15Z feat: add SKU-level inventory depletion alerts
 2026-08-23T17:48:54Z fix: wrong severity label on burst anomaly
 2026-08-23T18:16:29Z refactor: extract ONDC protocol adapter
+2026-08-23T19:39:08Z chore: clean up test fixtures and mock data
