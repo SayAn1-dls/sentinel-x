@@ -216,3 +216,4 @@
 2026-08-23T05:08:56Z fix: incorrect confidence band in price model
 2026-08-23T06:37:28Z refactor: split dashboard widgets into components
 2026-08-23T07:19:14Z chore: add structured logging to alert service
+2026-08-23T08:54:40Z feat: add hyperlocal weather signal integration
