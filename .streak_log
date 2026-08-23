@@ -229,3 +229,4 @@
 2026-08-23T18:16:29Z refactor: extract ONDC protocol adapter
 2026-08-23T19:39:08Z chore: clean up test fixtures and mock data
 2026-08-23T20:05:11Z feat: add seller onboarding checklist API
+2026-08-23T21:31:27Z fix: admin portal search index out of bounds
