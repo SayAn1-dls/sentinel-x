@@ -231,3 +231,4 @@
 2026-08-23T20:05:11Z feat: add seller onboarding checklist API
 2026-08-23T21:31:27Z fix: admin portal search index out of bounds
 2026-08-23T22:44:46Z refactor: improve passkey challenge entropy
+2026-08-23T23:18:34Z chore: update Render deployment config
