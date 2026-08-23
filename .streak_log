@@ -214,3 +214,4 @@
 2026-08-23T03:15:51Z chore: update forensic model hyperparameters
 2026-08-23T04:52:21Z feat: add competitor assortment gap radar
 2026-08-23T05:08:56Z fix: incorrect confidence band in price model
+2026-08-23T06:37:28Z refactor: split dashboard widgets into components
