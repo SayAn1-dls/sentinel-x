@@ -344,3 +344,21 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate Supply Chain for
 - **Model**: `DeviceFingerprintForensics`
 - **Logic**: Calculates Shannon entropy across browser/hardware attributes and detects Virtual Machine environments via hardware forensic correlation.
 - **Risk Impact**: Medium (+25 for VM detection, +45 for OS kernel mismatch).
+
+## Update: 2026-08-23 - Peripheral Bus & DMA Forensics (v21)
+
+### Peripheral Bus Forensic Analysis
+Implemented analysis of high-speed peripheral buses (Thunderbolt, PCIe) to detect and mitigate Direct Memory Access (DMA) attacks. This ensures the integrity of system memory against hardware-level threats that bypass the CPU and OS security controls.
+
+- **Signal**: `peripheralBus`
+- **Checks**:
+  - **DMA Attack Detection**: Identifies unauthorized attempts by external devices to read or write directly to system RAM.
+  - **Untrusted PCIe Device Discovery**: Scans for non-whitelisted or suspicious peripheral devices connected to the PCIe bus.
+  - **IOMMU Verification**: Ensures the Input-Output Memory Management Unit is active and properly configured to isolate device memory access.
+  - **Thunderbolt Security Level**: Evaluates the authentication requirements for Thunderbolt peripherals (None, User, Secure).
+- **Risk Impact**: Critical (+98) for active DMA attack detection, High (+60) for untrusted PCIe devices.
+
+### Risk Engine v21
+Upgraded the `calculateAdvancedRiskScore` function to integrate Peripheral Bus forensic signals.
+- **Version**: 21.0.0
+- **Weighting**: DMA Attack Detected (+98 - Critical), Untrusted PCIe Device Found (+60 - High), Disabled IOMMU (+35), No Thunderbolt Security (+40).

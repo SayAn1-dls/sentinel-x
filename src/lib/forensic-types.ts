@@ -159,7 +159,6 @@ export interface DNSIntegritySignal {
   resolvedIpMatchesExpected: boolean;
 }
 
-
 export interface CrossChainForensics {
   linkedWallets: string[];
   bridgeProtocols: string[];
@@ -202,7 +201,6 @@ export interface BGPRouteLeakSignal {
   leakSeverity: number;
 }
 
-
 export interface HardwareSupplyChainSignal {
   isCompromised: boolean;
   tamperEvidentSealBroken: boolean;
@@ -212,9 +210,18 @@ export interface HardwareSupplyChainSignal {
   riskScore: number;
 }
 
+export interface PeripheralBusForensics {
+  dmaAttackDetected: boolean;
+  untrustedPCIeDeviceFound: boolean;
+  thunderboltSecurityLevel: 'NONE' | 'USER' | 'SECURE' | 'DP_ONLY';
+  iommuEnabled: boolean;
+  unauthorizedMemoryAccessAttempts: number;
+}
+
 export interface ForensicIntelligence {
   hardwareSupplyChain?: HardwareSupplyChainSignal;
   bgpRouteLeak?: BGPRouteLeakSignal;
+  peripheralBus?: PeripheralBusForensics;
   memorySwap?: MemorySwapForensics;
   hidForensics?: HIDForensics;
   zkpForensics?: ZKPForensics;
