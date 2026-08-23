@@ -208,3 +208,4 @@
 2026-08-22T04:53:40Z chore: add Sentry error tracking integration stub
 2026-08-22T05:14:44Z feat: add cross-region latency monitor
 2026-08-22T06:47:34Z fix: duplicate alert suppression not triggering
+2026-08-23T00:07:52Z feat: add seller trust score aggregator
