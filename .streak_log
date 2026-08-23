@@ -225,3 +225,4 @@
 2026-08-23T14:57:05Z refactor: decouple risk engine from alert router
 2026-08-23T15:22:00Z chore: add canary flag to ML model serving
 2026-08-23T16:04:15Z feat: add SKU-level inventory depletion alerts
+2026-08-23T17:48:54Z fix: wrong severity label on burst anomaly
