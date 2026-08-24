@@ -255,3 +255,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T08:52:02Z chore: update ESLint to v9 flat config
 2026-08-24T09:20:34Z feat: add geographic cluster risk heatmap
 2026-08-24T09:48:08Z fix: session token expiry not reflected in UI
+2026-08-24T10:16:21Z refactor: consolidate API error response format
