@@ -251,3 +251,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T07:00:08Z chore: add OWASP dependency check to CI
 2026-08-24T07:28:12Z feat: add competitor stock-out detection signal
 2026-08-24T07:56:40Z fix: admin bulk action not applying to all users
+2026-08-24T08:24:03Z refactor: improve forensic event batching logic
