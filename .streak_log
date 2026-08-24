@@ -249,3 +249,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T06:04:42Z fix: missing null guard in ZKP proof validator
 2026-08-24T06:32:41Z refactor: extract webhook dispatcher to service
 2026-08-24T07:00:08Z chore: add OWASP dependency check to CI
+2026-08-24T07:28:12Z feat: add competitor stock-out detection signal
