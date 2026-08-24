@@ -270,3 +270,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T15:52:53Z refactor: move forensic constants to env config
 2026-08-24T16:20:33Z chore: cleanup orphaned alert subscriptions
 2026-08-24T16:48:46Z feat: add seller churn risk early warning
+2026-08-24T17:16:34Z fix: incorrect badge count on alert bell icon
