@@ -277,3 +277,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T19:08:30Z fix: memory pressure in long-running audit scans
 2026-08-24T19:36:50Z refactor: split admin portal into sub-routes
 2026-08-24T20:04:16Z chore: add structured metrics to forensic engine
+2026-08-24T20:32:38Z feat: add price elasticity estimator per SKU
