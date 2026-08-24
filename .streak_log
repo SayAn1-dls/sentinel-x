@@ -237,3 +237,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T00:28:17Z fix: resolve race condition in alert deduplicator
 2026-08-24T00:56:34Z refactor: split forensic engine into micromodules
 2026-08-24T01:24:10Z chore: update ML model registry to v2.3
+2026-08-24T01:52:23Z feat: add Diwali demand spike predictor
