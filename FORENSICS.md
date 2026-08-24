@@ -362,3 +362,20 @@ Implemented analysis of high-speed peripheral buses (Thunderbolt, PCIe) to detec
 Upgraded the `calculateAdvancedRiskScore` function to integrate Peripheral Bus forensic signals.
 - **Version**: 21.0.0
 - **Weighting**: DMA Attack Detected (+98 - Critical), Untrusted PCIe Device Found (+60 - High), Disabled IOMMU (+35), No Thunderbolt Security (+40).
+
+## Update: 2026-08-24 - BGP Routing Integrity & AS Path Forensics (v22)
+
+### BGP Routing Integrity Analysis
+Implemented deep analysis of BGP (Border Gateway Protocol) routing paths and AS (Autonomous System) hops to detect traffic hijacking and route leaks. This ensures the integrity of the network path between the client and Sentinel-X.
+
+- **Signal**: `bgpRouting`
+- **Checks**:
+  - **AS Path Length Anomaly**: Detects unusually long AS paths indicating potential interception or inefficient routing common in BGP hijacking.
+  - **Origin Mismatch**: Identifies if the IP prefix is being announced by an unauthorized Autonomous System.
+  - **Suspicious ASN Correlation**: Cross-references ASNs against known high-risk or malicious networks.
+- **Risk Impact**: Critical (+90) for active hijacking detection, High (+60) for origin mismatches.
+
+### Risk Engine v22
+Upgraded the `calculateAdvancedRiskScore` function to integrate BGP Routing Integrity signals.
+- **Version**: 22.0.0
+- **Weighting**: BGP Hijacking Detected (+90 - Critical), Origin Mismatch (+60 - High), AS Path Length Anomaly (+30).
