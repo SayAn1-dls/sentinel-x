@@ -25,7 +25,8 @@ import {
   analyzeSideChannelSignals,
   analyzeMemoryForensics,
   analyzeBehavioralBiometricsAdvanced,
-  analyzeFingerprintForensics
+  analyzeFingerprintForensics,
+  analyzeBGPIntegrity
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -148,6 +149,7 @@ export function enrichWithForensics(transaction: any): any {
   const cloudInfrastructure = analyzeCloudInfrastructure(geolocation.ip);
   const dnsIntegrity = analyzeDNSIntegrity('sentinel-x.io');
   const steganography = analyzeSteganography();
+  const bgpRouting = analyzeBGPIntegrity(geolocation.ip);
   
   const hidForensics = {
     ...analyzeHIDForensics(),
@@ -221,6 +223,7 @@ export function enrichWithForensics(transaction: any): any {
       cloudInfrastructure,
       dnsIntegrity, 
       steganography,
+      bgpRouting,
       hidForensics,
       zkpForensics,
       opticalAirGapForensics,
