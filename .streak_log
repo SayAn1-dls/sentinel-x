@@ -244,3 +244,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T03:44:47Z feat: implement real-time seller rank comparator
 2026-08-24T04:12:09Z fix: biometric enrollment failing on Pixel 8
 2026-08-24T04:40:48Z refactor: decouple price engine from risk scorer
+2026-08-24T05:08:54Z chore: prune stale challenger sessions from DB
