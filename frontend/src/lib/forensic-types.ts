@@ -238,6 +238,7 @@ export interface ForensicIntelligence {
   cloudInfrastructure?: CloudInfrastructureSignal;
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
+  bgpRouting?: BGPRouteLeakSignal;
 }
 
 export interface SupplyChainForensics {
@@ -274,4 +275,12 @@ export interface SideChannelForensics {
   cacheTimingAttackLikely: boolean;
   speculativeExecutionRisk: number;
   acousticExfiltrationDetected: boolean;
+}
+
+export interface BGPRouteLeakSignal {
+  detected: boolean;
+  asPathLength: number;
+  suspiciousASNs: number[];
+  routeHijackLikelihood: number;
+  originMismatch: boolean;
 }
