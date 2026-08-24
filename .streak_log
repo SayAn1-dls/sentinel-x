@@ -274,3 +274,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T17:44:01Z refactor: improve WebAuthn attestation parsing
 2026-08-24T18:12:37Z chore: tag v1.2.0-alpha release candidate
 2026-08-24T18:40:39Z feat: add demand forecast confidence intervals
+2026-08-24T19:08:30Z fix: memory pressure in long-running audit scans
