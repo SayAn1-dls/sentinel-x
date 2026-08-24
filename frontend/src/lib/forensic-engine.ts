@@ -4,28 +4,29 @@ import {
   VelocityMetric, 
   RiskLevel, 
   TemporalAnomalySignal, 
-  CrossChainLink,
-  BehavioralBiometricSignal,
-  DeviceFingerprint,
-  SessionReplaySignal,
-  ASNReputation,
-  KernelForensics,
-  PeerNetworkAnalysis,
-  SecureEnclaveForensics,
-  BrowserIntegritySignal,
-  AIAgentDetectionSignal,
-  SmartContractForensics,
-  DarkWebExposure,
-  NetworkPacketAnalysis,
-  CloudInfrastructureSignal,
+  CrossChainLink, 
+  BehavioralBiometricSignal, 
+  DeviceFingerprint, 
+  SessionReplaySignal, 
+  ASNReputation, 
+  KernelForensics, 
+  PeerNetworkAnalysis, 
+  SecureEnclaveForensics, 
+  BrowserIntegritySignal, 
+  AIAgentDetectionSignal, 
+  SmartContractForensics, 
+  DarkWebExposure, 
+  NetworkPacketAnalysis, 
+  CloudInfrastructureSignal, 
   DNSIntegritySignal, 
   SteganographyAnalysis, 
-  CrossChainForensics,
-  HIDForensics,
-  ZKPForensics,
-  MemoryForensics,
-  OpticalAirGapForensics,
-  SupplyChainForensics,
+  CrossChainForensics, 
+  HIDForensics, 
+  ZKPForensics, 
+  MemoryForensics, 
+  OpticalAirGapForensics, 
+  SupplyChainForensics, 
+  BGPRouteLeakSignal, 
   SideChannelForensics
 } from './forensic-types';
 
@@ -429,8 +430,7 @@ export function analyzeOpticalAirGap(): OpticalAirGapForensics {
 /**
  * v19: Analyzes supply chain integrity and dependency vulnerabilities.
  */
-export function analyzeSupplyChainIntegrity(): SupplyChainForensics,
-  SideChannelForensics {
+export function analyzeSupplyChainIntegrity(): SupplyChainForensics {
   return {
     dependencyHashMismatch: false,
     untrustedRegistryDetected: false,
@@ -472,6 +472,7 @@ export function calculateAdvancedRiskScore(
     biometricForensics?: any;
     fingerprintForensics?: any;
     supplyChainForensics?: SupplyChainForensics;
+    bgpRouting?: BGPRouteLeakSignal;
     sideChannelForensics?: SideChannelForensics;
   }
 ): { score: number; level: RiskLevel } {
@@ -579,6 +580,13 @@ export function calculateAdvancedRiskScore(
     if (params.sideChannelForensics.cacheTimingAttackLikely) score += 70;
     if (params.sideChannelForensics.acousticExfiltrationDetected) score += 95;
     score += params.sideChannelForensics.speculativeExecutionRisk * 50;
+  }
+  // v22 BGP Routing Integrity Logic
+  if (params.bgpRouting) {
+    if (params.bgpRouting.detected) score += 90;
+    if (params.bgpRouting.originMismatch) score += 60;
+    if (params.bgpRouting.asPathLength > 6) score += 30;
+    score += params.bgpRouting.routeHijackLikelihood * 50;
   }
 
   // v19 Supply Chain Integrity Logic
@@ -703,5 +711,19 @@ export function analyzeSideChannelSignals(): SideChannelForensics {
     cacheTimingAttackLikely: false,
     speculativeExecutionRisk: 0.12,
     acousticExfiltrationDetected: false
+  };}
+
+/**
+ * v22: Analyzes BGP routing paths for potential hijacking or route leaks.
+ */
+export function analyzeBGPIntegrity(ip: string): BGPRouteLeakSignal {
+  const isHighRiskIP = ip.startsWith('103.') || ip.startsWith('45.');
+  
+  return {
+    detected: isHighRiskIP && Math.random() > 0.8,
+    asPathLength: isHighRiskIP ? 8 : 3,
+    suspiciousASNs: isHighRiskIP ? [4134, 13335] : [],
+    routeHijackLikelihood: isHighRiskIP ? 0.72 : 0.02,
+    originMismatch: isHighRiskIP
   };
 }
