@@ -247,3 +247,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T05:08:54Z chore: prune stale challenger sessions from DB
 2026-08-24T05:36:29Z feat: add SKU-level sell-through rate tracker
 2026-08-24T06:04:42Z fix: missing null guard in ZKP proof validator
+2026-08-24T06:32:41Z refactor: extract webhook dispatcher to service
