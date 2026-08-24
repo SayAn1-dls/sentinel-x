@@ -242,3 +242,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T02:48:43Z refactor: normalize ONDC event schema v3
 2026-08-24T03:16:33Z chore: add connection pool health metrics
 2026-08-24T03:44:47Z feat: implement real-time seller rank comparator
+2026-08-24T04:12:09Z fix: biometric enrollment failing on Pixel 8
