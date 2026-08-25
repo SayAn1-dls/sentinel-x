@@ -308,3 +308,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T17:14:24Z refactor: improve streaming response for audit logs
 2026-08-25T18:01:17Z chore: update deployment checklist for v1.2
 2026-08-25T18:48:41Z feat: add competitor entry detection alert
+2026-08-25T19:35:15Z fix: wrong color on high severity alert badge
