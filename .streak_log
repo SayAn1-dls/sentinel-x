@@ -303,3 +303,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T13:19:37Z fix: admin search returning duplicate results
 2026-08-25T14:06:07Z refactor: consolidate risk band thresholds
 2026-08-25T14:53:52Z chore: add load test suite for forensic API
+2026-08-25T15:40:17Z feat: add inventory reorder point predictor
