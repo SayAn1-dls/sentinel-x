@@ -307,3 +307,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T16:27:47Z fix: biometric re-enrollment not clearing old keys
 2026-08-25T17:14:24Z refactor: improve streaming response for audit logs
 2026-08-25T18:01:17Z chore: update deployment checklist for v1.2
+2026-08-25T18:48:41Z feat: add competitor entry detection alert
