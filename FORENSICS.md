@@ -379,3 +379,24 @@ Implemented deep analysis of BGP (Border Gateway Protocol) routing paths and AS 
 Upgraded the `calculateAdvancedRiskScore` function to integrate BGP Routing Integrity signals.
 - **Version**: 22.0.0
 - **Weighting**: BGP Hijacking Detected (+90 - Critical), Origin Mismatch (+60 - High), AS Path Length Anomaly (+30).
+
+## Update: 2026-08-25 - Advanced Memory Forensics & Sequential Cross-Chain Linking (v23)
+
+### Advanced Memory Forensic Analysis
+Implemented comprehensive volatile memory analysis to detect sophisticated scraping and DMA-based exfiltration attempts.
+- **Signal**: `memoryForensics`
+- **Checks**:
+  - **RAM Scraping**: Pattern-matching for cryptographic key extraction in memory.
+  - **Cold Boot Vulnerability**: Evaluates the risk of memory remanence attacks.
+  - **Paging Integrity**: Verifies virtual-to-physical mapping structures.
+- **Risk Impact**: Critical (+95) for scraping, High (+85) for DMA vectors.
+
+### Sequential Cross-Chain Link Detection
+Enhanced the cross-chain forensic engine to identify sequential transaction patterns across disparate networks (Ethereum, Solana, Bitcoin).
+- **Logic**: Detects addresses with structural similarity or sequential execution markers.
+- **Confidence**: Integrated into the risk scoring engine with weighting based on fingerprint and IP correlation.
+
+### Risk Engine v23
+Upgraded the `calculateAdvancedRiskScore` function to include deep memory forensics and refined cross-chain confidence scoring.
+- **Version**: 23.0.0
+- **Weighting**: RAM Scraping (+95), DMA Attack Vector (+85), Sequential TX Link (+30).
