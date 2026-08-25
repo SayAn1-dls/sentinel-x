@@ -298,3 +298,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T09:24:30Z feat: add seller performance benchmarking module
 2026-08-25T10:11:28Z fix: incorrect chart scale on weekly view
 2026-08-25T10:58:00Z refactor: extract ONDC adapter to standalone lib
+2026-08-25T11:45:31Z chore: bump ESLint and Prettier to latest
