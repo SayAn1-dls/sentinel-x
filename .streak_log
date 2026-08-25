@@ -293,3 +293,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T05:29:46Z chore: add canary deployment support to CI
 2026-08-25T06:16:31Z feat: add hyperlocal demand signal from weather API
 2026-08-25T07:03:48Z fix: passkey timeout on low-memory Android devices
+2026-08-25T07:50:42Z refactor: decouple alert router from forensic core
