@@ -302,3 +302,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T12:32:34Z feat: add festival season calendar integration
 2026-08-25T13:19:37Z fix: admin search returning duplicate results
 2026-08-25T14:06:07Z refactor: consolidate risk band thresholds
+2026-08-25T14:53:52Z chore: add load test suite for forensic API
