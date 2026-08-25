@@ -285,3 +285,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-24T22:52:20Z fix: resolve hydration error on stats page
 2026-08-25T00:00:13Z feat: add SIH 2026 problem statement analyzer
 2026-08-25T00:47:11Z fix: resolve edge case in merchant risk scorer
+2026-08-25T01:34:12Z refactor: split forensic pipeline into workers
