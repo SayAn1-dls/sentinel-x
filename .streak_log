@@ -291,3 +291,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T03:55:47Z fix: null pointer in behavioral drift detector
 2026-08-25T04:42:57Z refactor: optimize MongoDB aggregation for stats
 2026-08-25T05:29:46Z chore: add canary deployment support to CI
+2026-08-25T06:16:31Z feat: add hyperlocal demand signal from weather API
