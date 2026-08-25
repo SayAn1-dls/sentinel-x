@@ -296,3 +296,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-25T07:50:42Z refactor: decouple alert router from forensic core
 2026-08-25T08:37:40Z chore: prune expired webhook subscriptions
 2026-08-25T09:24:30Z feat: add seller performance benchmarking module
+2026-08-25T10:11:28Z fix: incorrect chart scale on weekly view
