@@ -322,3 +322,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T04:42:06Z refactor: improve passkey device type detection
 2026-08-26T05:29:31Z chore: update Render health check endpoint
 2026-08-26T06:16:43Z feat: add real-time competitor stock monitor
+2026-08-26T07:03:42Z fix: memory leak in forensic event stream handler
