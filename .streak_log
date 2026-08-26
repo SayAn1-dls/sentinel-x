@@ -342,3 +342,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T20:22:24Z refactor: move all secrets to Vault-style env loader
 2026-08-26T21:09:28Z chore: tag v1.2.0-beta release
 2026-08-26T21:56:29Z feat: add cross-border transaction anomaly detector
+2026-08-26T22:43:23Z fix: streak log cleanup and final QA pass Aug 26
