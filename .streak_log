@@ -333,3 +333,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T13:19:10Z fix: incorrect seller tier classification edge case
 2026-08-26T14:06:58Z refactor: improve forensic report PDF generation
 2026-08-26T14:53:05Z chore: add SBOM generation to release pipeline
+2026-08-26T15:40:47Z feat: add geographic arbitrage opportunity detector
