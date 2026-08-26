@@ -337,3 +337,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T16:27:42Z fix: admin portal layout breaks on 1280px viewport
 2026-08-26T17:14:17Z refactor: clean up legacy forensic v1 code paths
 2026-08-26T18:01:19Z chore: update API rate limits to 500 req/min
+2026-08-26T18:48:13Z feat: add supply chain disruption risk scorer
