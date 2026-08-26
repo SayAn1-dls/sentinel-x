@@ -329,3 +329,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T10:11:45Z fix: broken pagination on audit log page
 2026-08-26T10:58:32Z refactor: consolidate all DB schema migrations
 2026-08-26T11:45:09Z chore: enable Vercel edge caching for static routes
+2026-08-26T12:32:11Z feat: add ML-powered return rate predictor
