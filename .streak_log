@@ -334,3 +334,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T14:06:58Z refactor: improve forensic report PDF generation
 2026-08-26T14:53:05Z chore: add SBOM generation to release pipeline
 2026-08-26T15:40:47Z feat: add geographic arbitrage opportunity detector
+2026-08-26T16:27:42Z fix: admin portal layout breaks on 1280px viewport
