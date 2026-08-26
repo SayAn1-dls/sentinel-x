@@ -331,3 +331,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T11:45:09Z chore: enable Vercel edge caching for static routes
 2026-08-26T12:32:11Z feat: add ML-powered return rate predictor
 2026-08-26T13:19:10Z fix: incorrect seller tier classification edge case
+2026-08-26T14:06:58Z refactor: improve forensic report PDF generation
