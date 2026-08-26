@@ -316,3 +316,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T00:00:50Z feat: add SIH team collaboration module stub
 2026-08-26T00:47:12Z fix: session invalidation race on logout
 2026-08-26T01:34:28Z refactor: split dashboard into lazy-loaded chunks
+2026-08-26T02:21:03Z chore: add Redis cache layer for forensic queries
