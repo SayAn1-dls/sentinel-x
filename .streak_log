@@ -340,3 +340,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T18:48:13Z feat: add supply chain disruption risk scorer
 2026-08-26T19:35:10Z fix: passkey assertion failing on Chrome 128
 2026-08-26T20:22:24Z refactor: move all secrets to Vault-style env loader
+2026-08-26T21:09:28Z chore: tag v1.2.0-beta release
