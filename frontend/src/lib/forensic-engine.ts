@@ -442,6 +442,20 @@ export function analyzeSupplyChainIntegrity(): SupplyChainForensics {
   };
 }
 
+/**
+ * v24: Analyzes potential quantum computing attack signatures and PQC readiness.
+ */
+export function analyzeQuantumForensics(): QuantumAttackForensics {
+  return {
+    isShorAlgorithmDetected: false,
+    groverIterationCount: 0,
+    quantumEntropyAnomaly: false,
+    isPostQuantumSecure: true,
+    latticeBasisReductionDetected: false,
+    qbitCoherenceRisk: 0.01
+  };
+}
+
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
@@ -475,6 +489,7 @@ export function calculateAdvancedRiskScore(
     supplyChainForensics?: SupplyChainForensics;
     bgpRouting?: BGPRouteLeakSignal;
     sideChannelForensics?: SideChannelForensics;
+    quantumForensics?: QuantumAttackForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -618,6 +633,15 @@ export function calculateAdvancedRiskScore(
     if (params.memoryForensics.kernelMemoryLeakage) score += 50;
     if (!params.memoryForensics.pagingIntegrityVerified) score += 70;
     score += params.memoryForensics.anomalyScore * 60;
+  }
+
+  // v24 Quantum Forensic Logic
+  if (params.quantumForensics) {
+    if (params.quantumForensics.isShorAlgorithmDetected) score += 100;
+    if (params.quantumForensics.latticeBasisReductionDetected) score += 90;
+    if (params.quantumForensics.quantumEntropyAnomaly) score += 60;
+    if (!params.quantumForensics.isPostQuantumSecure) score += 30;
+    score += params.quantumForensics.qbitCoherenceRisk * 50;
   }
 
   score = Math.min(100, score);

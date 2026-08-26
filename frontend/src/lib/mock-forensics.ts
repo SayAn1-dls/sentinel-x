@@ -26,7 +26,8 @@ import {
   analyzeMemoryForensics,
   analyzeBehavioralBiometricsAdvanced,
   analyzeFingerprintForensics,
-  analyzeBGPIntegrity
+  analyzeBGPIntegrity,
+  analyzeQuantumForensics
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -177,6 +178,13 @@ export function enrichWithForensics(transaction: any): any {
     pagingIntegrityVerified: Math.random() > 0.01
   };
   
+  const quantumForensics = {
+    ...analyzeQuantumForensics(),
+    isShorAlgorithmDetected: Math.random() > 0.999,
+    latticeBasisReductionDetected: Math.random() > 0.995,
+    isPostQuantumSecure: Math.random() > 0.1
+  };
+
   const sideChannelForensics = {
     ...analyzeSideChannelSignals(),
     cpuPowerAnalysisDetected: Math.random() > 0.999,
@@ -230,6 +238,7 @@ export function enrichWithForensics(transaction: any): any {
       supplyChainForensics,
       sideChannelForensics,
       memoryForensics
+      quantumForensics,
     }
   };
 }

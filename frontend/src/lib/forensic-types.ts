@@ -208,8 +208,18 @@ export interface MemoryForensics {
   anomalyScore: number;
 }
 
+export interface QuantumAttackForensics {
+  isShorAlgorithmDetected: boolean;
+  groverIterationCount: number;
+  quantumEntropyAnomaly: boolean;
+  isPostQuantumSecure: boolean;
+  latticeBasisReductionDetected: boolean;
+  qbitCoherenceRisk: number;
+}
+
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
+  quantumForensics?: QuantumAttackForensics;
   sideChannelForensics?: SideChannelForensics;
   supplyChainForensics?: SupplyChainForensics;
   zkpForensics?: ZKPForensics;

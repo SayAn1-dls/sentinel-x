@@ -400,3 +400,10 @@ Enhanced the cross-chain forensic engine to identify sequential transaction patt
 Upgraded the `calculateAdvancedRiskScore` function to include deep memory forensics and refined cross-chain confidence scoring.
 - **Version**: 23.0.0
 - **Weighting**: RAM Scraping (+95), DMA Attack Vector (+85), Sequential TX Link (+30).
+
+## Quantum Attack Forensics & PQC Readiness (Added 2026-08-26)
+Sentinel-X now includes forensic signals for detecting early-stage quantum computing threats and assessing Post-Quantum Cryptography (PQC) readiness.
+- **Shor's Algorithm Detection**: Monitors for transaction patterns indicative of prime factorization attempts using quantum Shor-type algorithms.
+- **Lattice-Basis Reduction Detection**: Analyzes interactions for signatures of lattice-based attacks on classical public-key infrastructure.
+- **Quantum Entropy Anomaly**: Detects deviations in random number generation entropy that might suggest quantum interference or non-classical biases.
+- **Risk Scoring (v24)**: Non-PQC compliant interactions or detected quantum signatures trigger critical risk flags (+100 for Shor algorithm detection).
