@@ -319,3 +319,4 @@ TEST COMMIT - 2026-08-22T22:51:34Z
 2026-08-26T02:21:03Z chore: add Redis cache layer for forensic queries
 2026-08-26T03:08:24Z feat: add demand surge early warning system
 2026-08-26T03:55:11Z fix: ZKP soundness check off-by-one error
+2026-08-26T04:42:06Z refactor: improve passkey device type detection
