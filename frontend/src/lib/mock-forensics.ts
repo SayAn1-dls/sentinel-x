@@ -27,7 +27,7 @@ import {
   analyzeBehavioralBiometricsAdvanced,
   analyzeFingerprintForensics,
   analyzeBGPIntegrity,
-  analyzeQuantumForensics
+  analyzeHardwareTrojans
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -178,13 +178,6 @@ export function enrichWithForensics(transaction: any): any {
     pagingIntegrityVerified: Math.random() > 0.01
   };
   
-  const quantumForensics = {
-    ...analyzeQuantumForensics(),
-    isShorAlgorithmDetected: Math.random() > 0.999,
-    latticeBasisReductionDetected: Math.random() > 0.995,
-    isPostQuantumSecure: Math.random() > 0.1
-  };
-
   const sideChannelForensics = {
     ...analyzeSideChannelSignals(),
     cpuPowerAnalysisDetected: Math.random() > 0.999,
@@ -194,8 +187,8 @@ export function enrichWithForensics(transaction: any): any {
 
   const supplyChainForensics = {
     ...analyzeSupplyChainIntegrity(),
-    tamperEvidenceDetected: Math.random() > 0.997,
-    firmwareIntegrityVerified: Math.random() > 0.01
+    dependencyHashMismatch: Math.random() > 0.997,
+    maliciousPackageSignature: Math.random() > 0.999
   };
 
   const biometricForensics = analyzeBehavioralBiometricsAdvanced(
@@ -204,6 +197,13 @@ export function enrichWithForensics(transaction: any): any {
   );
   
   const fingerprintForensics = analyzeFingerprintForensics(mockFingerprint);
+
+  const hardwareTrojanForensics = {
+    ...analyzeHardwareTrojans(),
+    isClockGlitchDetected: Math.random() > 0.999,
+    thermalSignatureAnomaly: Math.random() * 0.1,
+    isTamperFuseBlown: Math.random() > 0.9995
+  };
 
   return {
     ...transaction,
@@ -237,8 +237,8 @@ export function enrichWithForensics(transaction: any): any {
       opticalAirGapForensics,
       supplyChainForensics,
       sideChannelForensics,
-      memoryForensics
-      quantumForensics,
+      memoryForensics,
+      hardwareTrojanForensics
     }
   };
 }

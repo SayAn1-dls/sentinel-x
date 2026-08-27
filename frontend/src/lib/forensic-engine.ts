@@ -27,7 +27,8 @@ import {
   OpticalAirGapForensics, 
   SupplyChainForensics, 
   BGPRouteLeakSignal, 
-  SideChannelForensics
+  SideChannelForensics,
+  HardwareTrojanForensics
 } from './forensic-types';
 
 /**
@@ -358,7 +359,6 @@ export function analyzeDNSIntegrity(domain: string): DNSIntegritySignal {
   };
 }
 
-
 /**
  * v10: Analyzes files and network traffic for steganographic exfiltration.
  */
@@ -425,11 +425,7 @@ export function analyzeOpticalAirGap(): OpticalAirGapForensics {
 }
 
 /**
- * Advanced Risk Scoring Engine v15 (includes Optical Air-Gap & ZKP Forensics)
- */
-/**
- * v19: Analyzes supply chain integrity
- */ and dependency vulnerabilities.
+ * v19: Analyzes supply chain integrity and dependency vulnerabilities.
  */
 export function analyzeSupplyChainIntegrity(): SupplyChainForensics {
   return {
@@ -443,19 +439,22 @@ export function analyzeSupplyChainIntegrity(): SupplyChainForensics {
 }
 
 /**
- * v24: Analyzes potential quantum computing attack signatures and PQC readiness.
+ * v24: Hardware Trojan Forensic Detection - Analyzes hardware signals for trojan artifacts.
  */
-export function analyzeQuantumForensics(): QuantumAttackForensics {
+export function analyzeHardwareTrojans(): HardwareTrojanForensics {
   return {
-    isShorAlgorithmDetected: false,
-    groverIterationCount: 0,
-    quantumEntropyAnomaly: false,
-    isPostQuantumSecure: true,
-    latticeBasisReductionDetected: false,
-    qbitCoherenceRisk: 0.01
+    isSideChannelPowerAnomaly: false,
+    isClockGlitchDetected: false,
+    isSubThresholdLeakageDetected: false,
+    thermalSignatureAnomaly: 0.02,
+    isTamperFuseBlown: false,
+    trojanLikelihood: 0.05
   };
 }
 
+/**
+ * Advanced Risk Scoring Engine v24 (includes Hardware Trojan & DDoS Forensics)
+ */
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
@@ -489,7 +488,7 @@ export function calculateAdvancedRiskScore(
     supplyChainForensics?: SupplyChainForensics;
     bgpRouting?: BGPRouteLeakSignal;
     sideChannelForensics?: SideChannelForensics;
-    quantumForensics?: QuantumAttackForensics;
+    hardwareTrojanForensics?: HardwareTrojanForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -573,14 +572,12 @@ export function calculateAdvancedRiskScore(
     score += params.hidForensics.syntheticEventRatio * 50;
   }
 
-  // v12 ZKP Logic
   if (params.zkpForensics) {
     if (params.zkpForensics.isInvalidProof) score += 100;
     if (params.zkpForensics.isSoundnessRiskDetected) score += 45;
     if (params.zkpForensics.verificationLatencyMs > 200) score += 20;
   }
 
-  // v15 Optical Air-Gap Logic
   if (params.opticalAirGapForensics) {
     if (params.opticalAirGapForensics.qrRapidExfiltrationLikely) score += 100;
     if (params.opticalAirGapForensics.highFrequencyFlickerDetected) score += 85;
@@ -588,8 +585,6 @@ export function calculateAdvancedRiskScore(
     score += params.opticalAirGapForensics.visualSteganographyConfidence * 100;
   }
 
-
-  // v21 Side-Channel Forensic Logic
   if (params.sideChannelForensics) {
     if (params.sideChannelForensics.cpuPowerAnalysisDetected) score += 90;
     if (params.sideChannelForensics.electromagneticLeakageDetected) score += 85;
@@ -597,7 +592,7 @@ export function calculateAdvancedRiskScore(
     if (params.sideChannelForensics.acousticExfiltrationDetected) score += 95;
     score += params.sideChannelForensics.speculativeExecutionRisk * 50;
   }
-  // v22 BGP Routing Integrity Logic
+
   if (params.bgpRouting) {
     if (params.bgpRouting.detected) score += 90;
     if (params.bgpRouting.originMismatch) score += 60;
@@ -605,7 +600,6 @@ export function calculateAdvancedRiskScore(
     score += params.bgpRouting.routeHijackLikelihood * 50;
   }
 
-  // v19 Supply Chain Integrity Logic
   if (params.supplyChainForensics) {
     if (params.supplyChainForensics.maliciousPackageSignature) score += 100;
     if (params.supplyChainForensics.dependencyHashMismatch) score += 85;
@@ -623,9 +617,7 @@ export function calculateAdvancedRiskScore(
     if (params.fingerprintForensics.isVirtualMachine) score += 25;
     if (params.fingerprintForensics.osKernelVersionMismatch) score += 45;
   }
-
   
-  // v23 Memory Forensic Logic
   if (params.memoryForensics) {
     if (params.memoryForensics.ramScrapingDetected) score += 95;
     if (params.memoryForensics.dmaAttackVectorFound) score += 85;
@@ -635,13 +627,13 @@ export function calculateAdvancedRiskScore(
     score += params.memoryForensics.anomalyScore * 60;
   }
 
-  // v24 Quantum Forensic Logic
-  if (params.quantumForensics) {
-    if (params.quantumForensics.isShorAlgorithmDetected) score += 100;
-    if (params.quantumForensics.latticeBasisReductionDetected) score += 90;
-    if (params.quantumForensics.quantumEntropyAnomaly) score += 60;
-    if (!params.quantumForensics.isPostQuantumSecure) score += 30;
-    score += params.quantumForensics.qbitCoherenceRisk * 50;
+  // v24 Hardware Trojan Forensic Logic
+  if (params.hardwareTrojanForensics) {
+    if (params.hardwareTrojanForensics.isTamperFuseBlown) score += 100;
+    if (params.hardwareTrojanForensics.isClockGlitchDetected) score += 90;
+    if (params.hardwareTrojanForensics.isSideChannelPowerAnomaly) score += 85;
+    if (params.hardwareTrojanForensics.isSubThresholdLeakageDetected) score += 75;
+    score += params.hardwareTrojanForensics.thermalSignatureAnomaly * 100;
   }
 
   score = Math.min(100, score);
@@ -658,7 +650,6 @@ export function calculateAdvancedRiskScore(
 export function verifyKernelIntegrity(pageHashes: string[]): boolean {
   return pageHashes.every(hash => !hash.startsWith('0xDEAD') && hash.length === 64);
 }
-
 
 export function detectCrossChainLinks(
   address: string,
@@ -685,7 +676,6 @@ export function detectCrossChainLinks(
     });
   }
   
-  // v23: Sequential transaction link detection
   if (address && address.length > 10) {
     links.push({
       linkedAddress: '0x' + address.slice(2, 6) + '...' + Math.random().toString(16).slice(2, 10),
@@ -697,24 +687,7 @@ export function detectCrossChainLinks(
 
   return links;
 }
-);
-  }
 
-  if (ip.startsWith('103.')) {
-    links.push({
-      linkedAddress: 'bc1q' + Math.random().toString(36).slice(2, 42),
-      network: 'Bitcoin',
-      confidence: 0.75,
-      reason: 'SHARED_IP'
-    });
-  }
-
-  return links;
-}
-
-/**
- * v20: Deep Behavioral Biometric Analysis for identity verification.
- */
 export function analyzeBehavioralBiometricsAdvanced(
   keystrokeIntervals: number[],
   mouseCoordinates: { x: number; y: number }[]
@@ -747,9 +720,6 @@ export function analyzeBehavioralBiometricsAdvanced(
   };
 }
 
-/**
- * v20: Device Fingerprint Entropy & Hardware Forensic Correlation.
- */
 export function analyzeFingerprintForensics(fingerprint: DeviceFingerprint): any {
   return {
     canvasHashEntropy: 0.92,
@@ -762,9 +732,6 @@ export function analyzeFingerprintForensics(fingerprint: DeviceFingerprint): any
   };
 }
 
-/**
- * v21: Analyzes hardware-level side-channel signals for potential cryptographic exfiltration.
- */
 export function analyzeSideChannelSignals(): SideChannelForensics {
   return {
     cpuPowerAnalysisDetected: false,
@@ -772,11 +739,9 @@ export function analyzeSideChannelSignals(): SideChannelForensics {
     cacheTimingAttackLikely: false,
     speculativeExecutionRisk: 0.12,
     acousticExfiltrationDetected: false
-  };}
+  };
+}
 
-/**
- * v22: Analyzes BGP routing paths for potential hijacking or route leaks.
- */
 export function analyzeBGPIntegrity(ip: string): BGPRouteLeakSignal {
   const isHighRiskIP = ip.startsWith('103.') || ip.startsWith('45.');
   
@@ -789,9 +754,6 @@ export function analyzeBGPIntegrity(ip: string): BGPRouteLeakSignal {
   };
 }
 
-/**
- * v23: Analyzes volatile memory artifacts for evidence of scraping or DMA attacks.
- */
 export function analyzeMemoryForensics(): MemoryForensics {
   return {
     ramScrapingDetected: false,

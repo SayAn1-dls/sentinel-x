@@ -217,9 +217,19 @@ export interface QuantumAttackForensics {
   qbitCoherenceRisk: number;
 }
 
+export interface HardwareTrojanForensics {
+  isSideChannelPowerAnomaly: boolean;
+  isClockGlitchDetected: boolean;
+  isSubThresholdLeakageDetected: boolean;
+  thermalSignatureAnomaly: number;
+  isTamperFuseBlown: boolean;
+  trojanLikelihood: number;
+}
+
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
   quantumForensics?: QuantumAttackForensics;
+  hardwareTrojanForensics?: HardwareTrojanForensics;
   sideChannelForensics?: SideChannelForensics;
   supplyChainForensics?: SupplyChainForensics;
   zkpForensics?: ZKPForensics;
