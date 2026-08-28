@@ -69,3 +69,45 @@ through configurable delivery channels.
 - Input validation on all ingestion endpoints
 - Rate limiting at gateway and per-sensor level
 - Audit logging for all administrative actions
+
+## Data Flow
+
+### Sensor Telemetry Pipeline
+
+1. **Ingestion**: Sensor sends telemetry via POST `/api/v2/sensors/{id}/telemetry`
+2. **Validation**: Payload structure validated by `validator.validate_sensor_payload()`
+3. **Normalization**: Raw readings converted to standard units
+4. **Detection**: Each reading passes through configured detectors:
+   - ThresholdDetector checks against configured bounds
+   - StatisticalDetector computes z-score against sliding window
+5. **Classification**: Detected anomalies scored by severity
+6. **Alerting**: Alert routed through rules engine to configured channels
+7. **Storage**: All telemetry and events persisted to MongoDB
+
+### Alert Lifecycle
+
+```
+Triggered → Active → Acknowledged → Resolved
+                  └→ Escalated (if not acknowledged within SLA)
+```
+
+## Deployment Architecture
+
+### Production Stack
+- **Runtime**: Node.js 20 LTS + Python 3.11 (ML services)
+- **Database**: MongoDB Atlas (M10 cluster)
+- **Cache**: Redis 7.x (Render managed)
+- **Hosting**: Render Web Service (auto-scaling)
+- **CDN**: Cloudflare (static assets)
+- **Monitoring**: Prometheus + Grafana
+- **Error Tracking**: Sentry
+- **CI/CD**: GitHub Actions
+
+### Environment Separation
+| Component     | Development      | Staging           | Production       |
+|---------------|------------------|-------------------|------------------|
+| Database      | Local MongoDB    | Atlas M0 (free)   | Atlas M10        |
+| Cache         | Local Redis      | Render Redis      | Render Redis HA  |
+| Log Level     | DEBUG            | INFO              | WARNING          |
+| Rate Limit    | Disabled         | 1000 req/min      | 100 req/min      |
+| Auth          | Mock JWT         | Real JWT          | Real JWT + MFA   |
