@@ -130,3 +130,141 @@ Submit sensor telemetry data.
   "processed_at": "2026-08-28T10:30:01Z"
 }
 ```
+
+---
+
+## Alerts
+
+### GET /alerts
+
+List alerts with filtering and pagination.
+
+**Query Parameters:**
+| Parameter    | Type   | Description                           |
+|--------------|--------|---------------------------------------|
+| priority     | string | Filter: p1, p2, p3, p4               |
+| status       | string | Filter: active, acknowledged, resolved|
+| since        | string | ISO 8601 datetime lower bound         |
+| until        | string | ISO 8601 datetime upper bound         |
+| source       | string | Filter by source sensor ID            |
+
+**Response (200):**
+```json
+{
+  "alerts": [
+    {
+      "id": "alt_789",
+      "title": "Temperature threshold breach",
+      "priority": "p2",
+      "source": "sen_001",
+      "status": "active",
+      "triggered_at": "2026-08-28T10:35:00Z",
+      "message": "Temperature reading 45.2°C exceeds upper bound of 40°C"
+    }
+  ],
+  "total": 15,
+  "unacknowledged": 3
+}
+```
+
+### POST /alerts/{alert_id}/acknowledge
+
+Acknowledge an active alert.
+
+**Request:**
+```json
+{
+  "acknowledged_by": "usr_abc123",
+  "notes": "Investigating the temperature spike in server room"
+}
+```
+
+**Response (200):**
+```json
+{
+  "alert_id": "alt_789",
+  "status": "acknowledged",
+  "acknowledged_at": "2026-08-28T10:40:00Z"
+}
+```
+
+### POST /alerts/{alert_id}/resolve
+
+Resolve an alert with resolution details.
+
+**Request:**
+```json
+{
+  "resolved_by": "usr_abc123",
+  "resolution": "HVAC system restarted, temperature normalized",
+  "root_cause": "HVAC compressor failure"
+}
+```
+
+**Response (200):**
+```json
+{
+  "alert_id": "alt_789",
+  "status": "resolved",
+  "resolved_at": "2026-08-28T11:00:00Z",
+  "time_to_resolve_minutes": 25
+}
+```
+
+---
+
+## Detection Rules
+
+### GET /detection/rules
+
+List all configured detection rules.
+
+**Response (200):**
+```json
+{
+  "rules": [
+    {
+      "id": "rule_001",
+      "name": "High Temperature Alert",
+      "type": "threshold",
+      "config": {
+        "sensor_type": "temperature",
+        "lower_bound": -10,
+        "upper_bound": 40
+      },
+      "channels": ["email", "slack"],
+      "priority": "p2",
+      "enabled": true
+    }
+  ]
+}
+```
+
+### POST /detection/rules
+
+Create a new detection rule.
+
+**Request:**
+```json
+{
+  "name": "Motion After Hours",
+  "type": "threshold",
+  "config": {
+    "sensor_type": "motion",
+    "lower_bound": 0,
+    "upper_bound": 0,
+    "time_window": {"start": "22:00", "end": "06:00"}
+  },
+  "channels": ["email", "webhook", "sms"],
+  "priority": "p1"
+}
+```
+
+**Response (201):**
+```json
+{
+  "rule_id": "rule_015",
+  "status": "created",
+  "enabled": true
+}
+```
