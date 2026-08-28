@@ -95,3 +95,84 @@ class ThresholdDetector:
             expected_range=(lower, upper),
             confidence=0.95,
         )
+
+
+class StatisticalDetector:
+    """Detect anomalies using statistical methods (Z-score, IQR).
+
+    Maintains a sliding window of recent observations to compute
+    running statistics and identify outliers.
+
+    Attributes:
+        window_size: Number of recent observations to maintain.
+        z_threshold: Z-score threshold for outlier detection.
+    """
+
+    def __init__(self, window_size: int = 100, z_threshold: float = 3.0):
+        """Initialize statistical detector.
+
+        Args:
+            window_size: Size of the sliding observation window.
+            z_threshold: Number of standard deviations for outlier classification.
+        """
+        self.window_size = window_size
+        self.z_threshold = z_threshold
+        self._windows: Dict[str, List[float]] = {}
+
+    def _compute_stats(self, values: List[float]) -> Tuple[float, float]:
+        """Compute mean and standard deviation of a value list.
+
+        Args:
+            values: List of numeric observations.
+
+        Returns:
+            Tuple of (mean, standard_deviation).
+        """
+        n = len(values)
+        if n == 0:
+            return 0.0, 0.0
+        mean = sum(values) / n
+        variance = sum((x - mean) ** 2 for x in values) / n
+        return mean, variance ** 0.5
+
+    def ingest(self, sensor_id: str, value: float) -> Optional[AnomalyEvent]:
+        """Ingest a new observation and check for statistical anomalies.
+
+        Args:
+            sensor_id: Identifier for the data source.
+            value: New observation value.
+
+        Returns:
+            AnomalyEvent if the value is a statistical outlier, None otherwise.
+        """
+        if sensor_id not in self._windows:
+            self._windows[sensor_id] = []
+
+        window = self._windows[sensor_id]
+        window.append(value)
+        if len(window) > self.window_size:
+            window.pop(0)
+
+        if len(window) < 10:
+            return None  # Not enough data for reliable statistics
+
+        mean, std = self._compute_stats(window[:-1])  # Exclude current value
+        if std == 0:
+            return None
+
+        z_score = abs(value - mean) / std
+        if z_score < self.z_threshold:
+            return None
+
+        return AnomalyEvent(
+            event_id=f"stat-{sensor_id}-{len(window)}",
+            anomaly_type=AnomalyType.STATISTICAL_OUTLIER,
+            severity=Severity.HIGH if z_score > 4.0 else Severity.MEDIUM,
+            source_sensor=sensor_id,
+            timestamp=datetime.utcnow(),
+            description=f"Z-score {z_score:.2f} exceeds threshold {self.z_threshold}",
+            raw_value=value,
+            expected_range=(mean - self.z_threshold * std, mean + self.z_threshold * std),
+            confidence=min(z_score / 5.0, 1.0),
+            metadata={"z_score": z_score, "mean": mean, "std": std},
+        )
