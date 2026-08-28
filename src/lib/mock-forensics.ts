@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -148,6 +148,7 @@ export function enrichWithForensics(transaction: any): any {
   const bgpRouteLeak = analyzeBGPRouteLeak(asnReputation.asn);
   const hardwareSupplyChain = analyzeHardwareSupplyChain();
   const peripheralBus = analyzePeripheralBus();
+  const sideChannelForensics = analyzeSideChannelTiming("CRYPTOGRAPHIC_VERIFICATION");
   const tlsFingerprint = analyzeTLSFingerprint(mockFingerprint.userAgent);
   
   return {
@@ -181,7 +182,8 @@ export function enrichWithForensics(transaction: any): any {
       tlsFingerprint,
       bgpRouteLeak,
       hardwareSupplyChain,
-      peripheralBus
+      peripheralBus,
+      sideChannelForensics
     }
   };
 }

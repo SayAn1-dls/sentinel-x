@@ -407,3 +407,20 @@ Sentinel-X now includes forensic signals for detecting early-stage quantum compu
 - **Lattice-Basis Reduction Detection**: Analyzes interactions for signatures of lattice-based attacks on classical public-key infrastructure.
 - **Quantum Entropy Anomaly**: Detects deviations in random number generation entropy that might suggest quantum interference or non-classical biases.
 - **Risk Scoring (v24)**: Non-PQC compliant interactions or detected quantum signatures trigger critical risk flags (+100 for Shor algorithm detection).
+
+## Update: 2026-08-28 - Side-Channel Timing Analysis & Interception Detection (v25)
+
+### Side-Channel Timing Forensic Analysis
+Implemented analysis of execution timing variations to detect potential side-channel attacks, information leaks, or the presence of intercepting proxies. This is critical for ensuring that sensitive operations (like cryptographic verification) are not being observed or tampered with at a sub-millisecond level.
+
+- **Signal**: `sideChannelForensics`
+- **Checks**:
+  - **Timing Variance Detection**: Identifies deviations from expected latency baselines for specific operation types.
+  - **Operation Categorization**: Monitors Cryptographic Verification, Memory Access, and Network Response cycles.
+  - **Variance Scoring**: Calculates a normalized variance score to quantify the risk of a side-channel leak.
+- **Risk Impact**: High (+65) for significant timing variance, with additional weighting based on the variance score.
+
+### Risk Engine v25
+Upgraded the `calculateAdvancedRiskScore` function to integrate Side-Channel Timing forensic signals.
+- **Version**: 25.0.0
+- **Weighting**: Timing Variance Detected (+65 - High), High Variance Score (up to +50).

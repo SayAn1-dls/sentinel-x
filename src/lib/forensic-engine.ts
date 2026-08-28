@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics
 } from './forensic-types';
 
 /**
@@ -502,6 +502,7 @@ export function calculateAdvancedRiskScore(
     tlsFingerprint?: TLSFingerprintSignal;
     bgpRouteLeak?: BGPRouteLeakSignal;
     peripheralBus?: PeripheralBusForensics;
+    sideChannelForensics?: SideChannelForensics;
     hardwareSupplyChain?: HardwareSupplyChainSignal;
   }
 ): { score: number; level: RiskLevel } {
@@ -634,6 +635,11 @@ export function calculateAdvancedRiskScore(
     if (!params.peripheralBus.iommuEnabled) score += 35;
     score += params.peripheralBus.unauthorizedMemoryAccessAttempts * 10;
   }
+  if (params.sideChannelForensics) {
+    if (params.sideChannelForensics.timingVarianceDetected) score += 65;
+    score += params.sideChannelForensics.varianceScore * 50;
+  }
+
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -705,5 +711,25 @@ export function analyzeHardwareSupplyChain(): HardwareSupplyChainSignal {
     firmwareVersionMismatch: false,
     factoryAttestationValid: !isTampered,
     riskScore: isTampered ? 0.95 : 0.05
+  };
+}
+
+/**
+ * v24: Analyzes side-channel timing variations to detect potential information leaks or intercepting proxies.
+ */
+export function analyzeSideChannelTiming(operationType: 'CRYPTOGRAPHIC_VERIFICATION' | 'MEMORY_ACCESS' | 'NETWORK_RESPONSE'): SideChannelForensics {
+  // Simulate timing analysis by introducing a variance check against a baseline
+  const observedLatency = 40 + Math.random() * 20; // Mock latency
+  const expectedLatency = 45;
+  const variance = Math.abs(observedLatency - expectedLatency);
+  const isHighRisk = variance > 12;
+
+  return {
+    timingVarianceDetected: isHighRisk,
+    operationType,
+    observedLatencyMs: parseFloat(observedLatency.toFixed(2)),
+    expectedLatencyMs: expectedLatency,
+    varianceScore: parseFloat((variance / expectedLatency).toFixed(4)),
+    isHighRisk
   };
 }

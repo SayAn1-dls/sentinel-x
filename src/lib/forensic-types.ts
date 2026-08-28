@@ -249,6 +249,7 @@ export interface ForensicIntelligence {
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
   quantumForensics?: QuantumForensics;
+  sideChannelForensics?: SideChannelForensics;
   tlsFingerprint?: TLSFingerprintSignal;
 }
 
@@ -276,4 +277,13 @@ export interface QuantumForensics {
   shorsAlgorithmVulnerability: number;
   isGroverAttackResistant: boolean;
   keySizeBits: number;
+}
+
+export interface SideChannelForensics {
+  timingVarianceDetected: boolean;
+  operationType: 'CRYPTOGRAPHIC_VERIFICATION' | 'MEMORY_ACCESS' | 'NETWORK_RESPONSE';
+  observedLatencyMs: number;
+  expectedLatencyMs: number;
+  varianceScore: number;
+  isHighRisk: boolean;
 }
