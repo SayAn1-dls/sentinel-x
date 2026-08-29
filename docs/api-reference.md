@@ -268,3 +268,99 @@ Create a new detection rule.
   "enabled": true
 }
 ```
+
+---
+
+## Health & Monitoring
+
+### GET /health
+
+System health check endpoint.
+
+**Response (200):**
+```json
+{
+  "status": "healthy",
+  "uptime_seconds": 86400,
+  "version": "2.0.0-alpha",
+  "timestamp": "2026-08-29T05:30:00Z",
+  "components": {
+    "database": {"status": "healthy", "latency_ms": 12.3},
+    "redis": {"status": "healthy", "latency_ms": 1.5},
+    "detection_engine": {"status": "healthy", "latency_ms": 0.8},
+    "alert_router": {"status": "healthy", "latency_ms": 0.3}
+  }
+}
+```
+
+### GET /health/ready
+
+Readiness probe for load balancer.
+
+**Response (200):**
+```json
+{"ready": true}
+```
+
+**Response (503):**
+```json
+{"ready": false, "reason": "database connection unavailable"}
+```
+
+### GET /metrics
+
+Prometheus-compatible metrics endpoint.
+
+**Response (200 text/plain):**
+```
+# HELP sentinel_telemetry_total Total telemetry points processed
+# TYPE sentinel_telemetry_total counter
+sentinel_telemetry_total 1234567
+
+# HELP sentinel_anomalies_total Total anomalies detected
+# TYPE sentinel_anomalies_total counter
+sentinel_anomalies_total{severity="low"} 450
+sentinel_anomalies_total{severity="medium"} 120
+sentinel_anomalies_total{severity="high"} 35
+sentinel_anomalies_total{severity="critical"} 8
+
+# HELP sentinel_active_sensors Current active sensor count
+# TYPE sentinel_active_sensors gauge
+sentinel_active_sensors 42
+```
+
+---
+
+## Audit Trail
+
+### GET /audit/logs
+
+Query audit trail entries.
+
+**Query Parameters:**
+| Parameter | Type   | Description                     |
+|-----------|--------|---------------------------------|
+| action    | string | Filter by action type           |
+| actor     | string | Filter by user ID               |
+| since     | string | ISO 8601 lower time bound       |
+| until     | string | ISO 8601 upper time bound       |
+| limit     | int    | Max results (default: 100)      |
+
+**Response (200):**
+```json
+{
+  "entries": [
+    {
+      "id": "aud_001",
+      "action": "auth.login",
+      "actor": "usr_abc123",
+      "timestamp": "2026-08-29T10:00:00Z",
+      "resource_type": "session",
+      "resource_id": "sess_xyz",
+      "ip_address": "203.0.113.42",
+      "success": true
+    }
+  ],
+  "total": 2847
+}
+```
