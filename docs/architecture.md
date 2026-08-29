@@ -111,3 +111,52 @@ Triggered → Active → Acknowledged → Resolved
 | Log Level     | DEBUG            | INFO              | WARNING          |
 | Rate Limit    | Disabled         | 1000 req/min      | 100 req/min      |
 | Auth          | Mock JWT         | Real JWT          | Real JWT + MFA   |
+
+## Security Controls
+
+### Authentication & Authorization
+- JWT-based authentication with configurable expiry
+- Role-based access control (RBAC): admin, operator, viewer
+- API key authentication for machine-to-machine communication
+- Session tokens with secure generation and rotation
+
+### Input Validation
+- All API inputs validated through the validator module
+- Sensor payloads checked for structure, types, and bounds
+- String sanitization removes control characters and null bytes
+- Request body size limits enforced at gateway level
+
+### Audit & Compliance
+- All security-relevant actions logged to immutable audit trail
+- Failed login attempts tracked for brute-force detection
+- Configuration changes require admin role and are logged
+- Data export events tracked for compliance reporting
+
+### Network Security
+- TLS 1.3 for all external connections
+- mTLS support for sensor connections
+- Rate limiting at API gateway (token bucket algorithm)
+- Circuit breaker pattern for external service calls
+- CORS configured per environment
+
+## Monitoring Stack
+
+### Metrics (Prometheus)
+- `sentinel_telemetry_total` — Total telemetry points processed
+- `sentinel_anomalies_total{severity}` — Anomalies by severity
+- `sentinel_active_sensors` — Current active sensor count
+- `sentinel_alert_latency_seconds` — Alert delivery latency
+- `sentinel_api_request_duration_seconds` — API response times
+
+### Alerting (Grafana)
+- Sensor offline > 5 minutes
+- Anomaly rate > 10/minute
+- API error rate > 5%
+- Database connection pool exhaustion
+- Memory usage > 85%
+
+### Logging (Structured JSON)
+- Correlation IDs for request tracing
+- Rotating file handlers with size and time-based policies
+- Log levels configurable per module
+- Exception stack traces captured in structured format
