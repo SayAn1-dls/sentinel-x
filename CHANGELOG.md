@@ -1,38 +1,50 @@
-# SENTINEL-X FORENSIC GUARD — CHANGELOG
+# Changelog
 
-## [4.0.0] — FORENSIC GUARD RELEASE
+All notable changes to Sentinel-X will be documented in this file.
+
+## [2.0.0-alpha] - 2026-08-29
 
 ### Added
-- **Forensic Dashboard** — Real-time transaction HUD with live threat feed and blocking controls
-- **AI Analysis Engine** — Neural scanner for smurfing, layering, and round-tripping detection
-- **Deep-Trace Audit Log** — Immutable event ledger with CSV/JSON export and session tracking
-- **Network Security Monitor** — TLS 1.3 gateway health, latency monitoring, PacketMonitor
-- **Silicon UI System** — 60px backdrop-blur frosted glass HUD components throughout
-- **ThreatMatrix** — Real-time severity distribution heatmap
-- **RiskMeter** — Radial gauge for risk score visualization
-- **AnomalyChart** — 24-hour hourly transaction anomaly detection bar chart
-- **PatternDetector** — Known AML signature matching panel
-- **SystemHealth** — Infrastructure health bar for all forensic modules
-- **RiskHeatmap** — Entity-level risk distribution grid
-- **ActivityTimeline** — Chronological forensic event trace
+- Structured logging module with JSON formatting and rotation support
+- Input validation for emails, IPs, sensor payloads, and alert configs
+- Threshold-based and statistical anomaly detection engines
+- Rate-of-change detector for sudden sensor value spikes
+- Detection pipeline orchestrator for parallel detector execution
+- Alert management system with priority-based routing
+- Alert deduplication with fingerprint-based suppression
+- Email and webhook notification handlers with HMAC signing
+- Event correlation engine for compound threat detection
+- Internal publish/subscribe event bus for decoupled communication
+- Health check module with readiness/liveness probes
+- Prometheus-compatible metrics collection (Counter, Gauge)
+- Task scheduler for periodic operations
+- Token bucket rate limiter for API protection
+- Circuit breaker pattern for external service resilience
+- Cryptographic utilities (password hashing, HMAC, API key generation)
+- Date/time utilities with IST timezone support
+- Cursor-based and offset-based pagination
+- Standardized API response formatting
+- Sensor registry with lifecycle management
+- Audit trail logging for compliance tracking
+- Comprehensive API reference documentation
+- System architecture document with threat model
+- Unit tests for all new modules (87%+ coverage target)
 
-### Architecture
-- `ForensicEngine` — Rule-based transaction analysis with velocity and layering detection
-- `AIScanner` — SX-FORENSIC-AI-V4.0 pattern detection model
-- `AuditTrace` — Persistent audit logging with localStorage fallback
-- `ThreatAnalyzer` — Global threat index computation
-- `NetworkSecurityMonitor` — Gateway health and encryption verification
-- Full REST API routes: `/api/transactions`, `/api/audit`, `/api/scan`, `/api/network`, `/api/alerts`
-- Complete test suite covering all core engines
+### Changed
+- Overhauled README with badges, architecture diagram, and project structure
+- Updated project structure to support Python modules alongside TypeScript
 
-### Design System
-- Pitch Black (`#050505`) base
-- Neon Orange (`#FF6B00`) primary accent
-- Danger Red (`#FF0033`) critical alerts
-- Cyber Cyan (`#00CFFF`) data highlights
-- Safe Green (`#00FF88`) success states
-- Silicon Transparency — `backdrop-filter: blur(60px)` on all panels
+### Security
+- PBKDF2-SHA256 password hashing with 260k iterations
+- HMAC-SHA256 webhook payload signing
+- Secure API key and session token generation
+- Input sanitization with control character removal
 
----
+## [1.0.0] - 2026-08-24
 
-*SENTINEL-X is an institutional-grade forensic platform — CLASSIFIED*
+### Added
+- Initial release with forensic analysis modules
+- Frontend dashboard
+- Backend API server
+- MongoDB integration
+- Render deployment configuration
