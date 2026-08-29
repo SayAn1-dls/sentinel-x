@@ -176,3 +176,130 @@ class StatisticalDetector:
             confidence=min(z_score / 5.0, 1.0),
             metadata={"z_score": z_score, "mean": mean, "std": std},
         )
+
+
+class RateDetector:
+    """Detect anomalous rates of change in sensor readings.
+
+    Monitors the rate at which values change over time, flagging
+    sudden spikes or drops that exceed configured thresholds.
+
+    Attributes:
+        max_rate: Maximum acceptable rate of change per second.
+        _last_values: Cache of last seen values per sensor.
+    """
+
+    def __init__(self, max_rate: float = 10.0):
+        """Initialize rate detector.
+
+        Args:
+            max_rate: Maximum allowed change per second.
+        """
+        self.max_rate = max_rate
+        self._last_values: Dict[str, tuple] = {}
+
+    def check(self, sensor_id: str, value: float, timestamp: datetime) -> Optional[AnomalyEvent]:
+        """Check if the rate of change is anomalous.
+
+        Args:
+            sensor_id: Sensor identifier.
+            value: Current reading.
+            timestamp: Time of the reading.
+
+        Returns:
+            AnomalyEvent if rate exceeds threshold, None otherwise.
+        """
+        if sensor_id in self._last_values:
+            last_value, last_time = self._last_values[sensor_id]
+            time_diff = (timestamp - last_time).total_seconds()
+
+            if time_diff > 0:
+                rate = abs(value - last_value) / time_diff
+
+                if rate > self.max_rate:
+                    self._last_values[sensor_id] = (value, timestamp)
+                    return AnomalyEvent(
+                        event_id=f"rate-{sensor_id}",
+                        anomaly_type=AnomalyType.RATE_ANOMALY,
+                        severity=Severity.HIGH if rate > self.max_rate * 2 else Severity.MEDIUM,
+                        source_sensor=sensor_id,
+                        timestamp=timestamp,
+                        description=f"Rate of change {rate:.2f}/s exceeds max {self.max_rate}/s",
+                        raw_value=value,
+                        expected_range=(
+                            last_value - self.max_rate * time_diff,
+                            last_value + self.max_rate * time_diff,
+                        ),
+                        confidence=min(rate / (self.max_rate * 3), 1.0),
+                        metadata={"rate": rate, "previous_value": last_value},
+                    )
+
+        self._last_values[sensor_id] = (value, timestamp)
+        return None
+
+
+class DetectionPipeline:
+    """Orchestrates multiple detectors in a processing pipeline.
+
+    Runs readings through all configured detectors and aggregates
+    the results into a unified anomaly report.
+
+    Attributes:
+        detectors: List of detector instances to run.
+    """
+
+    def __init__(self):
+        self.detectors: List[Any] = []
+        self._processed_count = 0
+        self._anomaly_count = 0
+
+    def add_detector(self, detector: Any) -> None:
+        """Add a detector to the pipeline.
+
+        Args:
+            detector: Any detector with a check() or ingest() method.
+        """
+        self.detectors.append(detector)
+
+    def process(self, sensor_id: str, value: float,
+                timestamp: Optional[datetime] = None) -> List[AnomalyEvent]:
+        """Run a reading through all detectors.
+
+        Args:
+            sensor_id: Source sensor identifier.
+            value: Reading value.
+            timestamp: Time of reading (default: now).
+
+        Returns:
+            List of detected anomalies (may be empty).
+        """
+        if timestamp is None:
+            timestamp = datetime.utcnow()
+
+        anomalies = []
+        self._processed_count += 1
+
+        for detector in self.detectors:
+            result = None
+            if hasattr(detector, "check"):
+                if isinstance(detector, RateDetector):
+                    result = detector.check(sensor_id, value, timestamp)
+                else:
+                    result = detector.check(sensor_id, value)
+            elif hasattr(detector, "ingest"):
+                result = detector.ingest(sensor_id, value)
+
+            if result is not None:
+                anomalies.append(result)
+
+        self._anomaly_count += len(anomalies)
+        return anomalies
+
+    @property
+    def stats(self) -> Dict[str, int]:
+        """Get pipeline processing statistics."""
+        return {
+            "processed": self._processed_count,
+            "anomalies_detected": self._anomaly_count,
+            "detector_count": len(self.detectors),
+        }
