@@ -1,82 +1,102 @@
-# ⚡ SENTINEL-X — FORENSIC GUARD PLATFORM v4.0
+# 🛡️ Sentinel-X
 
-> **Institutional-grade AI-powered forensic transaction monitoring and threat intelligence.**
+[![Build Status](https://img.shields.io/github/actions/workflow/status/SayAn1-dls/sentinel-x/ci.yml?branch=main)](https://github.com/SayAn1-dls/sentinel-x/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.0.0--alpha-orange)](CHANGELOG.md)
+[![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)](test_reports/)
 
-![Status](https://img.shields.io/badge/STATUS-OPERATIONAL-00FF88?style=for-the-badge&logo=shield)
-![Version](https://img.shields.io/badge/VERSION-4.0.0-FF6B00?style=for-the-badge)
-![Next.js](https://img.shields.io/badge/NEXT.JS-15-black?style=for-the-badge&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TYPESCRIPT-5-00CFFF?style=for-the-badge&logo=typescript)
+**Real-time security surveillance and threat detection platform** with anomaly detection, automated alerting, and forensic analysis capabilities.
 
----
-
-## 🏛 ARCHITECTURE
+## 🏗️ Architecture
 
 ```
- SENTINEL-X
- ├── 🧠  AI Analysis Engine     → Neural forensic scanner (smurfing, layering, round-tripping)
- ├── ⚡  Forensic Dashboard     → Real-time transaction HUD with live threat feed
- ├── 📋  Deep-Trace Audit Log   → Immutable event ledger with full session tracking
- ├── 🔒  Network Security       → TLS 1.3 gateway monitoring + encryption status
- └── 🎛  Silicon UI             → 60px backdrop-blur HUD components
+Sensors → Ingestion Gateway → Detection Engine → Threat Classifier → Alert Router
+                                    ↓                                      ↓
+                              Anomaly Events                    Email / Webhook / Slack
+                                    ↓
+                              Audit Trail → Dashboard
 ```
 
-## 🚀 QUICK START
+## ✨ Features
+
+- **Multi-sensor Telemetry** — Ingest data from cameras, motion sensors, temperature probes, and custom IoT devices
+- **Anomaly Detection Pipeline** — Threshold, statistical (Z-score), and rate-of-change detectors running in parallel
+- **Smart Alert Routing** — Priority-based routing with deduplication, cooldowns, and escalation workflows
+- **Forensic Analysis** — Quantum-ready forensic modules for deep incident investigation
+- **Real-time Dashboard** — Live monitoring with WebSocket-driven updates
+- **Audit Trail** — Complete compliance logging of all security-relevant actions
+- **Health Monitoring** — Built-in readiness probes and Prometheus metrics
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 20 LTS
+- Python 3.11+
+- MongoDB 7.x
+- Redis 7.x
+
+### Installation
 
 ```bash
+git clone https://github.com/SayAn1-dls/sentinel-x.git
+cd sentinel-x
 npm install
+cp .env.example .env  # Configure your environment
+```
+
+### Running
+
+```bash
+# Development
 npm run dev
+
+# Production
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+### Running Tests
 
-## 📁 FILE STRUCTURE
+```bash
+# All tests
+pytest tests/ -v
 
-```
-src/
-├── app/
-│   ├── page.tsx                 # Landing — Elite forensic platform home
-│   ├── dashboard/page.tsx       # Command Center — Live transaction HUD
-│   ├── audit/page.tsx           # Deep-Trace Audit Log
-│   ├── network/page.tsx         # Network Security Gateway Monitor
-│   ├── analysis/page.tsx        # AI Forensic Analysis Lab
-│   └── api/                     # REST API routes
-├── components/
-│   ├── hud/                     # ForensicHUD, AlertBanner, LiveStats, SystemHealth
-│   ├── dashboard/               # TransactionFeed, ThreatMatrix, ActivityTimeline
-│   ├── audit/                   # AuditLogTable, FilterPanel
-│   ├── network/                 # EncryptionStatus, GatewayIndicator, PacketMonitor
-│   ├── ai/                      # ScanEngine, AnalysisPanel, AnomalyChart, PatternDetector
-│   └── ui/                      # SiliconCard, GlassPanel, NeonButton, RiskMeter
-└── lib/
-    ├── forensic-engine.ts       # Core rule-based transaction analysis
-    ├── ai-scanner.ts            # AI pattern detection (smurfing, layering)
-    ├── audit-trace.ts           # Deep-trace audit logging
-    ├── threat-analyzer.ts       # Multi-layer threat scoring
-    ├── network-security.ts      # Gateway health monitoring
-    ├── types.ts                 # Full TypeScript type system
-    ├── constants.ts             # Threat colors, platform config
-    ├── utils.ts                 # Formatters, risk calculations
-    └── hooks/                   # useForensic, useAudit, useThreat, useNetwork, useAI
+# With coverage
+pytest tests/ --cov=src --cov-report=html
 ```
 
-## 🎨 DESIGN SYSTEM
+## 📚 Documentation
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| Pitch Black | `#050505` | Base background |
-| Neon Orange | `#FF6B00` | Primary accent, CTAs |
-| Danger Red | `#FF0033` | Critical alerts |
-| Cyber Cyan | `#00CFFF` | Data highlights |
-| Safe Green | `#00FF88` | Success states |
-| Silicon Blur | `60px` | All card/panel backdrops |
+- [System Architecture](docs/architecture.md) — Component design, threat model, deployment topology
+- [API Reference](docs/api-reference.md) — Complete endpoint documentation with examples
+- [Contributing Guide](CONTRIBUTING.md) — How to contribute to Sentinel-X
+- [Changelog](CHANGELOG.md) — Release history and notable changes
+- [Security Policy](SECURITY.md) — Responsible disclosure and security practices
 
-## 🔐 SECURITY MODEL
+## 🔧 Project Structure
 
-- **AES-256** encryption on all network gateways
-- **TLS 1.3** enforced on primary data pipelines
-- **Immutable audit trail** with session ID tracking
-- **AI anomaly detection** for all transaction flows
+```
+sentinel-x/
+├── src/
+│   ├── config/          # Configuration management
+│   │   └── settings.py  # Environment-based config
+│   ├── modules/         # Core business logic
+│   │   ├── detection.py # Anomaly detection engine
+│   │   ├── alert.py     # Alert routing system
+│   │   ├── audit.py     # Audit trail logging
+│   │   ├── health.py    # Health monitoring
+│   │   ├── metrics.py   # Prometheus metrics
+│   │   └── event_bus.py # Internal pub/sub
+│   └── utils/           # Shared utilities
+│       ├── logger.py    # Structured logging
+│       ├── validator.py # Input validation
+│       ├── crypto.py    # Cryptographic helpers
+│       └── retry.py     # Retry & circuit breaker
+├── tests/               # Test suites
+├── docs/                # Documentation
+├── backend/             # Backend API server
+└── frontend/            # Dashboard UI
+```
 
----
+## 📄 License
 
-*Built by SayAn1-dls · SENTINEL-X FORENSIC GUARD · CLASSIFIED*
+This project is licensed under the MIT License.
