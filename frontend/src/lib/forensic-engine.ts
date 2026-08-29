@@ -28,7 +28,9 @@ import {
   SupplyChainForensics, 
   BGPRouteLeakSignal, 
   SideChannelForensics,
-  HardwareTrojanForensics
+  HardwareTrojanForensics,
+  QuantumAttackForensics,
+  SatelliteForensics
 } from './forensic-types';
 
 /**
@@ -326,7 +328,7 @@ export function analyzeNetworkPackets(): NetworkPacketAnalysis {
     ttlValue: 64,
     isNmapScanDetected: false,
     isMitmLikely: false,
-    packetInterArrivalTimeJitter: 0.002
+    packetInterArrivalTime Jitter: 0.002
   };
 }
 
@@ -453,7 +455,36 @@ export function analyzeHardwareTrojans(): HardwareTrojanForensics {
 }
 
 /**
- * Advanced Risk Scoring Engine v24 (includes Hardware Trojan & DDoS Forensics)
+ * v25: Analyzes quantum computational artifacts for Shor's or Grover's algorithm signatures.
+ */
+export function analyzeQuantumForensics(): QuantumAttackForensics {
+  return {
+    isShorAlgorithmDetected: false,
+    groverIterationCount: 0,
+    quantumEntropyAnomaly: false,
+    isPostQuantumSecure: true,
+    latticeBasisReductionDetected: false,
+    qbitCoherenceRisk: 0.01
+  };
+}
+
+/**
+ * v25: Analyzes satellite link characteristics for potential ground-station spoofing or interception.
+ */
+export function analyzeSatelliteForensics(ip: string): SatelliteForensics {
+  const isSatelliteIP = ip.startsWith('98.') || ip.startsWith('192.0.'); // Mock ranges
+  
+  return {
+    isSatelliteLink: isSatelliteIP,
+    constellation: isSatelliteIP ? 'Starlink' : 'Unknown',
+    signalPropagationDelayMs: isSatelliteIP ? 650 : 20,
+    atmosphericInterferenceLevel: 0.12,
+    groundStationGeofenceMismatch: false
+  };
+}
+
+/**
+ * Advanced Risk Scoring Engine v25 (includes Quantum & Satellite Forensics)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -489,6 +520,8 @@ export function calculateAdvancedRiskScore(
     bgpRouting?: BGPRouteLeakSignal;
     sideChannelForensics?: SideChannelForensics;
     hardwareTrojanForensics?: HardwareTrojanForensics;
+    quantumForensics?: QuantumAttackForensics;
+    satelliteForensics?: SatelliteForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -627,13 +660,28 @@ export function calculateAdvancedRiskScore(
     score += params.memoryForensics.anomalyScore * 60;
   }
 
-  // v24 Hardware Trojan Forensic Logic
   if (params.hardwareTrojanForensics) {
     if (params.hardwareTrojanForensics.isTamperFuseBlown) score += 100;
     if (params.hardwareTrojanForensics.isClockGlitchDetected) score += 90;
     if (params.hardwareTrojanForensics.isSideChannelPowerAnomaly) score += 85;
     if (params.hardwareTrojanForensics.isSubThresholdLeakageDetected) score += 75;
     score += params.hardwareTrojanForensics.thermalSignatureAnomaly * 100;
+  }
+
+  // v25 Quantum Forensic Logic
+  if (params.quantumForensics) {
+    if (params.quantumForensics.isShorAlgorithmDetected) score += 100;
+    if (params.quantumForensics.quantumEntropyAnomaly) score += 80;
+    if (params.quantumForensics.latticeBasisReductionDetected) score += 60;
+    if (!params.quantumForensics.isPostQuantumSecure) score += 40;
+    score += params.quantumForensics.qbitCoherenceRisk * 100;
+  }
+
+  // v25 Satellite Forensic Logic
+  if (params.satelliteForensics && params.satelliteForensics.isSatelliteLink) {
+    if (params.satelliteForensics.groundStationGeofenceMismatch) score += 90;
+    if (params.satelliteForensics.signalPropagationDelayMs > 1000) score += 40;
+    score += params.satelliteForensics.atmosphericInterferenceLevel * 30;
   }
 
   score = Math.min(100, score);

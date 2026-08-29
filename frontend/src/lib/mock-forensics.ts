@@ -27,7 +27,9 @@ import {
   analyzeBehavioralBiometricsAdvanced,
   analyzeFingerprintForensics,
   analyzeBGPIntegrity,
-  analyzeHardwareTrojans
+  analyzeHardwareTrojans,
+  analyzeQuantumForensics,
+  analyzeSatelliteForensics
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -205,6 +207,14 @@ export function enrichWithForensics(transaction: any): any {
     isTamperFuseBlown: Math.random() > 0.9995
   };
 
+  const quantumForensics = {
+    ...analyzeQuantumForensics(),
+    quantumEntropyAnomaly: Math.random() > 0.999,
+    latticeBasisReductionDetected: Math.random() > 0.995
+  };
+
+  const satelliteForensics = analyzeSatelliteForensics(geolocation.ip);
+
   return {
     ...transaction,
     forensics: {
@@ -238,7 +248,9 @@ export function enrichWithForensics(transaction: any): any {
       supplyChainForensics,
       sideChannelForensics,
       memoryForensics,
-      hardwareTrojanForensics
+      hardwareTrojanForensics,
+      quantumForensics,
+      satelliteForensics
     }
   };
 }

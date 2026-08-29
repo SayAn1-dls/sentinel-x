@@ -226,6 +226,14 @@ export interface HardwareTrojanForensics {
   trojanLikelihood: number;
 }
 
+export interface SatelliteForensics {
+  isSatelliteLink: boolean;
+  constellation: 'Starlink' | 'OneWeb' | 'Iridium' | 'Kuiper' | 'Unknown';
+  signalPropagationDelayMs: number;
+  atmosphericInterferenceLevel: number;
+  groundStationGeofenceMismatch: boolean;
+}
+
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
   quantumForensics?: QuantumAttackForensics;
@@ -235,6 +243,7 @@ export interface ForensicIntelligence {
   zkpForensics?: ZKPForensics;
   opticalAirGapForensics?: OpticalAirGapForensics;
   hidForensics?: HIDForensics;
+  satelliteForensics?: SatelliteForensics;
   crossChainForensics?: CrossChainForensics;
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
