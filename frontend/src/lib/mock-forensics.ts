@@ -29,7 +29,9 @@ import {
   analyzeBGPIntegrity,
   analyzeHardwareTrojans,
   analyzeQuantumForensics,
-  analyzeSatelliteForensics
+  analyzeSatelliteForensics,
+  analyzeMFAIntegrity,
+  analyzeAuthenticatorForensics
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -215,6 +217,19 @@ export function enrichWithForensics(transaction: any): any {
 
   const satelliteForensics = analyzeSatelliteForensics(geolocation.ip);
 
+  const mfaIntegrity = {
+    ...analyzeMFAIntegrity(),
+    simSwapDetected: Math.random() > 0.999,
+    otpBypassAttemptDetected: Math.random() > 0.998,
+    rapidOTPRequestRate: Math.random() * 0.5
+  };
+
+  const authenticatorForensics = {
+    ...analyzeAuthenticatorForensics(),
+    counterCheckFailed: Math.random() > 0.995,
+    isClonedAuthenticatorLikely: Math.random() > 0.999
+  };
+
   return {
     ...transaction,
     forensics: {
@@ -250,7 +265,9 @@ export function enrichWithForensics(transaction: any): any {
       memoryForensics,
       hardwareTrojanForensics,
       quantumForensics,
-      satelliteForensics
+      satelliteForensics,
+      mfaIntegrity,
+      authenticatorForensics
     }
   };
 }

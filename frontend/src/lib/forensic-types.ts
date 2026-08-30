@@ -234,6 +234,24 @@ export interface SatelliteForensics {
   groundStationGeofenceMismatch: boolean;
 }
 
+export interface MFAIntegrityForensics {
+  simSwapDetected: boolean;
+  networkOperatorAnomaly: boolean;
+  roamingStatusMismatch: boolean;
+  otpBypassAttemptDetected: boolean;
+  rapidOTPRequestRate: number;
+  lastMFAVerificationMethod: 'SMS' | 'EMAIL' | 'TOTP' | 'WEBAUTHN' | 'PUSH';
+}
+
+export interface AuthenticatorForensics {
+  isHardwareSecurityKey: boolean;
+  authenticatorAAGUID?: string;
+  counterCheckFailed: boolean;
+  isClonedAuthenticatorLikely: boolean;
+  attestationType: 'BASIC' | 'SELF' | 'ATTCA' | 'ECDAA' | 'NONE';
+  signatureCounter: number;
+}
+
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
   quantumForensics?: QuantumAttackForensics;
@@ -245,6 +263,8 @@ export interface ForensicIntelligence {
   hidForensics?: HIDForensics;
   satelliteForensics?: SatelliteForensics;
   crossChainForensics?: CrossChainForensics;
+  mfaIntegrity?: MFAIntegrityForensics;
+  authenticatorForensics?: AuthenticatorForensics;
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;

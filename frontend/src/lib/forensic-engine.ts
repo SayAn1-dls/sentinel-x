@@ -30,7 +30,9 @@ import {
   SideChannelForensics,
   HardwareTrojanForensics,
   QuantumAttackForensics,
-  SatelliteForensics
+  SatelliteForensics,
+  MFAIntegrityForensics,
+  AuthenticatorForensics
 } from './forensic-types';
 
 /**
@@ -328,7 +330,7 @@ export function analyzeNetworkPackets(): NetworkPacketAnalysis {
     ttlValue: 64,
     isNmapScanDetected: false,
     isMitmLikely: false,
-    packetInterArrivalTime Jitter: 0.002
+    packetInterArrivalTimeJitter: 0.002
   };
 }
 
@@ -484,7 +486,35 @@ export function analyzeSatelliteForensics(ip: string): SatelliteForensics {
 }
 
 /**
- * Advanced Risk Scoring Engine v25 (includes Quantum & Satellite Forensics)
+ * v26: MFA Integrity Forensic Analysis - Detects SIM swapping and OTP bypass signatures.
+ */
+export function analyzeMFAIntegrity(): MFAIntegrityForensics {
+  return {
+    simSwapDetected: false,
+    networkOperatorAnomaly: false,
+    roamingStatusMismatch: false,
+    otpBypassAttemptDetected: false,
+    rapidOTPRequestRate: 0.2,
+    lastMFAVerificationMethod: 'TOTP'
+  };
+}
+
+/**
+ * v26: Authenticator Forensic Correlation - Analyzes hardware keys and attestation tokens.
+ */
+export function analyzeAuthenticatorForensics(): AuthenticatorForensics {
+  return {
+    isHardwareSecurityKey: true,
+    authenticatorAAGUID: 'ea9b8d66-4d01-1d21-3ce7-b6b3da6b6431',
+    counterCheckFailed: false,
+    isClonedAuthenticatorLikely: false,
+    attestationType: 'BASIC',
+    signatureCounter: 1422
+  };
+}
+
+/**
+ * Advanced Risk Scoring Engine v26 (includes MFA & Authenticator Forensics)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -522,6 +552,8 @@ export function calculateAdvancedRiskScore(
     hardwareTrojanForensics?: HardwareTrojanForensics;
     quantumForensics?: QuantumAttackForensics;
     satelliteForensics?: SatelliteForensics;
+    mfaIntegrity?: MFAIntegrityForensics;
+    authenticatorForensics?: AuthenticatorForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -682,6 +714,20 @@ export function calculateAdvancedRiskScore(
     if (params.satelliteForensics.groundStationGeofenceMismatch) score += 90;
     if (params.satelliteForensics.signalPropagationDelayMs > 1000) score += 40;
     score += params.satelliteForensics.atmosphericInterferenceLevel * 30;
+  }
+
+  // v26 MFA & Authenticator Logic
+  if (params.mfaIntegrity) {
+    if (params.mfaIntegrity.simSwapDetected) score += 95;
+    if (params.mfaIntegrity.otpBypassAttemptDetected) score += 90;
+    if (params.mfaIntegrity.networkOperatorAnomaly) score += 40;
+    score += params.mfaIntegrity.rapidOTPRequestRate * 50;
+  }
+
+  if (params.authenticatorForensics) {
+    if (params.authenticatorForensics.counterCheckFailed) score += 85;
+    if (params.authenticatorForensics.isClonedAuthenticatorLikely) score += 100;
+    if (params.authenticatorForensics.attestationType === 'NONE') score += 20;
   }
 
   score = Math.min(100, score);
