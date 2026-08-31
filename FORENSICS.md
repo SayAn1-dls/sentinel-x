@@ -424,3 +424,21 @@ Implemented analysis of execution timing variations to detect potential side-cha
 Upgraded the `calculateAdvancedRiskScore` function to integrate Side-Channel Timing forensic signals.
 - **Version**: 25.0.0
 - **Weighting**: Timing Variance Detected (+65 - High), High Variance Score (up to +50).
+
+## Update: 2026-08-31 - Synthetic Identity Forensics & Cluster Analysis (v27)
+
+### Synthetic Identity Forensic Analysis
+Implemented detection for algorithmically generated user profiles and "synthetic" identities created for automated fraud or social engineering.
+
+- **Signal**: `syntheticIdentity`
+- **Checks**:
+  - **Identity Age Threshold**: Flags accounts created within very short time windows relative to high-value transactions.
+  - **Social Validation Gaps**: Analyzes the entropy of linked account data and validation scores.
+  - **High-Risk Cluster Membership**: Detects if an identity belongs to a known cluster of synthetic profiles identified in historical forensic sweeps.
+  - **Activity Consistency**: Measures the regularity of user interactions vs. robotic patterns.
+- **Risk Impact**: Critical (+85) for high-likelihood synthetic profiles, High (+60) for cluster membership.
+
+### Risk Engine v27
+Upgraded the `calculateAdvancedRiskScore` function to integrate Synthetic Identity signals.
+- **Version**: 27.0.0
+- **Weighting**: Synthetic Profile Detected (+85 - Critical), High-Risk Cluster (+60), Low Social Validation (+40), Identity Age < 10 Days (+30).

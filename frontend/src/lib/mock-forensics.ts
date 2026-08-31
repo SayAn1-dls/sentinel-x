@@ -27,7 +27,7 @@ import {
   analyzeBehavioralBiometricsAdvanced,
   analyzeFingerprintForensics,
   analyzeBGPIntegrity,
-  analyzeHardwareTrojans,
+  analyzeHardwareTrojans, analyzeSyntheticIdentity,
   analyzeQuantumForensics,
   analyzeSatelliteForensics,
   analyzeMFAIntegrity,
@@ -230,6 +230,8 @@ export function enrichWithForensics(transaction: any): any {
     isClonedAuthenticatorLikely: Math.random() > 0.999
   };
 
+  const syntheticIdentity, = analyzeSyntheticIdentity(transaction.userId || "anon_123");
+
   return {
     ...transaction,
     forensics: {
@@ -264,6 +266,7 @@ export function enrichWithForensics(transaction: any): any {
       sideChannelForensics,
       memoryForensics,
       hardwareTrojanForensics,
+      syntheticIdentity,,,
       quantumForensics,
       satelliteForensics,
       mfaIntegrity,
