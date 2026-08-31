@@ -288,6 +288,7 @@ export interface ForensicIntelligence {
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
   bgpRouting?: BGPRouteLeakSignal;
+  syntheticIdentity?: SyntheticIdentityForensics;
 }
 
 export interface SupplyChainForensics {
@@ -332,4 +333,13 @@ export interface BGPRouteLeakSignal {
   suspiciousASNs: number[];
   routeHijackLikelihood: number;
   originMismatch: boolean;
+}
+
+export interface SyntheticIdentityForensics {
+  isSyntheticLikely: boolean;
+  identityAgeDays: number;
+  activityConsistencyScore: number;
+  linkedAccountEntropy: number;
+  socialValidationScore: number;
+  isHighRiskClusterMember: boolean;
 }

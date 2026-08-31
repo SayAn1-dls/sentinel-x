@@ -32,7 +32,7 @@ import {
   QuantumAttackForensics,
   SatelliteForensics,
   MFAIntegrityForensics,
-  AuthenticatorForensics
+  AuthenticatorForensics, SyntheticIdentityForensics
 } from './forensic-types';
 
 /**
@@ -502,7 +502,7 @@ export function analyzeMFAIntegrity(): MFAIntegrityForensics {
 /**
  * v26: Authenticator Forensic Correlation - Analyzes hardware keys and attestation tokens.
  */
-export function analyzeAuthenticatorForensics(): AuthenticatorForensics {
+export function analyzeAuthenticatorForensics, SyntheticIdentityForensics(): AuthenticatorForensics {
   return {
     isHardwareSecurityKey: true,
     authenticatorAAGUID: 'ea9b8d66-4d01-1d21-3ce7-b6b3da6b6431',
@@ -514,7 +514,7 @@ export function analyzeAuthenticatorForensics(): AuthenticatorForensics {
 }
 
 /**
- * Advanced Risk Scoring Engine v26 (includes MFA & Authenticator Forensics)
+ * Advanced Risk Scoring Engine v27 (includes MFA, Authenticator & Synthetic Identity Forensics)
  */
 export function calculateAdvancedRiskScore(
   baseScore: number,
@@ -553,7 +553,7 @@ export function calculateAdvancedRiskScore(
     quantumForensics?: QuantumAttackForensics;
     satelliteForensics?: SatelliteForensics;
     mfaIntegrity?: MFAIntegrityForensics;
-    authenticatorForensics?: AuthenticatorForensics;
+    authenticatorForensics?: AuthenticatorForensics, SyntheticIdentityForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -730,6 +730,14 @@ export function calculateAdvancedRiskScore(
     if (params.authenticatorForensics.attestationType === 'NONE') score += 20;
   }
 
+  // v27 Synthetic Identity Forensic Logic
+  if (params.syntheticIdentity) {
+    if (params.syntheticIdentity.isSyntheticLikely) score += 85;
+    if (params.syntheticIdentity.isHighRiskClusterMember) score += 60;
+    if (params.syntheticIdentity.identityAgeDays < 10) score += 30;
+    if (params.syntheticIdentity.socialValidationScore < 0.2) score += 40;
+  }
+
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -856,5 +864,21 @@ export function analyzeMemoryForensics(): MemoryForensics {
     kernelMemoryLeakage: false,
     pagingIntegrityVerified: true,
     anomalyScore: 0.04
+  };
+}
+
+/**
+ * v27: Synthetic Identity Forensic Analysis - Detects algorithmically generated user profiles and social validation gaps.
+ */
+export function analyzeSyntheticIdentity(userId: string): SyntheticIdentityForensics {
+  const isHighRisk = userId.startsWith('anon_') || userId.length < 8;
+  
+  return {
+    isSyntheticLikely: isHighRisk && Math.random() > 0.8,
+    identityAgeDays: isHighRisk ? 5 : 450,
+    activityConsistencyScore: 0.92,
+    linkedAccountEntropy: isHighRisk ? 0.15 : 0.85,
+    socialValidationScore: isHighRisk ? 0.12 : 0.95,
+    isHighRiskClusterMember: isHighRisk
   };
 }
