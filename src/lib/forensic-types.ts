@@ -218,7 +218,26 @@ export interface PeripheralBusForensics {
   unauthorizedMemoryAccessAttempts: number;
 }
 
+
+export interface SyntheticIdentitySignal {
+  isSynthetic: boolean;
+  identityAgeDays: number;
+  socialValidationScore: number;
+  isHighRiskClusterMember: boolean;
+  activityConsistencyScore: number;
+}
+
+export interface LinguisticForensics {
+  syntacticComplexity: number;
+  punctuationEntropy: number;
+  sentimentVolatility: number;
+  vocabularyBreadth: number;
+  isSocialEngineeringLikely: boolean;
+}
+
 export interface ForensicIntelligence {
+  linguisticForensics?: LinguisticForensics;
+  syntheticIdentity?: SyntheticIdentitySignal;
   hardwareSupplyChain?: HardwareSupplyChainSignal;
   bgpRouteLeak?: BGPRouteLeakSignal;
   peripheralBus?: PeripheralBusForensics;
