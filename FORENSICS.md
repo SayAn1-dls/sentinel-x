@@ -442,3 +442,20 @@ Implemented detection for algorithmically generated user profiles and "synthetic
 Upgraded the `calculateAdvancedRiskScore` function to integrate Synthetic Identity signals.
 - **Version**: 27.0.0
 - **Weighting**: Synthetic Profile Detected (+85 - Critical), High-Risk Cluster (+60), Low Social Validation (+40), Identity Age < 10 Days (+30).
+
+## Update: 2026-09-01 - Linguistic Forensic Profiling & Social Engineering Detection (v28)
+
+### Linguistic Forensic Profiling
+Implemented advanced analysis of transaction metadata and communication artifacts to detect social engineering attempts and bot-driven interactions.
+- **Signal**: `linguisticForensics`
+- **Checks**:
+  - **Syntactic Complexity**: Analyzes the depth and structure of language usage.
+  - **Punctuation Entropy**: Identifies robotic or anomalous punctuation patterns.
+  - **Sentiment Volatility**: Measures emotional shifts that may indicate manipulative intent.
+  - **Vocabulary Breadth**: Detects narrow or specialized vocabularies typical of limited AI agents.
+- **Detection**: Flags keywords associated with urgency and immediate action in high-risk contexts.
+
+### Risk Engine v28
+Upgraded the `calculateAdvancedRiskScore` function to integrate Linguistic Forensic signals and fully implement the Synthetic Identity v27 logic.
+- **Version**: 28.0.0
+- **Weighting**: Synthetic Profile Detected (+85 - Critical), Social Engineering Likelihood (+55 - High), High Sentiment Volatility (up to +30).

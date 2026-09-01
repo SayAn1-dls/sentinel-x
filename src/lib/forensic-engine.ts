@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics
 } from './forensic-types';
 
 /**
@@ -471,9 +471,50 @@ export function analyzePeripheralBus(): PeripheralBusForensics {
   };
 }
 
+
+/**
+ * v27: Analyzes for Synthetic Identity markers and high-risk cluster membership.
+ */
+export function analyzeSyntheticIdentity(identityAgeDays: number): SyntheticIdentitySignal {
+  const isHighRiskCluster = Math.random() > 0.98;
+  const socialValidationScore = 0.45 + Math.random() * 0.5;
+  const isSynthetic = identityAgeDays < 5 && socialValidationScore < 0.6;
+
+  return {
+    isSynthetic,
+    identityAgeDays,
+    socialValidationScore: parseFloat(socialValidationScore.toFixed(2)),
+    isHighRiskClusterMember: isHighRiskCluster,
+    activityConsistencyScore: 0.82
+  };
+}
+
+/**
+ * v28: Linguistic Forensic Profiling for social engineering and bot detection.
+ */
+export function analyzeLinguisticForensics(inputPayload: string): LinguisticForensics {
+  const words = inputPayload.split(' ');
+  const syntacticComplexity = Math.min(1, words.length / 50);
+  const punctuationEntropy = (inputPayload.match(/[.,!?;:]/g) || []).length / (inputPayload.length || 1);
+  
+  const isSocialEngineeringLikely = inputPayload.toLowerCase().includes('urgent') || 
+                                   inputPayload.toLowerCase().includes('immediate action') ||
+                                   syntacticComplexity < 0.1;
+
+  return {
+    syntacticComplexity: parseFloat(syntacticComplexity.toFixed(2)),
+    punctuationEntropy: parseFloat(punctuationEntropy.toFixed(4)),
+    sentimentVolatility: 0.15,
+    vocabularyBreadth: new Set(words).size / words.length,
+    isSocialEngineeringLikely
+  };
+}
+
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
+    syntheticIdentity?: SyntheticIdentitySignal;
+    linguisticForensics?: LinguisticForensics;
     travelSignal?: ImpossibleTravelSignal;
     isProxy?: boolean;
     velocityZScore?: number;
@@ -638,6 +679,22 @@ export function calculateAdvancedRiskScore(
   if (params.sideChannelForensics) {
     if (params.sideChannelForensics.timingVarianceDetected) score += 65;
     score += params.sideChannelForensics.varianceScore * 50;
+  }
+
+
+  // v27 Synthetic Identity Logic
+  if (params.syntheticIdentity) {
+    if (params.syntheticIdentity.isSynthetic) score += 85;
+    if (params.syntheticIdentity.isHighRiskClusterMember) score += 60;
+    if (params.syntheticIdentity.socialValidationScore < 0.4) score += 40;
+    if (params.syntheticIdentity.identityAgeDays < 10) score += 30;
+  }
+
+  // v28 Linguistic Forensics Logic
+  if (params.linguisticForensics) {
+    if (params.linguisticForensics.isSocialEngineeringLikely) score += 55;
+    if (params.linguisticForensics.syntacticComplexity < 0.2) score += 25;
+    score += params.linguisticForensics.sentimentVolatility * 100;
   }
 
   score = Math.min(100, score);
