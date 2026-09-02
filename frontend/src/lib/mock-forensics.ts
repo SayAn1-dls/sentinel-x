@@ -27,7 +27,7 @@ import {
   analyzeBehavioralBiometricsAdvanced,
   analyzeFingerprintForensics,
   analyzeBGPIntegrity,
-  analyzeHardwareTrojans, analyzeSyntheticIdentity,
+  analyzeHardwareTrojans, analyzeSyntheticIdentity, analyzeMicroInteractions,
   analyzeQuantumForensics,
   analyzeSatelliteForensics,
   analyzeMFAIntegrity,
@@ -230,7 +230,8 @@ export function enrichWithForensics(transaction: any): any {
     isClonedAuthenticatorLikely: Math.random() > 0.999
   };
 
-  const syntheticIdentity, = analyzeSyntheticIdentity(transaction.userId || "anon_123");
+  const syntheticIdentity = analyzeSyntheticIdentity(transaction.userId || "anon_123");
+  const microInteractions = analyzeMicroInteractions([Date.now() - 500, Date.now() - 480], [{x: 100, y: 100, t: Date.now() - 1000}]);
 
   return {
     ...transaction,
@@ -266,7 +267,8 @@ export function enrichWithForensics(transaction: any): any {
       sideChannelForensics,
       memoryForensics,
       hardwareTrojanForensics,
-      syntheticIdentity,,,
+      syntheticIdentity,
+      microInteractions,
       quantumForensics,
       satelliteForensics,
       mfaIntegrity,
