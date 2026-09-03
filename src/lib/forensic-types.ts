@@ -235,7 +235,18 @@ export interface LinguisticForensics {
   isSocialEngineeringLikely: boolean;
 }
 
+export interface ISAAttestationForensics {
+  isHardwareAESSupported: boolean;
+  isSHANISupported: boolean;
+  isRDRANDIntegrityVerified: boolean;
+  instructionEmulationDetected: boolean;
+  spectreMitigationActive: boolean;
+  meltdownMitigationActive: boolean;
+  isaLevelSecurityScore: number;
+}
+
 export interface ForensicIntelligence {
+  isaAttestation?: ISAAttestationForensics;
   linguisticForensics?: LinguisticForensics;
   syntheticIdentity?: SyntheticIdentitySignal;
   hardwareSupplyChain?: HardwareSupplyChainSignal;

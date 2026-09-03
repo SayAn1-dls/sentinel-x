@@ -459,3 +459,20 @@ Implemented advanced analysis of transaction metadata and communication artifact
 Upgraded the `calculateAdvancedRiskScore` function to integrate Linguistic Forensic signals and fully implement the Synthetic Identity v27 logic.
 - **Version**: 28.0.0
 - **Weighting**: Synthetic Profile Detected (+85 - Critical), Social Engineering Likelihood (+55 - High), High Sentiment Volatility (up to +30).
+
+## Update: 2026-09-03 - ISA Attestation & Hardware-Level Instruction Integrity (v29)
+
+### Instruction Set Architecture (ISA) Forensic Attestation
+Implemented deep analysis of hardware-level security primitives and instruction set integrity to detect software-based CPU emulation and side-channel vulnerabilities.
+
+- **Signal**: `isaAttestation`
+- **Checks**:
+  - **Instruction Emulation Detection**: Identifies if secure instructions (AES-NI, SHA-NI) are being emulated in software, often indicating a virtualized or tampered execution environment.
+  - **RDRAND Integrity**: Verifies the output entropy and hardware-level consistency of the RDRAND instruction.
+  - **Side-Channel Mitigations**: Evaluates the status of hardware-level mitigations for Spectre and Meltdown class vulnerabilities.
+- **Risk Impact**: Critical (+95) for instruction emulation detection, High (+60) for RDRAND integrity violations.
+
+### Risk Engine v29
+Upgraded the `calculateAdvancedRiskScore` function to integrate ISA Attestation signals.
+- **Version**: 29.0.0
+- **Weighting**: Instruction Emulation Detected (+95 - Critical), RDRAND Integrity Violation (+60 - High), Spectre/Meltdown Mitigations Disabled (+40).
