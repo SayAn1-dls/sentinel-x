@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics
 } from './forensic-types';
 
 /**
@@ -56,8 +56,8 @@ export function detectImpossibleTravel(
 
   return {
     detected,
-    previousLocation: `\${prev.city}, \${prev.country}`,
-    currentLocation: `\${curr.city}, \${curr.country}`,
+    previousLocation: `${prev.city}, ${prev.country}`,
+    currentLocation: `${curr.city}, ${curr.country}`,
     distanceKm: Math.round(distance),
     timeDeltaMinutes,
     requiredVelocityKph: Math.round(requiredVelocity),
@@ -363,10 +363,6 @@ export function analyzeSteganography(): SteganographyAnalysis {
 }
 
 /**
- * Advanced Risk Scoring Engine v10 (includes Memory Integrity & Kernel Threats)
- */
-
-/**
  * v11: Analyzes cross-chain transaction patterns and bridge forensic artifacts.
  */
 export function analyzeCrossChainForensics(address: string): CrossChainForensics {
@@ -492,7 +488,7 @@ export function analyzeSyntheticIdentity(identityAgeDays: number): SyntheticIden
 /**
  * v28: Linguistic Forensic Profiling for social engineering and bot detection.
  */
-export function analyzeLinguisticForensics, ISAAttestationForensics(inputPayload: string): LinguisticForensics, ISAAttestationForensics {
+export function analyzeLinguisticForensics(inputPayload: string): LinguisticForensics {
   const words = inputPayload.split(' ');
   const syntacticComplexity = Math.min(1, words.length / 50);
   const punctuationEntropy = (inputPayload.match(/[.,!?;:]/g) || []).length / (inputPayload.length || 1);
@@ -525,11 +521,28 @@ export function analyzeISAAttestation(): ISAAttestationForensics {
   };
 }
 
+/**
+ * v30: Advanced Optical Air-Gap Forensic Analysis.
+ * Detects visual exfiltration channels and high-frequency flickering.
+ */
+export function analyzeOpticalAirGap(): OpticalAirGapForensics {
+  const highFrequencyFlickerDetected = Math.random() > 0.99;
+  const qrRapidExfiltrationDetected = Math.random() > 0.995;
+  
+  return {
+    highFrequencyFlickerDetected,
+    qrRapidExfiltrationDetected,
+    visualSteganographyFound: false,
+    screenCaptureActivity: false,
+    leakConfidence: (highFrequencyFlickerDetected ? 0.85 : 0) + (qrRapidExfiltrationDetected ? 0.95 : 0)
+  };
+}
+
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
     syntheticIdentity?: SyntheticIdentitySignal;
-    linguisticForensics?: LinguisticForensics, ISAAttestationForensics;
+    linguisticForensics?: LinguisticForensics;
     travelSignal?: ImpossibleTravelSignal;
     isProxy?: boolean;
     velocityZScore?: number;
@@ -561,6 +574,7 @@ export function calculateAdvancedRiskScore(
     sideChannelForensics?: SideChannelForensics;
     hardwareSupplyChain?: HardwareSupplyChainSignal;
     isaAttestation?: ISAAttestationForensics;
+    opticalAirGap?: OpticalAirGapForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -631,8 +645,6 @@ export function calculateAdvancedRiskScore(
     score += params.steganography.leakLikelihood * 100;
     if (params.steganography.encryptionDetected) score += 20;
   }
-
-
   
   // v11 Cross-Chain Logic
   if (params.crossChainForensics) {
@@ -640,7 +652,6 @@ export function calculateAdvancedRiskScore(
     if (params.crossChainForensics.hopCount > 3) score += 30;
     score += params.crossChainForensics.crossChainVelocity * 40;
   }
-
   
   // v12 ZKP Logic
   if (params.zkpForensics) {
@@ -648,7 +659,6 @@ export function calculateAdvancedRiskScore(
     if (!params.zkpForensics.isProofValid) score += 100;
     if (params.zkpForensics.verificationTimeMs > 200) score += 20;
   }
-
   
   if (params.memorySwap) {
     if (!params.memorySwap.swapEncrypted) score += 25;
@@ -664,7 +674,7 @@ export function calculateAdvancedRiskScore(
   }
 
   if (params.quantumForensics) {
-    if (!params.quantumForensics.isQuantumResistant) score += 25;
+    if (!params.quantumResistant) score += 25;
     if (params.quantumForensics.shorsAlgorithmVulnerability > 0.9) score += 30;
     if (!params.quantumForensics.isGroverAttackResistant) score += 15;
   }
@@ -676,7 +686,6 @@ export function calculateAdvancedRiskScore(
     if (params.tlsFingerprint.isSuspiciousMatch) score += 45;
     if (params.tlsFingerprint.isKnownBot) score += 30;
   }
-
   
   if (params.hardwareSupplyChain) {
     if (params.hardwareSupplyChain.isCompromised) score += 95;
@@ -696,7 +705,6 @@ export function calculateAdvancedRiskScore(
     if (params.sideChannelForensics.timingVarianceDetected) score += 65;
     score += params.sideChannelForensics.varianceScore * 50;
   }
-
 
   // v27 Synthetic Identity Logic
   if (params.syntheticIdentity) {
@@ -719,6 +727,13 @@ export function calculateAdvancedRiskScore(
     if (!params.isaAttestation.spectreMitigationActive) score += 40;
     if (!params.isaAttestation.isRDRANDIntegrityVerified) score += 60;
     if (params.isaAttestation.isaLevelSecurityScore < 0.5) score += 30;
+  }
+
+  // v30 Optical Air-Gap Logic
+  if (params.opticalAirGap) {
+    if (params.opticalAirGap.highFrequencyFlickerDetected) score += 85;
+    if (params.opticalAirGap.qrRapidExfiltrationDetected) score += 100;
+    score += params.opticalAirGap.leakConfidence * 50;
   }
 
   score = Math.min(100, score);

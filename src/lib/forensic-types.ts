@@ -245,6 +245,14 @@ export interface ISAAttestationForensics {
   isaLevelSecurityScore: number;
 }
 
+export interface OpticalAirGapForensics {
+  highFrequencyFlickerDetected: boolean;
+  qrRapidExfiltrationDetected: boolean;
+  visualSteganographyFound: boolean;
+  screenCaptureActivity: boolean;
+  leakConfidence: number;
+}
+
 export interface ForensicIntelligence {
   isaAttestation?: ISAAttestationForensics;
   linguisticForensics?: LinguisticForensics;
@@ -281,6 +289,7 @@ export interface ForensicIntelligence {
   quantumForensics?: QuantumForensics;
   sideChannelForensics?: SideChannelForensics;
   tlsFingerprint?: TLSFingerprintSignal;
+  opticalAirGap?: OpticalAirGapForensics;
 }
 
 export interface SteganographyAnalysis {

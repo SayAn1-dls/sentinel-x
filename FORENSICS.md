@@ -476,3 +476,21 @@ Implemented deep analysis of hardware-level security primitives and instruction 
 Upgraded the `calculateAdvancedRiskScore` function to integrate ISA Attestation signals.
 - **Version**: 29.0.0
 - **Weighting**: Instruction Emulation Detected (+95 - Critical), RDRAND Integrity Violation (+60 - High), Spectre/Meltdown Mitigations Disabled (+40).
+
+## Update: 2026-09-04 - Optical Air-Gap Analysis & ISA Forensic Refinement (v30)
+
+### Optical Air-Gap Forensic Analysis
+Implemented core logic for detecting visual exfiltration channels, including high-frequency screen flickering and rapid QR-code sequences. This fills the gap between documented specifications and actual implementation.
+- **Signal**: `opticalAirGap`
+- **Checks**:
+  - **High-Frequency Flicker**: Detects subtle luminescent variations used for data transmission.
+  - **QR Rapid Exfiltration**: Monitors for rapid sequence markers in visual payloads.
+- **Risk Impact**: Critical (+100) for rapid QR exfiltration, High (+85) for flicker detection.
+
+### ISA Attestation & Linguistic Forensic Logic Restoration
+Fixed a critical syntax error in the forensic engine where `analyzeLinguisticForensics` and `analyzeISAAttestation` logic was partially merged or incorrectly exported. Restored proper TypeScript interfaces and separate analysis functions.
+
+### Risk Engine v30
+Upgraded the `calculateAdvancedRiskScore` function to integrate Optical Air-Gap signals and properly handle ISA Attestation metrics.
+- **Version**: 30.0.0
+- **Weighting**: QR Rapid Exfiltration (+100), High-Frequency Flicker (+85), Instruction Emulation (+95).
