@@ -253,7 +253,26 @@ export interface OpticalAirGapForensics {
   leakConfidence: number;
 }
 
+
+export interface DeepfakeForensics {
+  isSyntheticMediaDetected: boolean;
+  spatialIncoherenceScore: number;
+  temporalFlickerDetected: boolean;
+  frequencyDomainAnomaly: boolean;
+  confidenceScore: number;
+}
+
+export interface VoiceBiometricForensics {
+  isVoiceCloned: boolean;
+  playbackAttackDetected: boolean;
+  spectralEnvelopeMismatch: boolean;
+  prosodyConsistencyScore: number;
+  syntheticArtifactsDetected: boolean;
+}
+
 export interface ForensicIntelligence {
+  deepfakeForensics?: DeepfakeForensics;
+  voiceBiometrics?: VoiceBiometricForensics;
   isaAttestation?: ISAAttestationForensics;
   linguisticForensics?: LinguisticForensics;
   syntheticIdentity?: SyntheticIdentitySignal;
