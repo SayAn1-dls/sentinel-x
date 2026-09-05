@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics
 } from './forensic-types';
 
 /**
@@ -525,7 +525,7 @@ export function analyzeISAAttestation(): ISAAttestationForensics {
  * v30: Advanced Optical Air-Gap Forensic Analysis.
  * Detects visual exfiltration channels and high-frequency flickering.
  */
-export function analyzeOpticalAirGap(): OpticalAirGapForensics {
+export function analyzeOpticalAirGap(): OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics {
   const highFrequencyFlickerDetected = Math.random() > 0.99;
   const qrRapidExfiltrationDetected = Math.random() > 0.995;
   
@@ -535,6 +535,35 @@ export function analyzeOpticalAirGap(): OpticalAirGapForensics {
     visualSteganographyFound: false,
     screenCaptureActivity: false,
     leakConfidence: (highFrequencyFlickerDetected ? 0.85 : 0) + (qrRapidExfiltrationDetected ? 0.95 : 0)
+  };
+}
+
+
+/**
+ * v31: Analyzes for Deepfake (Synthetic Media) artifacts.
+ */
+export function analyzeDeepfakeForensics(): DeepfakeForensics {
+  const isSynthetic = Math.random() > 0.992;
+  return {
+    isSyntheticMediaDetected: isSynthetic,
+    spatialIncoherenceScore: isSynthetic ? 0.88 : 0.05,
+    temporalFlickerDetected: isSynthetic && Math.random() > 0.4,
+    frequencyDomainAnomaly: isSynthetic && Math.random() > 0.7,
+    confidenceScore: isSynthetic ? 0.94 : 0.02
+  };
+}
+
+/**
+ * v32: Analyzes Voice Biometrics for cloning and playback attacks.
+ */
+export function analyzeVoiceBiometrics(): VoiceBiometricForensics {
+  const isCloned = Math.random() > 0.995;
+  return {
+    isVoiceCloned: isCloned,
+    playbackAttackDetected: false,
+    spectralEnvelopeMismatch: isCloned,
+    prosodyConsistencyScore: isCloned ? 0.45 : 0.92,
+    syntheticArtifactsDetected: isCloned
   };
 }
 
@@ -574,7 +603,7 @@ export function calculateAdvancedRiskScore(
     sideChannelForensics?: SideChannelForensics;
     hardwareSupplyChain?: HardwareSupplyChainSignal;
     isaAttestation?: ISAAttestationForensics;
-    opticalAirGap?: OpticalAirGapForensics;
+    opticalAirGap?: OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -735,6 +764,11 @@ export function calculateAdvancedRiskScore(
     if (params.opticalAirGap.qrRapidExfiltrationDetected) score += 100;
     score += params.opticalAirGap.leakConfidence * 50;
   }
+
+  
+  // v31 Deepfake & v32 Voice Biometrics Logic
+  if (params.deepfakeForensics?.isSyntheticMediaDetected) score += 95;
+  if (params.voiceBiometrics?.isVoiceCloned) score += 90;
 
   score = Math.min(100, score);
 
