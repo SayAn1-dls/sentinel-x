@@ -309,6 +309,7 @@ export interface ForensicIntelligence {
   sideChannelForensics?: SideChannelForensics;
   tlsFingerprint?: TLSFingerprintSignal;
   opticalAirGap?: OpticalAirGapForensics;
+  honeytokenForensics?: HoneytokenForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -344,4 +345,12 @@ export interface SideChannelForensics {
   expectedLatencyMs: number;
   varianceScore: number;
   isHighRisk: boolean;
+}
+
+export interface HoneytokenForensics {
+  decoyFieldAccessed: boolean;
+  hiddenResourceRequested: boolean;
+  honeytokenTriggered: boolean;
+  interactionType: 'TRAP_FIELD' | 'GHOST_ENDPOINT' | 'CANARY_TOKEN' | 'NONE';
+  attackerProfilingScore: number;
 }

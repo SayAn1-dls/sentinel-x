@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics
 } from './forensic-types';
 
 /**
@@ -525,7 +525,7 @@ export function analyzeISAAttestation(): ISAAttestationForensics {
  * v30: Advanced Optical Air-Gap Forensic Analysis.
  * Detects visual exfiltration channels and high-frequency flickering.
  */
-export function analyzeOpticalAirGap(): OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics {
+export function analyzeOpticalAirGap(): OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics {
   const highFrequencyFlickerDetected = Math.random() > 0.99;
   const qrRapidExfiltrationDetected = Math.random() > 0.995;
   
@@ -603,7 +603,10 @@ export function calculateAdvancedRiskScore(
     sideChannelForensics?: SideChannelForensics;
     hardwareSupplyChain?: HardwareSupplyChainSignal;
     isaAttestation?: ISAAttestationForensics;
-    opticalAirGap?: OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics;
+    opticalAirGap?: OpticalAirGapForensics;
+    deepfakeForensics?: DeepfakeForensics;
+    voiceBiometrics?: VoiceBiometricForensics;
+    honeytokenForensics?: HoneytokenForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -770,6 +773,14 @@ export function calculateAdvancedRiskScore(
   if (params.deepfakeForensics?.isSyntheticMediaDetected) score += 95;
   if (params.voiceBiometrics?.isVoiceCloned) score += 90;
 
+  // v33 Honeytoken Forensic Logic
+  if (params.honeytokenForensics) {
+    if (params.honeytokenForensics.honeytokenTriggered) score += 95;
+    if (params.honeytokenForensics.decoyFieldAccessed) score += 70;
+    if (params.honeytokenForensics.hiddenResourceRequested) score += 85;
+    score += params.honeytokenForensics.attackerProfilingScore * 50;
+  }
+
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -861,5 +872,29 @@ export function analyzeSideChannelTiming(operationType: 'CRYPTOGRAPHIC_VERIFICAT
     expectedLatencyMs: expectedLatency,
     varianceScore: parseFloat((variance / expectedLatency).toFixed(4)),
     isHighRisk
+  };
+}
+
+/**
+ * v33: Honeytoken Forensic Analysis - Detects interactions with decoy fields and canary resources.
+ */
+export function analyzeHoneytokenInteraction(
+  decoyAccessed: boolean,
+  hiddenRequested: boolean,
+  triggerCount: number
+): HoneytokenForensics {
+  const honeytokenTriggered = decoyAccessed || hiddenRequested || triggerCount > 0;
+  
+  let interactionType: 'TRAP_FIELD' | 'GHOST_ENDPOINT' | 'CANARY_TOKEN' | 'NONE' = 'NONE';
+  if (decoyAccessed) interactionType = 'TRAP_FIELD';
+  else if (hiddenRequested) interactionType = 'GHOST_ENDPOINT';
+  else if (triggerCount > 0) interactionType = 'CANARY_TOKEN';
+
+  return {
+    decoyFieldAccessed: decoyAccessed,
+    hiddenResourceRequested: hiddenRequested,
+    honeytokenTriggered,
+    interactionType,
+    attackerProfilingScore: honeytokenTriggered ? Math.min(0.98, 0.4 + triggerCount * 0.2) : 0.02
   };
 }

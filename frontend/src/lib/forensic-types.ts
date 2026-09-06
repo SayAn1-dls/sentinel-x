@@ -288,6 +288,7 @@ export interface ForensicIntelligence {
   dnsIntegrity?: DNSIntegritySignal;
   steganography?: SteganographyAnalysis;
   bgpRouting?: BGPRouteLeakSignal;
+  honeytokenForensics?: HoneytokenForensics;
   syntheticIdentity?: SyntheticIdentityForensics;
 }
 
@@ -342,4 +343,12 @@ export interface SyntheticIdentityForensics {
   linkedAccountEntropy: number;
   socialValidationScore: number;
   isHighRiskClusterMember: boolean;
+}
+
+export interface HoneytokenForensics {
+  decoyFieldAccessed: boolean;
+  hiddenResourceRequested: boolean;
+  honeytokenTriggered: boolean;
+  interactionType: 'TRAP_FIELD' | 'GHOST_ENDPOINT' | 'CANARY_TOKEN' | 'NONE';
+  attackerProfilingScore: number;
 }
