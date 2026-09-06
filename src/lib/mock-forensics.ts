@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -154,16 +154,18 @@ export function enrichWithForensics(transaction: any): any {
   
   const deepfakeForensics = analyzeDeepfakeForensics();
   const voiceBiometrics = analyzeVoiceBiometrics();
+  const honeytokenForensics = analyzeHoneytokenInteraction(Math.random() > 0.99, Math.random() > 0.995, Math.random() > 0.98 ? 2 : 0);
   const syntheticIdentity = analyzeSyntheticIdentity(transaction.accountAgeDays || 15);
   const linguisticForensics = analyzeLinguisticForensics(transaction.memo || 'Standard treasury transfer execution.');
   const isaAttestation = analyzeISAAttestation();
-  const opticalAirGap = analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics();
+  const opticalAirGap = analyzeOpticalAirGap();
 
   return {
     ...transaction,
     forensics: {
       deepfakeForensics,
       voiceBiometrics,
+      honeytokenForensics,
       syntheticIdentity,
       linguisticForensics,
       isaAttestation,
