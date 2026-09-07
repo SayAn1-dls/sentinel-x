@@ -253,6 +253,14 @@ export interface OpticalAirGapForensics {
   leakConfidence: number;
 }
 
+export interface AcousticAirGapForensics {
+  ultrasoundExfiltrationDetected: boolean;
+  frequencyRangeHz: number;
+  signalPowerDb: number;
+  acousticSignatureMatch: boolean;
+  leakConfidence: number;
+}
+
 
 export interface DeepfakeForensics {
   isSyntheticMediaDetected: boolean;
@@ -271,6 +279,7 @@ export interface VoiceBiometricForensics {
 }
 
 export interface ForensicIntelligence {
+  acousticAirGap?: AcousticAirGapForensics;
   deepfakeForensics?: DeepfakeForensics;
   voiceBiometrics?: VoiceBiometricForensics;
   isaAttestation?: ISAAttestationForensics;
