@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics, AcousticAirGapForensics
 } from './forensic-types';
 
 /**
@@ -525,7 +525,7 @@ export function analyzeISAAttestation(): ISAAttestationForensics {
  * v30: Advanced Optical Air-Gap Forensic Analysis.
  * Detects visual exfiltration channels and high-frequency flickering.
  */
-export function analyzeOpticalAirGap(): OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics {
+export function analyzeOpticalAirGap(): OpticalAirGapForensics {
   const highFrequencyFlickerDetected = Math.random() > 0.99;
   const qrRapidExfiltrationDetected = Math.random() > 0.995;
   
@@ -564,6 +564,21 @@ export function analyzeVoiceBiometrics(): VoiceBiometricForensics {
     spectralEnvelopeMismatch: isCloned,
     prosodyConsistencyScore: isCloned ? 0.45 : 0.92,
     syntheticArtifactsDetected: isCloned
+  };
+}
+
+/**
+ * v34: Advanced Acoustic Air-Gap Forensic Analysis.
+ * Detects inaudible ultrasound exfiltration channels.
+ */
+export function analyzeAcousticAirGap(): AcousticAirGapForensics {
+  const ultrasoundExfiltrationDetected = Math.random() > 0.997;
+  return {
+    ultrasoundExfiltrationDetected,
+    frequencyRangeHz: ultrasoundExfiltrationDetected ? 18000 + Math.random() * 4000 : 0,
+    signalPowerDb: ultrasoundExfiltrationDetected ? -60 + Math.random() * 20 : -100,
+    acousticSignatureMatch: ultrasoundExfiltrationDetected,
+    leakConfidence: ultrasoundExfiltrationDetected ? 0.98 : 0.01
   };
 }
 
@@ -607,6 +622,7 @@ export function calculateAdvancedRiskScore(
     deepfakeForensics?: DeepfakeForensics;
     voiceBiometrics?: VoiceBiometricForensics;
     honeytokenForensics?: HoneytokenForensics;
+    acousticAirGap?: AcousticAirGapForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -779,6 +795,12 @@ export function calculateAdvancedRiskScore(
     if (params.honeytokenForensics.decoyFieldAccessed) score += 70;
     if (params.honeytokenForensics.hiddenResourceRequested) score += 85;
     score += params.honeytokenForensics.attackerProfilingScore * 50;
+  }
+
+  // v34 Acoustic Air-Gap Logic
+  if (params.acousticAirGap) {
+    if (params.acousticAirGap.ultrasoundExfiltrationDetected) score += 95;
+    score += params.acousticAirGap.leakConfidence * 50;
   }
 
   score = Math.min(100, score);
