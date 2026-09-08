@@ -290,6 +290,7 @@ export interface ForensicIntelligence {
   bgpRouting?: BGPRouteLeakSignal;
   honeytokenForensics?: HoneytokenForensics;
   syntheticIdentity?: SyntheticIdentityForensics;
+  microInteractions?: MicroInteractionsForensics;
 }
 
 export interface SupplyChainForensics {
@@ -351,4 +352,12 @@ export interface HoneytokenForensics {
   honeytokenTriggered: boolean;
   interactionType: 'TRAP_FIELD' | 'GHOST_ENDPOINT' | 'CANARY_TOKEN' | 'NONE';
   attackerProfilingScore: number;
+}
+
+export interface MicroInteractionsForensics {
+  averageDwellTimeMs: number;
+  clickPrecisionScore: number;
+  rapidScrollDetected: boolean;
+  hesitationFrequency: number;
+  isBotLikeMicroBehavior: boolean;
 }
