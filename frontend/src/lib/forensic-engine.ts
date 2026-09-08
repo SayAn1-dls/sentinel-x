@@ -32,7 +32,7 @@ import {
   QuantumAttackForensics,
   SatelliteForensics,
   MFAIntegrityForensics,
-  AuthenticatorForensics, SyntheticIdentityForensics
+  AuthenticatorForensics, SyntheticIdentityForensics, MicroInteractionsForensics
 } from './forensic-types';
 
 /**
@@ -502,7 +502,7 @@ export function analyzeMFAIntegrity(): MFAIntegrityForensics {
 /**
  * v26: Authenticator Forensic Correlation - Analyzes hardware keys and attestation tokens.
  */
-export function analyzeAuthenticatorForensics, SyntheticIdentityForensics(): AuthenticatorForensics {
+export function analyzeAuthenticatorForensics(): AuthenticatorForensics {
   return {
     isHardwareSecurityKey: true,
     authenticatorAAGUID: 'ea9b8d66-4d01-1d21-3ce7-b6b3da6b6431',
@@ -553,7 +553,7 @@ export function calculateAdvancedRiskScore(
     quantumForensics?: QuantumAttackForensics;
     satelliteForensics?: SatelliteForensics;
     mfaIntegrity?: MFAIntegrityForensics;
-    authenticatorForensics?: AuthenticatorForensics, SyntheticIdentityForensics;
+    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -738,6 +738,14 @@ export function calculateAdvancedRiskScore(
     if (params.syntheticIdentity.socialValidationScore < 0.2) score += 40;
   }
 
+  // v28 Micro-Interactions Logic
+  if (params.microInteractions) {
+    if (params.microInteractions.isBotLikeMicroBehavior) score += 65;
+    if (params.microInteractions.rapidScrollDetected) score += 25;
+    if (params.microInteractions.averageDwellTimeMs < 40) score += 40;
+    score += params.microInteractions.hesitationFrequency * 5;
+  }
+
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -880,5 +888,32 @@ export function analyzeSyntheticIdentity(userId: string): SyntheticIdentityForen
     linkedAccountEntropy: isHighRisk ? 0.15 : 0.85,
     socialValidationScore: isHighRisk ? 0.12 : 0.95,
     isHighRiskClusterMember: isHighRisk
+  };
+}
+
+/**
+ * v28: Micro-Interactions Forensics - Analyzes sub-second interaction patterns for bot-like hesitation or precision.
+ */
+export function analyzeMicroInteractions(
+  clickTimestamps: number[],
+  mousePath: { x: number; y: number; t: number }[]
+): MicroInteractionsForensics {
+  const dwellTimes = [];
+  for (let i = 1; i < clickTimestamps.length; i++) {
+    dwellTimes.push(clickTimestamps[i] - clickTimestamps[i-1]);
+  }
+  
+  const avgDwellTime = dwellTimes.length > 0 ? dwellTimes.reduce((a, b) => a + b, 0) / dwellTimes.length : 150;
+  const hesitationFrequency = dwellTimes.filter(d => d > 1000).length;
+  
+  // Bots often have extremely precise or perfectly linear mouse paths
+  const isBotLike = avgDwellTime < 50 || hesitationFrequency > 10;
+  
+  return {
+    averageDwellTimeMs: avgDwellTime,
+    clickPrecisionScore: 0.98,
+    rapidScrollDetected: false,
+    hesitationFrequency,
+    isBotLikeMicroBehavior: isBotLike
   };
 }

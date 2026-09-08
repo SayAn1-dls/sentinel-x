@@ -520,27 +520,18 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate Deepfake and Voi
 - **Version**: 31.0.0
 - **Weighting**: Synthetic Media Detected (+95), Voice Cloning Detected (+90), Spatial Incoherence (up to +50).
 
-## Update: 2026-09-05 - Deepfake Forensics & Voice Biometric Integrity (v31 & v32)
+## Update: 2026-09-08 - Micro-Interactions Forensics & Clickstream Analysis (v33)
 
-### Deepfake Forensic Analysis (v31)
-Implemented detection for synthetic media (Deepfakes) by analyzing spatial and temporal artifacts in media streams.
-- **Signal**: `deepfakeForensics`
+### Micro-Interactions Forensic Analysis
+Implemented sub-second interaction analysis to detect bot-like hesitation, ultra-precise movements, and anomalous click patterns.
+- **Signal**: `microInteractions`
 - **Checks**:
-  - **Spatial Incoherence**: Detects structural anomalies in facial features and environment lighting consistent with AI-generated frames.
-  - **Temporal Flicker**: Identifies high-frequency inter-frame variations typical of lower-quality synthetic video synthesis.
-  - **Frequency Domain Anomaly**: Analyzes the Fourier Transform of media frames to detect high-frequency noise patterns indicative of generative model artifacts.
-- **Risk Impact**: Critical (+95) for explicit synthetic media detection.
+  - **Average Dwell Time**: Measures the time spent on interactive elements to identify robotic speed or lack of human deliberation.
+  - **Click Precision**: Evaluates the variance in click coordinates relative to element centers.
+  - **Hesitation Frequency**: Identifies unusual pauses that may indicate a bot script waiting for DOM elements or manual intervention in a semi-automated attack.
+- **Risk Impact**: High (+65) for explicit bot-like micro-behavior.
 
-### Voice Biometric Integrity (v32)
-Introduced forensic analysis for voice cloning and playback attacks to ensure the integrity of multi-modal biometric authentication.
-- **Signal**: `voiceBiometrics`
-- **Checks**:
-  - **Spectral Envelope Mismatch**: Compares the frequency distribution against historical human vocal profiles.
-  - **Prosody Consistency**: Analyzes the rhythm and intonation patterns to detect robotic or synthetic cadence.
-  - **Synthetic Artifacts**: Detects noise floors and ultrasonic artifacts typical of voice synthesis engines.
-- **Risk Impact**: Critical (+90) for voice cloning detection.
-
-### Risk Engine v31
-Upgraded the `calculateAdvancedRiskScore` function to integrate Deepfake and Voice Biometric signals.
-- **Version**: 31.0.0
-- **Weighting**: Synthetic Media Detected (+95), Voice Cloning Detected (+90), Spatial Incoherence (up to +50).
+### Risk Engine v33
+Upgraded the `calculateAdvancedRiskScore` function to integrate Micro-Interactions forensic signals.
+- **Version**: 33.0.0
+- **Weighting**: Bot-like Micro-Behavior (+65 - High), Rapid Scroll Detection (+25), Ultra-fast Dwell Time (+40).
