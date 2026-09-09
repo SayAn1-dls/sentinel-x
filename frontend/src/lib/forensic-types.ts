@@ -291,6 +291,7 @@ export interface ForensicIntelligence {
   honeytokenForensics?: HoneytokenForensics;
   syntheticIdentity?: SyntheticIdentityForensics;
   microInteractions?: MicroInteractionsForensics;
+  cryptoSideChannel?: CryptoSideChannelForensics;
 }
 
 export interface SupplyChainForensics {
@@ -360,4 +361,13 @@ export interface MicroInteractionsForensics {
   rapidScrollDetected: boolean;
   hesitationFrequency: number;
   isBotLikeMicroBehavior: boolean;
+}
+
+export interface CryptoSideChannelForensics {
+  timingJitterDetected: boolean;
+  powerAnalysisRisk: number;
+  electromagneticLeakageDetected: boolean;
+  isConstantTimeExecutionVerified: boolean;
+  cacheSideChannelDetected: boolean;
+  signatureMalleabilityRisk: number;
 }
