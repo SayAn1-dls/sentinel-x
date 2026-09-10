@@ -252,6 +252,14 @@ export interface AuthenticatorForensics {
   signatureCounter: number;
 }
 
+export interface GPUSideChannelForensics {
+  isGpuTimingLeakDetected: boolean;
+  shaderInstructionEntropy: number;
+  memoryBandwidthAnomaly: boolean;
+  isParallelComputeHijackLikely: boolean;
+  gpuProcessIsolationVerified: boolean;
+}
+
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
   quantumForensics?: QuantumAttackForensics;
@@ -265,6 +273,7 @@ export interface ForensicIntelligence {
   crossChainForensics?: CrossChainForensics;
   mfaIntegrity?: MFAIntegrityForensics;
   authenticatorForensics?: AuthenticatorForensics;
+  gpuSideChannel?: GPUSideChannelForensics;
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;
