@@ -535,3 +535,21 @@ Implemented sub-second interaction analysis to detect bot-like hesitation, ultra
 Upgraded the `calculateAdvancedRiskScore` function to integrate Micro-Interactions forensic signals.
 - **Version**: 33.0.0
 - **Weighting**: Bot-like Micro-Behavior (+65 - High), Rapid Scroll Detection (+25), Ultra-fast Dwell Time (+40).
+
+## Update: 2026-09-10 - GPU Side-Channel Forensic Analysis (v34)
+
+### GPU Side-Channel Forensics
+Implemented detection for timing leaks and instruction entropy anomalies in GPU shaders. This is critical for preventing side-channel attacks that exploit parallel compute resources to extract sensitive cryptographic material.
+
+- **Signal**: `gpuSideChannel`
+- **Checks**:
+  - **GPU Timing Leak Detection**: Identifies sub-millisecond variations in shader execution times.
+  - **Shader Instruction Entropy**: Analyzes the complexity and randomness of GPU instructions to detect hidden malicious shaders.
+  - **Parallel Compute Hijack Likelihood**: Monitors for unauthorized use of GPU cores for cryptojacking or background hash cracking.
+  - **GPU Process Isolation**: Verifies that GPU contexts are properly isolated to prevent cross-process data leakage.
+- **Risk Impact**: High (+75) for timing leaks, Critical (+90) for parallel compute hijacking.
+
+### Risk Engine v34
+Upgraded the `calculateAdvancedRiskScore` function to integrate GPU Side-Channel forensic signals and refined the scoring weighting for hardware-accelerated threats.
+- **Version**: 34.0.0
+- **Weighting**: Parallel Compute Hijack (+90 - Critical), GPU Timing Leak (+75 - High), GPU Isolation Violation (+60).

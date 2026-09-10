@@ -27,7 +27,7 @@ import {
   analyzeBehavioralBiometricsAdvanced,
   analyzeFingerprintForensics,
   analyzeBGPIntegrity,
-  analyzeHardwareTrojans, analyzeSyntheticIdentity, analyzeMicroInteractions, analyzeCryptoSideChannel,
+  analyzeHardwareTrojans, analyzeSyntheticIdentity, analyzeMicroInteractions, analyzeCryptoSideChannel, analyzeGPUSideChannel,
   analyzeQuantumForensics,
   analyzeSatelliteForensics,
   analyzeMFAIntegrity,
@@ -232,7 +232,15 @@ export function enrichWithForensics(transaction: any): any {
 
   const syntheticIdentity = analyzeSyntheticIdentity(transaction.userId || "anon_123");
   const microInteractions = analyzeMicroInteractions([Date.now() - 500, Date.now() - 480], [{x: 100, y: 100, t: Date.now() - 1000}]);
+  
   const cryptoSideChannel = analyzeCryptoSideChannel();
+  const gpuSideChannel = {
+    ...analyzeGPUSideChannel(),
+    isGpuTimingLeakDetected: Math.random() > 0.998,
+    isParallelComputeHijackLikely: Math.random() > 0.999,
+    shaderInstructionEntropy: Math.random() * 0.2
+  };
+
 
   return {
     ...transaction,
@@ -270,7 +278,7 @@ export function enrichWithForensics(transaction: any): any {
       hardwareTrojanForensics,
       syntheticIdentity,
       microInteractions,
-      cryptoSideChannel,
+      cryptoSideChannel, gpuSideChannel,
       quantumForensics,
       satelliteForensics,
       mfaIntegrity,
