@@ -31,7 +31,7 @@ import {
   analyzeQuantumForensics,
   analyzeSatelliteForensics,
   analyzeMFAIntegrity,
-  analyzeAuthenticatorForensics
+  analyzeAuthenticatorForensics, analyzeAcousticAirGap
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -233,6 +233,13 @@ export function enrichWithForensics(transaction: any): any {
   const syntheticIdentity = analyzeSyntheticIdentity(transaction.userId || "anon_123");
   const microInteractions = analyzeMicroInteractions([Date.now() - 500, Date.now() - 480], [{x: 100, y: 100, t: Date.now() - 1000}]);
   
+
+  const acousticAirGap = {
+    ...analyzeAcousticAirGap(),
+    ultrasonicSignalDetected: Math.random() > 0.999,
+    acousticExfiltrationLikely: Math.random() > 0.995,
+    signalConfidence: Math.random() * 0.1
+  };
   const cryptoSideChannel = analyzeCryptoSideChannel();
   const gpuSideChannel = {
     ...analyzeGPUSideChannel(),
@@ -279,6 +286,7 @@ export function enrichWithForensics(transaction: any): any {
       syntheticIdentity,
       microInteractions,
       cryptoSideChannel, gpuSideChannel,
+      acousticAirGap,
       quantumForensics,
       satelliteForensics,
       mfaIntegrity,
