@@ -260,6 +260,13 @@ export interface GPUSideChannelForensics {
   gpuProcessIsolationVerified: boolean;
 }
 
+export interface AcousticAirGapForensics {
+  ultrasonicSignalDetected: boolean;
+  acousticExfiltrationLikely: boolean;
+  frequencyHz: number;
+  signalConfidence: number;
+}
+
 export interface ForensicIntelligence {
   memoryForensics?: MemoryForensics;
   quantumForensics?: QuantumAttackForensics;
@@ -274,6 +281,7 @@ export interface ForensicIntelligence {
   mfaIntegrity?: MFAIntegrityForensics;
   authenticatorForensics?: AuthenticatorForensics;
   gpuSideChannel?: GPUSideChannelForensics;
+  acousticAirGap?: AcousticAirGapForensics;
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;

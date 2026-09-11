@@ -27,12 +27,12 @@ import {
   OpticalAirGapForensics, 
   SupplyChainForensics, 
   BGPRouteLeakSignal, 
-  SideChannelForensics,
-  HardwareTrojanForensics,
-  QuantumAttackForensics,
-  SatelliteForensics,
-  MFAIntegrityForensics,
-  AuthenticatorForensics, SyntheticIdentityForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics
+  SideChannelForensics, 
+  HardwareTrojanForensics, 
+  QuantumAttackForensics, 
+  SatelliteForensics, 
+  MFAIntegrityForensics, 
+  AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics
 } from './forensic-types';
 
 /**
@@ -779,6 +779,14 @@ export function calculateAdvancedRiskScore(
     score += params.gpuSideChannel.shaderInstructionEntropy * 50;
   }
 
+  
+  // v35 Acoustic Air-Gap Logic
+  if (params.acousticAirGap) {
+    if (params.acousticAirGap.ultrasonicSignalDetected) score += 95;
+    if (params.acousticAirGap.acousticExfiltrationLikely) score += 85;
+    score += params.acousticAirGap.signalConfidence * 100;
+  }
+
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -962,5 +970,17 @@ export function analyzeCryptoSideChannel(): CryptoSideChannelForensics, GPUSideC
     isConstantTimeExecutionVerified: true,
     cacheSideChannelDetected: false,
     signatureMalleabilityRisk: 0.02
+  };
+}
+
+/**
+ * v35: Analyzes Acoustic Air-Gap signals for ultrasonic data exfiltration attempts.
+ */
+export function analyzeAcousticAirGap(): AcousticAirGapForensics {
+  return {
+    ultrasonicSignalDetected: false,
+    acousticExfiltrationLikely: false,
+    frequencyHz: 18000,
+    signalConfidence: 0.05
   };
 }

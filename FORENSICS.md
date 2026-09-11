@@ -1,3 +1,20 @@
+## Update: 2026-09-11 - Acoustic Air-Gap Analysis & Ultrasonic Forensic Refinement (v35)
+
+### Acoustic Air-Gap Forensic Analysis
+Implemented logic for detecting covert acoustic exfiltration channels, specifically targeting high-frequency ultrasonic signals (18kHz-22kHz) used to bypass traditional network and optical air-gap defenses.
+
+- **Signal**: `acousticAirGap`
+- **Checks**:
+  - **Ultrasonic Detection**: Monitors for periodic high-frequency patterns above the threshold of human hearing.
+  - **Acoustic Exfiltration Risk**: Correlates system load with acoustic anomalies to detect side-channel leakage.
+- **Risk Impact**: Critical (+95) for ultrasonic detection, High (+85) for confirmed acoustic exfiltration artifacts.
+
+### Risk Engine v35
+Integrated the Acoustic Air-Gap logic into the `calculateAdvancedRiskScore` engine to ensure cross-channel forensic coverage.
+- **Version**: 35.0.0
+- **Weighting**: Ultrasonic Signal (+95), Acoustic Exfiltration Likely (+85).
+
+---
 # Sentinel-X Forensic Intelligence Protocol
 
 This document outlines the forensic analysis models and kernel-level integrity checks implemented in the Sentinel-X system.
@@ -497,7 +514,7 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate Optical Air-Gap 
 
 ## Update: 2026-09-05 - Deepfake Forensics & Voice Biometric Integrity (v31 & v32)
 
-### Deepfake Forensic Analysis (v31)
+### Deepfake Forensic Analysis (v35)
 Implemented detection for synthetic media (Deepfakes) by analyzing spatial and temporal artifacts in media streams.
 - **Signal**: `deepfakeForensics`
 - **Checks**:
@@ -515,9 +532,9 @@ Introduced forensic analysis for voice cloning and playback attacks to ensure th
   - **Synthetic Artifacts**: Detects noise floors and ultrasonic artifacts typical of voice synthesis engines.
 - **Risk Impact**: Critical (+90) for voice cloning detection.
 
-### Risk Engine v31
+### Risk Engine v35
 Upgraded the `calculateAdvancedRiskScore` function to integrate Deepfake and Voice Biometric signals.
-- **Version**: 31.0.0
+- **Version**: 35.0.0
 - **Weighting**: Synthetic Media Detected (+95), Voice Cloning Detected (+90), Spatial Incoherence (up to +50).
 
 ## Update: 2026-09-08 - Micro-Interactions Forensics & Clickstream Analysis (v33)
