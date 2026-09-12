@@ -17,7 +17,7 @@ import {
   SmartContractForensics, 
   DarkWebExposure, 
   NetworkPacketAnalysis, 
-  CloudInfrastructureSignal, 
+  CloudInfrastructureSignal, RFSideChannelForensics, 
   DNSIntegritySignal, 
   SteganographyAnalysis, 
   CrossChainForensics, 
@@ -567,7 +567,7 @@ export function calculateAdvancedRiskScore(
     quantumForensics?: QuantumAttackForensics;
     satelliteForensics?: SatelliteForensics;
     mfaIntegrity?: MFAIntegrityForensics;
-    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics, GPUSideChannelForensics;
+    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics, GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -787,6 +787,15 @@ export function calculateAdvancedRiskScore(
     score += params.acousticAirGap.signalConfidence * 100;
   }
 
+  
+  // v36: RF Side-Channel Logic
+  if (params.rfSideChannel) {
+    if (params.rfSideChannel.isRadioFrequencyLeakageDetected) score += 95;
+    if (params.rfSideChannel.isSDRInterceptionLikely) score += 90;
+    if (!params.rfSideChannel.frequencyHoppingIntegrity) score += 50;
+    score += params.rfSideChannel.spectrumAnomalyScore * 100;
+    score += params.rfSideChannel.nearFieldCommunicationRisk * 40;
+  }
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -982,5 +991,18 @@ export function analyzeAcousticAirGap(): AcousticAirGapForensics {
     acousticExfiltrationLikely: false,
     frequencyHz: 18000,
     signalConfidence: 0.05
+  };
+}
+
+/**
+ * v36: RF (Radio Frequency) Side-Channel Forensic Analysis - Detects electromagnetic leakage and SDR-based interception attempts.
+ */
+export function analyzeRFSideChannel(): RFSideChannelForensics {
+  return {
+    isRadioFrequencyLeakageDetected: false,
+    spectrumAnomalyScore: 0.08,
+    isSDRInterceptionLikely: false,
+    frequencyHoppingIntegrity: true,
+    nearFieldCommunicationRisk: 0.02
   };
 }

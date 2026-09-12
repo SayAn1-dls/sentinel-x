@@ -31,7 +31,7 @@ import {
   analyzeQuantumForensics,
   analyzeSatelliteForensics,
   analyzeMFAIntegrity,
-  analyzeAuthenticatorForensics, analyzeAcousticAirGap
+  analyzeAuthenticatorForensics, analyzeAcousticAirGap, analyzeRFSideChannel
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -235,17 +235,53 @@ export function enrichWithForensics(transaction: any): any {
   
 
   const acousticAirGap = {
-    ...analyzeAcousticAirGap(),
+    ...analyzeAcousticAirGap, analyzeRFSideChannel(),
     ultrasonicSignalDetected: Math.random() > 0.999,
     acousticExfiltrationLikely: Math.random() > 0.995,
     signalConfidence: Math.random() * 0.1
   };
   const cryptoSideChannel = analyzeCryptoSideChannel();
   const gpuSideChannel = {
+  const rfSideChannel = {
+    ...analyzeRFSideChannel(),
+    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
+    isSDRInterceptionLikely: Math.random() > 0.998,
+    spectrumAnomalyScore: Math.random() * 0.15
+  };
     ...analyzeGPUSideChannel(),
+  const rfSideChannel = {
+    ...analyzeRFSideChannel(),
+    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
+    isSDRInterceptionLikely: Math.random() > 0.998,
+    spectrumAnomalyScore: Math.random() * 0.15
+  };
     isGpuTimingLeakDetected: Math.random() > 0.998,
+  const rfSideChannel = {
+    ...analyzeRFSideChannel(),
+    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
+    isSDRInterceptionLikely: Math.random() > 0.998,
+    spectrumAnomalyScore: Math.random() * 0.15
+  };
     isParallelComputeHijackLikely: Math.random() > 0.999,
+  const rfSideChannel = {
+    ...analyzeRFSideChannel(),
+    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
+    isSDRInterceptionLikely: Math.random() > 0.998,
+    spectrumAnomalyScore: Math.random() * 0.15
+  };
     shaderInstructionEntropy: Math.random() * 0.2
+  const rfSideChannel = {
+    ...analyzeRFSideChannel(),
+    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
+    isSDRInterceptionLikely: Math.random() > 0.998,
+    spectrumAnomalyScore: Math.random() * 0.15
+  };
+  };
+  const rfSideChannel = {
+    ...analyzeRFSideChannel(),
+    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
+    isSDRInterceptionLikely: Math.random() > 0.998,
+    spectrumAnomalyScore: Math.random() * 0.15
   };
 
 
@@ -285,7 +321,7 @@ export function enrichWithForensics(transaction: any): any {
       hardwareTrojanForensics,
       syntheticIdentity,
       microInteractions,
-      cryptoSideChannel, gpuSideChannel,
+      cryptoSideChannel, gpuSideChannel, rfSideChannel,
       acousticAirGap,
       quantumForensics,
       satelliteForensics,
