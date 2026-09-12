@@ -51,26 +51,6 @@ function useCounter(target: number, duration = 2000) {
   return { count, ref };
 }
 
-/* ── Simulated transaction feed data ── */
-const TX_FEED = [
-  { id: 'TX-8A2F', amount: '$42,180.00', from: 'NODE-7X2', to: 'NODE-3K9', risk: 'LOW', time: '00:00:03' },
-  { id: 'TX-C91D', amount: '$128,500.00', from: 'NODE-1A8', to: 'NODE-9F2', risk: 'HIGH', time: '00:00:07' },
-  { id: 'TX-F4E7', amount: '$8,920.00', from: 'NODE-5M3', to: 'NODE-2J6', risk: 'CLEAR', time: '00:00:11' },
-  { id: 'TX-B28A', amount: '$256,000.00', from: 'NODE-4P1', to: 'NODE-8W5', risk: 'CRITICAL', time: '00:00:15' },
-  { id: 'TX-E5C3', amount: '$15,750.00', from: 'NODE-6T4', to: 'NODE-1R8', risk: 'LOW', time: '00:00:19' },
-  { id: 'TX-A1D9', amount: '$89,300.00', from: 'NODE-2K7', to: 'NODE-5N3', risk: 'MEDIUM', time: '00:00:23' },
-  { id: 'TX-D7F2', amount: '$3,200.00', from: 'NODE-9H6', to: 'NODE-4L1', risk: 'CLEAR', time: '00:00:27' },
-  { id: 'TX-9B4E', amount: '$467,890.00', from: 'NODE-3V2', to: 'NODE-7X8', risk: 'HIGH', time: '00:00:31' },
-];
-
-const RISK_COLOR: Record<string, string> = {
-  CRITICAL: 'text-[#FF2D55]',
-  HIGH: 'text-[#FF6B00]',
-  MEDIUM: 'text-[#FFB800]',
-  LOW: 'text-[#00FFB3]',
-  CLEAR: 'text-[#00D4FF]',
-};
-
 const STATS = [
   { label: 'Transactions Monitored', value: 42000000, display: '4.2Cr+', icon: Database },
   { label: 'Threats Intercepted', value: 12847, display: '12,847', icon: ShieldCheck },
@@ -120,6 +100,53 @@ const TECH_STACK = [
   { name: 'WebAuthn / FIDO2', category: 'Auth' },
   { name: 'Vercel', category: 'Deployment' },
 ];
+
+const TX_FEED = [
+  { id: 'TX-8A2F', amount: '$42,180.00', from: 'NODE-7X2', to: 'NODE-3K9', risk: 'LOW', time: '00:00:03' },
+  { id: 'TX-C91D', amount: '$128,500.00', from: 'NODE-1A8', to: 'NODE-9F2', risk: 'HIGH', time: '00:00:07' },
+  { id: 'TX-F4E7', amount: '$8,920.00', from: 'NODE-5M3', to: 'NODE-2J6', risk: 'CLEAR', time: '00:00:11' },
+  { id: 'TX-B28A', amount: '$256,000.00', from: 'NODE-4P1', to: 'NODE-8W5', risk: 'CRITICAL', time: '00:00:15' },
+  { id: 'TX-E5C3', amount: '$15,750.00', from: 'NODE-6T4', to: 'NODE-1R8', risk: 'LOW', time: '00:00:19' },
+  { id: 'TX-A1D9', amount: '$89,300.00', from: 'NODE-2K7', to: 'NODE-5N3', risk: 'MEDIUM', time: '00:00:23' },
+  { id: 'TX-D7F2', amount: '$3,200.00', from: 'NODE-9H6', to: 'NODE-4L1', risk: 'CLEAR', time: '00:00:27' },
+  { id: 'TX-9B4E', amount: '$467,890.00', from: 'NODE-3V2', to: 'NODE-7X8', risk: 'HIGH', time: '00:00:31' },
+];
+
+const RISK_COLOR: Record<string, string> = {
+  CRITICAL: 'text-[#FF2D55]',
+  HIGH: 'text-[#FF6B00]',
+  MEDIUM: 'text-[#FFB800]',
+  LOW: 'text-[#00FFB3]',
+  CLEAR: 'text-[#00D4FF]',
+};
+
+/* ── Threat Timeline events ── */
+const THREAT_TIMELINE = [
+  { time: '14:23:07.041', event: 'ANOMALY_DETECTED', detail: 'Unusual transaction pattern flagged on NODE-4P1. Velocity spike: 340% above baseline.', severity: 'CRITICAL' },
+  { time: '14:23:08.102', event: 'MODEL_INFERENCE', detail: 'Neural risk engine scored TX-B28A at 0.94 confidence. Pattern matches layering typology.', severity: 'HIGH' },
+  { time: '14:23:08.337', event: 'AUTO_QUARANTINE', detail: 'TX-B28A quarantined. Downstream transfers to NODE-8W5 suspended pending review.', severity: 'HIGH' },
+  { time: '14:23:09.518', event: 'SANCTIONS_CHECK', detail: 'PEP screening initiated for beneficiary entity. Cross-referencing OFAC, EU, UN watchlists.', severity: 'MEDIUM' },
+  { time: '14:23:10.004', event: 'ALERT_DISPATCHED', detail: 'Priority alert routed to compliance team. Escalation level: L2. SLA clock started.', severity: 'HIGH' },
+  { time: '14:23:12.891', event: 'GRAPH_UPDATED', detail: 'Entity relationship graph updated. 3 new edges detected between NODE-4P1 cluster.', severity: 'MEDIUM' },
+  { time: '14:23:15.220', event: 'CASE_CREATED', detail: 'Investigation case #SX-2026-4891 opened. Assigned to Senior Analyst. Audit trail initiated.', severity: 'LOW' },
+  { time: '14:23:18.003', event: 'SYSTEM_NOMINAL', detail: 'Threat containment confirmed. Resuming standard monitoring on all active nodes.', severity: 'CLEAR' },
+];
+
+const SEVERITY_COLOR: Record<string, string> = {
+  CRITICAL: 'text-[#FF2D55]',
+  HIGH: 'text-[#FF6B00]',
+  MEDIUM: 'text-[#FFB800]',
+  LOW: 'text-[#00FFB3]',
+  CLEAR: 'text-[#00D4FF]',
+};
+
+const SEVERITY_BG: Record<string, string> = {
+  CRITICAL: 'bg-[rgba(255,45,85,0.1)] border-[rgba(255,45,85,0.25)]',
+  HIGH: 'bg-[rgba(255,107,0,0.1)] border-[rgba(255,107,0,0.25)]',
+  MEDIUM: 'bg-[rgba(255,184,0,0.08)] border-[rgba(255,184,0,0.2)]',
+  LOW: 'bg-[rgba(0,255,179,0.06)] border-[rgba(0,255,179,0.15)]',
+  CLEAR: 'bg-[rgba(0,212,255,0.06)] border-[rgba(0,212,255,0.15)]',
+};
 
 export default function HomePage() {
   const [currentTime, setCurrentTime] = useState('');
@@ -212,10 +239,10 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="terminal-text text-5xl md:text-7xl lg:text-8xl font-bold leading-[1] mb-6 tracking-tight"
           >
-            <span className="text-[#E2E8F0]">THREAT</span>{' '}
-            <span className="text-[#E2E8F0]">INTELLIGENCE</span>
+            <span className="text-[#E2E8F0]">REAL-TIME</span>{' '}
+            <span className="text-[#E2E8F0]">FRAUD</span>
             <br />
-            <span className="neon-text-cyan">ACTIVE</span>
+            <span className="neon-text-cyan">INTELLIGENCE</span>
             <span className="terminal-cursor text-[#00D4FF] ml-1" />
           </motion.h1>
 
@@ -291,6 +318,45 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Feature Grid ── */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
+              // CAPABILITIES
+            </span>
+            <h2 className="terminal-text text-3xl md:text-4xl font-bold text-[#E2E8F0]">
+              CORE <span className="neon-text-cyan">MODULES</span>
+            </h2>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            {FEATURES.map(({ icon: Icon, title, desc }) => (
+              <div
+                key={title}
+                className="border border-[rgba(0,212,255,0.08)] bg-[rgba(10,15,30,0.6)] rounded-xl p-6 backdrop-blur-xl card-hover text-left"
+              >
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center border border-[rgba(0,212,255,0.15)] bg-[rgba(0,212,255,0.06)] mb-4">
+                  <Icon size={18} className="text-[#00D4FF]" />
+                </div>
+                <h3 className="terminal-text text-sm font-bold tracking-wide mb-2 text-[#E2E8F0]">{title}</h3>
+                <p className="text-xs text-[rgba(148,163,184,0.5)] leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── How It Works ── */}
       <section id="how-it-works" className="relative z-10 py-24 px-6 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
@@ -355,45 +421,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Feature Grid ── */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
-              // CAPABILITIES
-            </span>
-            <h2 className="terminal-text text-3xl md:text-4xl font-bold text-[#E2E8F0]">
-              CORE <span className="neon-text-cyan">MODULES</span>
-            </h2>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
-            {FEATURES.map(({ icon: Icon, title, desc }) => (
-              <div
-                key={title}
-                className="border border-[rgba(0,212,255,0.08)] bg-[rgba(10,15,30,0.6)] rounded-xl p-6 backdrop-blur-xl card-hover text-left"
-              >
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center border border-[rgba(0,212,255,0.15)] bg-[rgba(0,212,255,0.06)] mb-4">
-                  <Icon size={18} className="text-[#00D4FF]" />
-                </div>
-                <h3 className="terminal-text text-sm font-bold tracking-wide mb-2 text-[#E2E8F0]">{title}</h3>
-                <p className="text-xs text-[rgba(148,163,184,0.5)] leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
       {/* ── Tech Stack ── */}
       <section id="tech-stack" className="relative z-10 py-24 px-6 scroll-mt-20">
         <div className="max-w-5xl mx-auto">
@@ -432,6 +459,94 @@ export default function HomePage() {
                 <div className="text-[9px] tracking-[0.3em] uppercase text-[rgba(148,163,184,0.4)] terminal-text mt-1">{tech.category}</div>
               </motion.div>
             ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Threat Timeline ── */}
+      <section id="threat-timeline" className="relative z-10 py-24 px-6 scroll-mt-20">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(255,45,85,0.5)] block mb-3">
+              // LIVE INCIDENT LOG
+            </span>
+            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
+              THREAT <span className="text-[#FF2D55]">TIMELINE</span>
+            </h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="border border-[rgba(255,45,85,0.12)] rounded-xl bg-[rgba(10,15,30,0.8)] backdrop-blur-xl overflow-hidden"
+          >
+            {/* Terminal header bar */}
+            <div className="px-5 py-3 border-b border-[rgba(255,45,85,0.1)] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-[#FF2D55]" />
+                  <div className="w-3 h-3 rounded-full bg-[#FFB800]" />
+                  <div className="w-3 h-3 rounded-full bg-[#00FFB3]" />
+                </div>
+                <span className="terminal-text text-[10px] tracking-[0.3em] uppercase text-[rgba(148,163,184,0.4)]">
+                  sentinel-x://threat-monitor
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#FF2D55] animate-pulse" />
+                <span className="terminal-text text-[10px] tracking-[0.2em] uppercase text-[rgba(255,45,85,0.6)]">
+                  Recording
+                </span>
+              </div>
+            </div>
+
+            {/* Timeline log entries */}
+            <div className="p-5 space-y-3">
+              {THREAT_TIMELINE.map((entry, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.4 }}
+                  className={`flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 p-3 rounded-lg border ${SEVERITY_BG[entry.severity]} transition-all duration-300 hover:translate-x-1`}
+                >
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="terminal-text text-[11px] text-[rgba(148,163,184,0.5)] w-[95px]">
+                      {entry.time}
+                    </span>
+                    <span className={`terminal-text text-[10px] tracking-[0.15em] font-bold ${SEVERITY_COLOR[entry.severity]} w-[58px] text-center`}>
+                      {entry.severity}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="terminal-text text-xs font-bold text-[#E2E8F0] tracking-wide">
+                      {entry.event}
+                    </span>
+                    <p className="text-[11px] text-[rgba(148,163,184,0.5)] mt-1 leading-relaxed">
+                      {entry.detail}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Terminal footer */}
+            <div className="px-5 py-3 border-t border-[rgba(255,45,85,0.08)] flex items-center gap-2">
+              <span className="terminal-text text-[10px] text-[#00FFB3]">$</span>
+              <span className="terminal-text text-[10px] text-[rgba(148,163,184,0.4)]">
+                threat_monitor --status
+              </span>
+              <span className="terminal-cursor text-[#00FFB3] ml-0.5" />
+            </div>
           </motion.div>
         </div>
       </section>
