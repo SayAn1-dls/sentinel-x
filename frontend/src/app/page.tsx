@@ -13,6 +13,10 @@ import {
   Graph,
   Clipboard,
   MagnifyingGlass,
+  CloudArrowUp,
+  Brain,
+  Siren,
+  CaretRight,
 } from '@phosphor-icons/react';
 
 /* ── Animated counter hook ── */
@@ -82,6 +86,28 @@ const FEATURES = [
   { icon: LockKey, title: 'Sanctions Screening', desc: 'Live PEP and sanctions list screening with fuzzy matching across global watchlists.' },
 ];
 
+/* ── How It Works pipeline steps ── */
+const PIPELINE_STEPS = [
+  {
+    icon: CloudArrowUp,
+    step: '01',
+    title: 'INGEST',
+    desc: 'Upload transaction data, connect APIs, or stream real-time feeds. Sentinel-X normalizes and indexes every data point instantly.',
+  },
+  {
+    icon: Brain,
+    step: '02',
+    title: 'ANALYZE',
+    desc: 'Neural pattern detection runs across transaction graphs. ML models score risk, detect anomalies, and map entity relationships in real-time.',
+  },
+  {
+    icon: Siren,
+    step: '03',
+    title: 'ALERT',
+    desc: 'Instant threat notifications with severity-based routing. Flagged transactions are quarantined and escalated for human review.',
+  },
+];
+
 export default function HomePage() {
   const [currentTime, setCurrentTime] = useState('');
 
@@ -127,12 +153,10 @@ export default function HomePage() {
           </div>
 
           <div className="hidden md:flex items-center gap-6">
-            {/* System status */}
             <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[rgba(0,255,179,0.2)] bg-[rgba(0,255,179,0.05)]">
               <div className="w-2 h-2 rounded-full bg-[#00FFB3] animate-pulse" />
               <span className="text-[10px] tracking-[0.3em] uppercase text-[#00FFB3] terminal-text font-bold">System Operational</span>
             </div>
-            {/* Live clock */}
             <span className="text-xs text-[rgba(148,163,184,0.5)] terminal-text">{currentTime}</span>
           </div>
 
@@ -149,19 +173,17 @@ export default function HomePage() {
 
       {/* ── Hero Section ── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-32 pb-20 z-10">
-        {/* Background transaction feed */}
         <div className="absolute inset-0 overflow-hidden opacity-[0.06] pointer-events-none">
           <div className="ticker-scroll terminal-text text-xs leading-8 text-[#00D4FF] whitespace-pre-wrap px-8 pt-20">
             {[...TX_FEED, ...TX_FEED, ...TX_FEED, ...TX_FEED].map((tx, i) => (
               <div key={i} className="py-1">
-                [{tx.time}] {tx.id} | {tx.from} → {tx.to} | {tx.amount} | RISK: {tx.risk}
+                [{tx.time}] {tx.id} | {tx.from} \u2192 {tx.to} | {tx.amount} | RISK: {tx.risk}
               </div>
             ))}
           </div>
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto">
-          {/* Status badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -173,7 +195,6 @@ export default function HomePage() {
             </span>
           </motion.div>
 
-          {/* Main headline */}
           <motion.h1
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -247,7 +268,7 @@ export default function HomePage() {
                   <div key={i} className="flex items-center gap-4 py-1.5 border-b border-[rgba(0,212,255,0.04)]">
                     <span className="text-[rgba(148,163,184,0.4)] w-16">{tx.time}</span>
                     <span className="text-[#00D4FF]">{tx.id}</span>
-                    <span className="text-[rgba(148,163,184,0.5)]">{tx.from} → {tx.to}</span>
+                    <span className="text-[rgba(148,163,184,0.5)]">{tx.from} \u2192 {tx.to}</span>
                     <span className="text-[#E2E8F0] ml-auto">{tx.amount}</span>
                     <span className={`${RISK_COLOR[tx.risk]} text-[10px] tracking-wider w-16 text-right`}>{tx.risk}</span>
                   </div>
@@ -256,13 +277,82 @@ export default function HomePage() {
               <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-[#0A0F1E] to-transparent pointer-events-none" />
             </div>
           </motion.div>
+        </div>
+      </section>
 
-          {/* ── Feature Grid ── */}
+      {/* ── How It Works ── */}
+      <section id="how-it-works" className="relative z-10 py-24 px-6 scroll-mt-20">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
+              // OPERATIONAL PIPELINE
+            </span>
+            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
+              HOW IT <span className="neon-text-cyan">WORKS</span>
+            </h2>
+          </motion.div>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-0">
+            {PIPELINE_STEPS.flatMap((step, i) => {
+              const Icon = step.icon;
+              const elements = [
+                <motion.div
+                  key={`step-${i}`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2, duration: 0.5 }}
+                  className="relative flex-1 max-w-xs border border-[rgba(0,212,255,0.12)] bg-[rgba(10,15,30,0.7)] rounded-xl p-8 backdrop-blur-xl card-hover text-center"
+                >
+                  <div className="absolute -top-3 left-6 px-3 py-1 bg-[#0A0F1E] border border-[rgba(0,212,255,0.2)] rounded-full">
+                    <span className="terminal-text text-[10px] tracking-[0.3em] text-[#00D4FF]">STEP {step.step}</span>
+                  </div>
+                  <div className="w-14 h-14 mx-auto rounded-xl flex items-center justify-center border border-[rgba(0,212,255,0.2)] bg-[rgba(0,212,255,0.06)] mb-5 glow-cyan">
+                    <Icon size={28} weight="duotone" className="text-[#00D4FF]" />
+                  </div>
+                  <h3 className="terminal-text text-lg font-bold tracking-[0.15em] text-[#E2E8F0] mb-3">{step.title}</h3>
+                  <p className="text-sm text-[rgba(148,163,184,0.5)] leading-relaxed">{step.desc}</p>
+                </motion.div>,
+              ];
+              if (i < PIPELINE_STEPS.length - 1) {
+                elements.push(
+                  <motion.div
+                    key={`conn-${i}`}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.2 + 0.3 }}
+                    className="hidden md:flex items-center mx-2"
+                  >
+                    <div className="flex items-center gap-1 text-[#00D4FF] opacity-40">
+                      <div className="w-8 h-[1px] bg-[rgba(0,212,255,0.3)]" />
+                      <CaretRight size={16} weight="bold" />
+                      <div className="w-8 h-[1px] bg-[rgba(0,212,255,0.3)]" />
+                    </div>
+                  </motion.div>
+                );
+              }
+              return elements;
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature Grid ── */}
+      <section className="relative z-10 py-16 px-6">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto mb-16"
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {FEATURES.map(({ icon: Icon, title, desc }) => (
               <div
@@ -277,30 +367,32 @@ export default function HomePage() {
               </div>
             ))}
           </motion.div>
-
-          {/* ── CTA ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1 }}
-          >
-            <Link href="/auth">
-              <button
-                data-testid="enter-dashboard-btn"
-                className="group inline-flex items-center gap-3 px-10 py-5 rounded-xl terminal-text font-bold text-base tracking-[0.15em] uppercase bg-[rgba(0,212,255,0.1)] border border-[rgba(0,212,255,0.3)] text-[#00D4FF] hover:bg-[rgba(0,212,255,0.18)] hover:border-[rgba(0,212,255,0.5)] glow-cyan transition-all duration-300"
-              >
-                Enter Command Center
-                <ArrowRight size={22} weight="bold" className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
-          </motion.div>
         </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="relative z-10 py-20 px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <Link href="/auth">
+            <button
+              data-testid="enter-dashboard-btn"
+              className="group inline-flex items-center gap-3 px-10 py-5 rounded-xl terminal-text font-bold text-base tracking-[0.15em] uppercase bg-[rgba(0,212,255,0.1)] border border-[rgba(0,212,255,0.3)] text-[#00D4FF] hover:bg-[rgba(0,212,255,0.18)] hover:border-[rgba(0,212,255,0.5)] glow-cyan transition-all duration-300"
+            >
+              Enter Command Center
+              <ArrowRight size={22} weight="bold" className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </Link>
+        </motion.div>
       </section>
 
       {/* ── Footer ── */}
       <footer className="py-12 border-t border-[rgba(0,212,255,0.06)] text-center relative z-10">
         <p className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(148,163,184,0.3)]">
-          SENTINEL-X © 2026 | CLASSIFIED | Version 4.0.2
+          SENTINEL-X \u00A9 2026 | CLASSIFIED | Version 4.0.2
         </p>
       </footer>
     </main>
