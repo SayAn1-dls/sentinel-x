@@ -551,6 +551,138 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Genesis / About ── */}
+      <section id="genesis" className="relative z-10 py-24 px-6 scroll-mt-20">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
+              // DECLASSIFIED
+            </span>
+            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
+              THE <span className="neon-text-cyan">GENESIS</span>
+            </h2>
+          </motion.div>
+
+          {/* ASCII art divider */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <pre className="terminal-text text-[10px] text-[rgba(0,212,255,0.2)] leading-tight inline-block">
+{`  ___  ____  _  _  ____  ____  _  _  ____  __       _  _ 
+ / __)( ___)( \( )(_  _)(_  _)( \( )( ___)(  )     ( \/ )
+ \__ \ )__)  )  (   )(   _)(_  )  (  )__)  )(__  ___  )  ( 
+ (___/(____)(_)\_) (__) (____)(_)\_)(____)(____)(___)(__ /)`}
+            </pre>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="border border-[rgba(0,212,255,0.1)] rounded-xl bg-[rgba(10,15,30,0.7)] backdrop-blur-xl p-8 md:p-12"
+          >
+            <div className="space-y-6">
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="text-base md:text-lg text-[rgba(148,163,184,0.7)] leading-relaxed"
+              >
+                Sentinel-X was born from a simple observation: financial fraud detection was still stuck in the past.
+                Legacy systems relied on static rules, manual reviews, and fragmented data. The threat landscape had evolved,
+                but the tools hadn&apos;t.
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="text-base md:text-lg text-[rgba(148,163,184,0.7)] leading-relaxed"
+              >
+                What started as a research project in AI-driven anomaly detection became something bigger: an end-to-end
+                intelligence platform that thinks like an analyst but operates at machine speed. Every transaction scored
+                in milliseconds. Every pattern mapped across billions of data points. Every threat neutralized before it
+                can propagate.
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+                className="text-base md:text-lg text-[rgba(148,163,184,0.7)] leading-relaxed"
+              >
+                This isn&apos;t just another dashboard. It&apos;s a command center for the new era of financial security,
+                built from the ground up with neural network architecture, real-time graph analysis, and
+                zero-trust authentication.
+              </motion.p>
+
+              {/* Creator credit */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.9, duration: 0.5 }}
+                className="pt-8 mt-8 border-t border-[rgba(0,212,255,0.08)]"
+              >
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center border border-[rgba(0,212,255,0.25)] bg-[rgba(0,212,255,0.08)] glow-cyan shrink-0">
+                    <span className="terminal-text text-xl font-bold text-[#00D4FF]">SB</span>
+                  </div>
+                  <div className="text-center sm:text-left">
+                    <div className="terminal-text text-sm font-bold text-[#E2E8F0] tracking-wide">Sayan Bhattacharya</div>
+                    <div className="terminal-text text-[10px] tracking-[0.3em] uppercase text-[rgba(0,212,255,0.5)] mt-1">
+                      Creator &amp; Lead Architect
+                    </div>
+                    <p className="text-xs text-[rgba(148,163,184,0.5)] mt-2 leading-relaxed max-w-md">
+                      Building at the intersection of AI, security, and fintech.
+                      Sentinel-X is the realization of a vision where intelligent systems
+                      protect financial ecosystems autonomously.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Mission terminal block */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-8 border border-[rgba(0,212,255,0.08)] rounded-xl bg-[rgba(10,15,30,0.6)] backdrop-blur-xl p-6"
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <span className="terminal-text text-[10px] text-[#00FFB3]">$</span>
+              <span className="terminal-text text-[10px] text-[rgba(148,163,184,0.4)]">
+                cat /etc/sentinel-x/mission.txt
+              </span>
+            </div>
+            <p className="terminal-text text-xs text-[rgba(0,212,255,0.6)] leading-relaxed">
+              &gt; MISSION: Democratize institutional-grade fraud intelligence.<br />
+              &gt; OBJECTIVE: Zero false negatives. Near-zero false positives.<br />
+              &gt; STATUS: Active development. Always evolving.<br />
+              &gt; CLASSIFICATION: Open Source. Community-driven.<br />
+              &gt; END_TRANSMISSION
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <section className="relative z-10 py-20 px-6 text-center">
         <motion.div
