@@ -108,6 +108,19 @@ const PIPELINE_STEPS = [
   },
 ];
 
+/* ── Tech Stack ── */
+const TECH_STACK = [
+  { name: 'Next.js 15', category: 'Frontend' },
+  { name: 'TypeScript', category: 'Language' },
+  { name: 'Tailwind CSS', category: 'Styling' },
+  { name: 'Framer Motion', category: 'Animation' },
+  { name: 'FastAPI', category: 'Backend' },
+  { name: 'Python', category: 'ML Pipeline' },
+  { name: 'MongoDB Atlas', category: 'Database' },
+  { name: 'WebAuthn / FIDO2', category: 'Auth' },
+  { name: 'Vercel', category: 'Deployment' },
+];
+
 export default function HomePage() {
   const [currentTime, setCurrentTime] = useState('');
 
@@ -131,10 +144,8 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#0A0F1E] text-[#E2E8F0] overflow-hidden font-sans grid-bg">
-      {/* Scanlines overlay */}
       <div className="scanlines-overlay" />
 
-      {/* Ambient gradients */}
       <div className="fixed inset-0 pointer-events-none z-[1]">
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,212,255,0.06),transparent_70%)]" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(0,255,179,0.04),transparent_70%)]" />
@@ -253,7 +264,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
-            className="max-w-3xl mx-auto mb-16 border border-[rgba(0,212,255,0.1)] rounded-xl bg-[rgba(10,15,30,0.7)] backdrop-blur-xl overflow-hidden"
+            className="max-w-3xl mx-auto border border-[rgba(0,212,255,0.1)] rounded-xl bg-[rgba(10,15,30,0.7)] backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-2.5 border-b border-[rgba(0,212,255,0.08)] flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -348,6 +359,19 @@ export default function HomePage() {
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
+              // CAPABILITIES
+            </span>
+            <h2 className="terminal-text text-3xl md:text-4xl font-bold text-[#E2E8F0]">
+              CORE <span className="neon-text-cyan">MODULES</span>
+            </h2>
+          </motion.div>
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -365,6 +389,48 @@ export default function HomePage() {
                 <h3 className="terminal-text text-sm font-bold tracking-wide mb-2 text-[#E2E8F0]">{title}</h3>
                 <p className="text-xs text-[rgba(148,163,184,0.5)] leading-relaxed">{desc}</p>
               </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Tech Stack ── */}
+      <section id="tech-stack" className="relative z-10 py-24 px-6 scroll-mt-20">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,255,179,0.5)] block mb-3">
+              // SYSTEM ARCHITECTURE
+            </span>
+            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
+              TECH <span className="neon-text-teal">STACK</span>
+            </h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-wrap justify-center gap-4"
+          >
+            {TECH_STACK.map((tech, i) => (
+              <motion.div
+                key={tech.name}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.4 }}
+                className="group relative px-6 py-4 rounded-xl border border-[rgba(0,212,255,0.1)] bg-[rgba(10,15,30,0.7)] backdrop-blur-xl hover:border-[rgba(0,212,255,0.3)] hover:bg-[rgba(0,212,255,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(0,212,255,0.1)]"
+              >
+                <div className="text-sm font-bold terminal-text text-[#E2E8F0] group-hover:text-[#00D4FF] transition-colors">{tech.name}</div>
+                <div className="text-[9px] tracking-[0.3em] uppercase text-[rgba(148,163,184,0.4)] terminal-text mt-1">{tech.category}</div>
+              </motion.div>
             ))}
           </motion.div>
         </div>
