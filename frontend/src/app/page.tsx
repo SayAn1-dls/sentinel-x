@@ -1,105 +1,40 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import {
-  ShieldCheck,
-  Database,
-  Fingerprint,
-  Globe,
-  ArrowRight,
-  LockKey,
-  Bell,
-  Graph,
-  Clipboard,
-  MagnifyingGlass,
-  CloudArrowUp,
-  Brain,
-  Siren,
-  CaretRight,
+  ShieldCheck, Database, Fingerprint, Globe, ArrowRight,
+  LockKey, Bell, Graph, Clipboard, MagnifyingGlass,
+  CloudArrowUp, Brain, Siren, CaretRight, Code,
+  GitBranch, Stack, CircuitBoard, Cpu, GithubLogo,
+  User, Lightbulb, Rocket, CheckCircle,
 } from '@phosphor-icons/react';
 
-/* ── Animated counter hook ── */
 function useCounter(target: number, duration = 2000) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const started = useRef(false);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const start = performance.now();
-          const step = (now: number) => {
-            const progress = Math.min((now - start) / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setCount(Math.floor(eased * target));
-            if (progress < 1) requestAnimationFrame(step);
-          };
-          requestAnimationFrame(step);
-        }
-      },
-      { threshold: 0.3 }
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true;
+        const start = performance.now();
+        const step = (now: number) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCount(Math.floor(eased * target));
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.3 });
     observer.observe(el);
     return () => observer.disconnect();
   }, [target, duration]);
-
   return { count, ref };
 }
-
-const STATS = [
-  { label: 'Transactions Monitored', value: 42000000, display: '4.2Cr+', icon: Database },
-  { label: 'Threats Intercepted', value: 12847, display: '12,847', icon: ShieldCheck },
-  { label: 'Active Nodes', value: 893, display: '893', icon: Globe },
-];
-
-const FEATURES = [
-  { icon: Fingerprint, title: 'Biometric Auth', desc: 'WebAuthn FIDO2 passkeys with fingerprint and Face ID for zero-password access.' },
-  { icon: MagnifyingGlass, title: 'AI Forensics', desc: 'Neural pattern detection across transaction graphs with sub-second risk scoring.' },
-  { icon: Bell, title: 'Real-time Alerts', desc: 'Instant threat notifications with severity-based routing and escalation protocols.' },
-  { icon: Graph, title: 'Network Graph', desc: 'Interactive entity relationship mapping with anomaly clustering and flow analysis.' },
-  { icon: Clipboard, title: 'Audit Trail', desc: 'Immutable, timestamped logs for every action, query, and system event.' },
-  { icon: LockKey, title: 'Sanctions Screening', desc: 'Live PEP and sanctions list screening with fuzzy matching across global watchlists.' },
-];
-
-/* ── How It Works pipeline steps ── */
-const PIPELINE_STEPS = [
-  {
-    icon: CloudArrowUp,
-    step: '01',
-    title: 'INGEST',
-    desc: 'Upload transaction data, connect APIs, or stream real-time feeds. Sentinel-X normalizes and indexes every data point instantly.',
-  },
-  {
-    icon: Brain,
-    step: '02',
-    title: 'ANALYZE',
-    desc: 'Neural pattern detection runs across transaction graphs. ML models score risk, detect anomalies, and map entity relationships in real-time.',
-  },
-  {
-    icon: Siren,
-    step: '03',
-    title: 'ALERT',
-    desc: 'Instant threat notifications with severity-based routing. Flagged transactions are quarantined and escalated for human review.',
-  },
-];
-
-/* ── Tech Stack ── */
-const TECH_STACK = [
-  { name: 'Next.js 15', category: 'Frontend' },
-  { name: 'TypeScript', category: 'Language' },
-  { name: 'Tailwind CSS', category: 'Styling' },
-  { name: 'Framer Motion', category: 'Animation' },
-  { name: 'FastAPI', category: 'Backend' },
-  { name: 'Python', category: 'ML Pipeline' },
-  { name: 'MongoDB Atlas', category: 'Database' },
-  { name: 'WebAuthn / FIDO2', category: 'Auth' },
-  { name: 'Vercel', category: 'Deployment' },
-];
 
 const TX_FEED = [
   { id: 'TX-8A2F', amount: '$42,180.00', from: 'NODE-7X2', to: 'NODE-3K9', risk: 'LOW', time: '00:00:03' },
@@ -113,601 +48,79 @@ const TX_FEED = [
 ];
 
 const RISK_COLOR: Record<string, string> = {
-  CRITICAL: 'text-[#FF2D55]',
-  HIGH: 'text-[#FF6B00]',
-  MEDIUM: 'text-[#FFB800]',
-  LOW: 'text-[#00FFB3]',
-  CLEAR: 'text-[#00D4FF]',
+  CRITICAL: 'text-[#FF2D55]', HIGH: 'text-[#FF6B00]',
+  MEDIUM: 'text-[#FFB800]', LOW: 'text-[#00FFB3]', CLEAR: 'text-[#00D4FF]',
 };
 
-/* ── Threat Timeline events ── */
-const THREAT_TIMELINE = [
-  { time: '14:23:07.041', event: 'ANOMALY_DETECTED', detail: 'Unusual transaction pattern flagged on NODE-4P1. Velocity spike: 340% above baseline.', severity: 'CRITICAL' },
-  { time: '14:23:08.102', event: 'MODEL_INFERENCE', detail: 'Neural risk engine scored TX-B28A at 0.94 confidence. Pattern matches layering typology.', severity: 'HIGH' },
-  { time: '14:23:08.337', event: 'AUTO_QUARANTINE', detail: 'TX-B28A quarantined. Downstream transfers to NODE-8W5 suspended pending review.', severity: 'HIGH' },
-  { time: '14:23:09.518', event: 'SANCTIONS_CHECK', detail: 'PEP screening initiated for beneficiary entity. Cross-referencing OFAC, EU, UN watchlists.', severity: 'MEDIUM' },
-  { time: '14:23:10.004', event: 'ALERT_DISPATCHED', detail: 'Priority alert routed to compliance team. Escalation level: L2. SLA clock started.', severity: 'HIGH' },
-  { time: '14:23:12.891', event: 'GRAPH_UPDATED', detail: 'Entity relationship graph updated. 3 new edges detected between NODE-4P1 cluster.', severity: 'MEDIUM' },
-  { time: '14:23:15.220', event: 'CASE_CREATED', detail: 'Investigation case #SX-2026-4891 opened. Assigned to Senior Analyst. Audit trail initiated.', severity: 'LOW' },
-  { time: '14:23:18.003', event: 'SYSTEM_NOMINAL', detail: 'Threat containment confirmed. Resuming standard monitoring on all active nodes.', severity: 'CLEAR' },
+const STATS = [
+  { label: 'Transactions Monitored', value: 42, display: '4.2Cr+', icon: Database },
+  { label: 'Threats Intercepted', value: 12847, display: '12,847', icon: ShieldCheck },
+  { label: 'Active Nodes', value: 893, display: '893', icon: Globe },
 ];
 
-const SEVERITY_COLOR: Record<string, string> = {
-  CRITICAL: 'text-[#FF2D55]',
-  HIGH: 'text-[#FF6B00]',
-  MEDIUM: 'text-[#FFB800]',
-  LOW: 'text-[#00FFB3]',
-  CLEAR: 'text-[#00D4FF]',
-};
+const FEATURES = [
+  { icon: Fingerprint, title: 'Biometric Auth', desc: 'WebAuthn FIDO2 passkeys with fingerprint and Face ID for zero-password access.' },
+  { icon: MagnifyingGlass, title: 'AI Forensics', desc: 'Neural pattern detection across transaction graphs with sub-second risk scoring.' },
+  { icon: Bell, title: 'Real-time Alerts', desc: 'Instant threat notifications with severity-based routing and escalation protocols.' },
+  { icon: Graph, title: 'Network Graph', desc: 'Interactive entity relationship mapping with anomaly clustering and flow analysis.' },
+  { icon: Clipboard, title: 'Audit Trail', desc: 'Immutable, timestamped logs for every action, query, and system event.' },
+  { icon: LockKey, title: 'Sanctions Screening', desc: 'Live PEP and sanctions list screening with fuzzy matching across global watchlists.' },
+];
 
-const SEVERITY_BG: Record<string, string> = {
-  CRITICAL: 'bg-[rgba(255,45,85,0.1)] border-[rgba(255,45,85,0.25)]',
-  HIGH: 'bg-[rgba(255,107,0,0.1)] border-[rgba(255,107,0,0.25)]',
-  MEDIUM: 'bg-[rgba(255,184,0,0.08)] border-[rgba(255,184,0,0.2)]',
-  LOW: 'bg-[rgba(0,255,179,0.06)] border-[rgba(0,255,179,0.15)]',
-  CLEAR: 'bg-[rgba(0,212,255,0.06)] border-[rgba(0,212,255,0.15)]',
-};
+const PIPELINE_STEPS = [
+  {
+    step: '01',
+    icon: CloudArrowUp,
+    title: 'Ingest',
+    desc: 'Transaction streams ingested via WebSocket from banking nodes. Multi-source aggregation with deduplication and schema normalization.',
+    color: '#00D4FF',
+  },
+  {
+    step: '02',
+    icon: Brain,
+    title: 'Analyze',
+    desc: 'ML pipeline scores each transaction in <50ms. Isolation Forest + Graph Neural Network detect anomalous clusters and entity relationships.',
+    color: '#00FFB3',
+  },
+  {
+    step: '03',
+    icon: Siren,
+    title: 'Alert',
+    desc: 'Severity-ranked alerts dispatched instantly to analysts. Sanctions screening, PEP matching, and audit trail written atomically.',
+    color: '#FF6B00',
+  },
+];
 
-export default function HomePage() {
-  const [currentTime, setCurrentTime] = useState('');
+const TECH_STACK = [
+  { name: 'Next.js 15', icon: Code, color: '#00D4FF' },
+  { name: 'TypeScript', icon: Code, color: '#3178C6' },
+  { name: 'FastAPI', icon: Stack, color: '#00FFB3' },
+  { name: 'Python 3.12', icon: CircuitBoard, color: '#FFD43B' },
+  { name: 'MongoDB Atlas', icon: Database, color: '#00ED64' },
+  { name: 'WebAuthn / FIDO2', icon: Fingerprint, color: '#FF6B00' },
+  { name: 'Framer Motion', icon: Rocket, color: '#FF2D55' },
+  { name: 'Tailwind CSS', icon: Cpu, color: '#38BDF8' },
+  { name: 'Vercel', icon: GitBranch, color: '#E2E8F0' },
+];
 
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      setCurrentTime(
-        now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
-          ' UTC'
-      );
-    };
-    tick();
-    const iv = setInterval(tick, 1000);
-    return () => clearInterval(iv);
-  }, []);
+const THREAT_TIMELINE = [
+  { ts: '2026-09-12 23:41:08', cluster: '#7', node: 'NODE-8X2', risk: 'HIGH', action: 'Quarantined', color: 'text-[#FF6B00]' },
+  { ts: '2026-09-12 23:39:52', cluster: '#12', node: 'NODE-3K9', risk: 'CRITICAL', action: 'Escalated to L3', color: 'text-[#FF2D55]' },
+  { ts: '2026-09-12 23:38:01', cluster: '#4', node: 'NODE-1A8', risk: 'MEDIUM', action: 'Flagged for review', color: 'text-[#FFB800]' },
+  { ts: '2026-09-12 23:35:44', cluster: '#9', node: 'NODE-9F2', risk: 'CLEAR', action: 'Released', color: 'text-[#00D4FF]' },
+  { ts: '2026-09-12 23:33:17', cluster: '#2', node: 'NODE-5M3', risk: 'LOW', action: 'Monitoring', color: 'text-[#00FFB3]' },
+  { ts: '2026-09-12 23:30:08', cluster: '#15', node: 'NODE-7X8', risk: 'CRITICAL', action: 'Entity frozen', color: 'text-[#FF2D55]' },
+  { ts: '2026-09-12 23:27:33', cluster: '#6', node: 'NODE-4L1', risk: 'HIGH', action: 'Sanctions hit confirmed', color: 'text-[#FF6B00]' },
+  { ts: '2026-09-12 23:24:59', cluster: '#11', node: 'NODE-2K7', risk: 'MEDIUM', action: 'PEP match pending', color: 'text-[#FFB800]' },
+  { ts: '2026-09-12 23:21:12', cluster: '#3', node: 'NODE-6T4', risk: 'CLEAR', action: 'Whitelisted', color: 'text-[#00D4FF]' },
+  { ts: '2026-09-12 23:18:47', cluster: '#8', node: 'NODE-1R8', risk: 'LOW', action: 'Audit logged', color: 'text-[#00FFB3]' },
+  { ts: '2026-09-12 23:15:02', cluster: '#20', node: 'NODE-4P1', risk: 'CRITICAL', action: 'Emergency halt triggered', color: 'text-[#FF2D55]' },
+  { ts: '2026-09-12 23:11:38', cluster: '#5', node: 'NODE-9H6', risk: 'HIGH', action: 'Cluster dissolved', color: 'text-[#FF6B00]' },
+];
 
-  const stat1 = useCounter(42, 2000);
-  const stat2 = useCounter(12847, 2500);
-  const stat3 = useCounter(893, 1800);
-  const statCounters = [stat1, stat2, stat3];
-
-  return (
-    <main className="min-h-screen bg-[#0A0F1E] text-[#E2E8F0] overflow-hidden font-sans grid-bg">
-      <div className="scanlines-overlay" />
-
-      <div className="fixed inset-0 pointer-events-none z-[1]">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,212,255,0.06),transparent_70%)]" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(0,255,179,0.04),transparent_70%)]" />
-      </div>
-
-      {/* ── Top Nav ── */}
-      <nav className="fixed top-0 inset-x-0 z-[200] border-b border-[rgba(0,212,255,0.08)]" style={{ background: 'rgba(10,15,30,0.9)', backdropFilter: 'blur(20px)' }}>
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-[rgba(0,212,255,0.3)] bg-[rgba(0,212,255,0.08)] glow-cyan">
-              <ShieldCheck size={22} weight="fill" className="text-[#00D4FF]" />
-            </div>
-            <span className="text-xl font-bold tracking-tight terminal-text">
-              SENTINEL<span className="text-[#00D4FF]">-X</span>
-            </span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-6">
-            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[rgba(0,255,179,0.2)] bg-[rgba(0,255,179,0.05)]">
-              <div className="w-2 h-2 rounded-full bg-[#00FFB3] animate-pulse" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#00FFB3] terminal-text font-bold">System Operational</span>
-            </div>
-            <span className="text-xs text-[rgba(148,163,184,0.5)] terminal-text">{currentTime}</span>
-          </div>
-
-          <Link href="/auth">
-            <button
-              data-testid="access-hq-btn"
-              className="px-6 py-2.5 rounded-lg text-[11px] font-bold tracking-[0.2em] uppercase terminal-text border border-[rgba(0,212,255,0.3)] bg-[rgba(0,212,255,0.08)] text-[#00D4FF] hover:bg-[rgba(0,212,255,0.15)] hover:border-[rgba(0,212,255,0.5)] hover:shadow-[0_0_20px_rgba(0,212,255,0.2)] transition-all duration-300"
-            >
-              Request Access
-            </button>
-          </Link>
-        </div>
-      </nav>
-
-      {/* ── Hero Section ── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-32 pb-20 z-10">
-        <div className="absolute inset-0 overflow-hidden opacity-[0.06] pointer-events-none">
-          <div className="ticker-scroll terminal-text text-xs leading-8 text-[#00D4FF] whitespace-pre-wrap px-8 pt-20">
-            {[...TX_FEED, ...TX_FEED, ...TX_FEED, ...TX_FEED].map((tx, i) => (
-              <div key={i} className="py-1">
-                [{tx.time}] {tx.id} | {tx.from} \u2192 {tx.to} | {tx.amount} | RISK: {tx.risk}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-3 border border-[rgba(0,212,255,0.15)] bg-[rgba(0,212,255,0.04)] px-5 py-2 rounded-full mb-10 backdrop-blur-xl"
-          >
-            <div className="w-2 h-2 bg-[#00D4FF] rounded-full" style={{ animation: 'pulse-dot 2s ease-in-out infinite' }} />
-            <span className="terminal-text font-bold text-[10px] tracking-[0.4em] uppercase text-[rgba(0,212,255,0.7)]">
-              v4.0.2 // Threat Intelligence Active
-            </span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="terminal-text text-5xl md:text-7xl lg:text-8xl font-bold leading-[1] mb-6 tracking-tight"
-          >
-            <span className="text-[#E2E8F0]">REAL-TIME</span>{' '}
-            <span className="text-[#E2E8F0]">FRAUD</span>
-            <br />
-            <span className="neon-text-cyan">INTELLIGENCE</span>
-            <span className="terminal-cursor text-[#00D4FF] ml-1" />
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-base md:text-lg text-[rgba(148,163,184,0.6)] max-w-2xl mx-auto mb-14 leading-relaxed"
-          >
-            Institutional-grade AI forensics for elite financial operations.
-            Real-time transaction monitoring, anomaly detection, and compliance enforcement.
-          </motion.p>
-
-          {/* ── Stat Cards ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-16"
-          >
-            {STATS.map((stat, i) => {
-              const counter = statCounters[i];
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={stat.label}
-                  ref={counter.ref}
-                  className="relative border border-[rgba(0,212,255,0.1)] bg-[rgba(10,15,30,0.7)] rounded-xl p-6 backdrop-blur-xl card-hover"
-                >
-                  <Icon size={20} className="text-[#00D4FF] mb-3 opacity-60" />
-                  <div className="terminal-text text-3xl font-bold text-[#00D4FF] counter-animate mb-1">
-                    {i === 0
-                      ? `${(counter.count / 10).toFixed(1)}Cr+`
-                      : counter.count.toLocaleString()}
-                  </div>
-                  <div className="text-[10px] tracking-[0.2em] uppercase text-[rgba(148,163,184,0.5)] terminal-text">
-                    {stat.label}
-                  </div>
-                </div>
-              );
-            })}
-          </motion.div>
-
-          {/* ── Live Transaction Feed Preview ── */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="max-w-3xl mx-auto border border-[rgba(0,212,255,0.1)] rounded-xl bg-[rgba(10,15,30,0.7)] backdrop-blur-xl overflow-hidden"
-          >
-            <div className="px-4 py-2.5 border-b border-[rgba(0,212,255,0.08)] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#00FFB3] animate-pulse" />
-                <span className="terminal-text text-[10px] tracking-[0.3em] uppercase text-[rgba(148,163,184,0.5)]">Live Feed</span>
-              </div>
-              <span className="terminal-text text-[10px] text-[rgba(148,163,184,0.3)]">{currentTime}</span>
-            </div>
-            <div className="h-[180px] overflow-hidden relative">
-              <div className="ticker-scroll terminal-text text-xs px-4 py-2">
-                {[...TX_FEED, ...TX_FEED].map((tx, i) => (
-                  <div key={i} className="flex items-center gap-4 py-1.5 border-b border-[rgba(0,212,255,0.04)]">
-                    <span className="text-[rgba(148,163,184,0.4)] w-16">{tx.time}</span>
-                    <span className="text-[#00D4FF]">{tx.id}</span>
-                    <span className="text-[rgba(148,163,184,0.5)]">{tx.from} \u2192 {tx.to}</span>
-                    <span className="text-[#E2E8F0] ml-auto">{tx.amount}</span>
-                    <span className={`${RISK_COLOR[tx.risk]} text-[10px] tracking-wider w-16 text-right`}>{tx.risk}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-[#0A0F1E] to-transparent pointer-events-none" />
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Feature Grid ── */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
-              // CAPABILITIES
-            </span>
-            <h2 className="terminal-text text-3xl md:text-4xl font-bold text-[#E2E8F0]">
-              CORE <span className="neon-text-cyan">MODULES</span>
-            </h2>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
-            {FEATURES.map(({ icon: Icon, title, desc }) => (
-              <div
-                key={title}
-                className="border border-[rgba(0,212,255,0.08)] bg-[rgba(10,15,30,0.6)] rounded-xl p-6 backdrop-blur-xl card-hover text-left"
-              >
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center border border-[rgba(0,212,255,0.15)] bg-[rgba(0,212,255,0.06)] mb-4">
-                  <Icon size={18} className="text-[#00D4FF]" />
-                </div>
-                <h3 className="terminal-text text-sm font-bold tracking-wide mb-2 text-[#E2E8F0]">{title}</h3>
-                <p className="text-xs text-[rgba(148,163,184,0.5)] leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── How It Works ── */}
-      <section id="how-it-works" className="relative z-10 py-24 px-6 scroll-mt-20">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
-              // OPERATIONAL PIPELINE
-            </span>
-            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
-              HOW IT <span className="neon-text-cyan">WORKS</span>
-            </h2>
-          </motion.div>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-0">
-            {PIPELINE_STEPS.flatMap((step, i) => {
-              const Icon = step.icon;
-              const elements = [
-                <motion.div
-                  key={`step-${i}`}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.2, duration: 0.5 }}
-                  className="relative flex-1 max-w-xs border border-[rgba(0,212,255,0.12)] bg-[rgba(10,15,30,0.7)] rounded-xl p-8 backdrop-blur-xl card-hover text-center"
-                >
-                  <div className="absolute -top-3 left-6 px-3 py-1 bg-[#0A0F1E] border border-[rgba(0,212,255,0.2)] rounded-full">
-                    <span className="terminal-text text-[10px] tracking-[0.3em] text-[#00D4FF]">STEP {step.step}</span>
-                  </div>
-                  <div className="w-14 h-14 mx-auto rounded-xl flex items-center justify-center border border-[rgba(0,212,255,0.2)] bg-[rgba(0,212,255,0.06)] mb-5 glow-cyan">
-                    <Icon size={28} weight="duotone" className="text-[#00D4FF]" />
-                  </div>
-                  <h3 className="terminal-text text-lg font-bold tracking-[0.15em] text-[#E2E8F0] mb-3">{step.title}</h3>
-                  <p className="text-sm text-[rgba(148,163,184,0.5)] leading-relaxed">{step.desc}</p>
-                </motion.div>,
-              ];
-              if (i < PIPELINE_STEPS.length - 1) {
-                elements.push(
-                  <motion.div
-                    key={`conn-${i}`}
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.2 + 0.3 }}
-                    className="hidden md:flex items-center mx-2"
-                  >
-                    <div className="flex items-center gap-1 text-[#00D4FF] opacity-40">
-                      <div className="w-8 h-[1px] bg-[rgba(0,212,255,0.3)]" />
-                      <CaretRight size={16} weight="bold" />
-                      <div className="w-8 h-[1px] bg-[rgba(0,212,255,0.3)]" />
-                    </div>
-                  </motion.div>
-                );
-              }
-              return elements;
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Tech Stack ── */}
-      <section id="tech-stack" className="relative z-10 py-24 px-6 scroll-mt-20">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,255,179,0.5)] block mb-3">
-              // SYSTEM ARCHITECTURE
-            </span>
-            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
-              TECH <span className="neon-text-teal">STACK</span>
-            </h2>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            {TECH_STACK.map((tech, i) => (
-              <motion.div
-                key={tech.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.4 }}
-                className="group relative px-6 py-4 rounded-xl border border-[rgba(0,212,255,0.1)] bg-[rgba(10,15,30,0.7)] backdrop-blur-xl hover:border-[rgba(0,212,255,0.3)] hover:bg-[rgba(0,212,255,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(0,212,255,0.1)]"
-              >
-                <div className="text-sm font-bold terminal-text text-[#E2E8F0] group-hover:text-[#00D4FF] transition-colors">{tech.name}</div>
-                <div className="text-[9px] tracking-[0.3em] uppercase text-[rgba(148,163,184,0.4)] terminal-text mt-1">{tech.category}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Threat Timeline ── */}
-      <section id="threat-timeline" className="relative z-10 py-24 px-6 scroll-mt-20">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(255,45,85,0.5)] block mb-3">
-              // LIVE INCIDENT LOG
-            </span>
-            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
-              THREAT <span className="text-[#FF2D55]">TIMELINE</span>
-            </h2>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="border border-[rgba(255,45,85,0.12)] rounded-xl bg-[rgba(10,15,30,0.8)] backdrop-blur-xl overflow-hidden"
-          >
-            {/* Terminal header bar */}
-            <div className="px-5 py-3 border-b border-[rgba(255,45,85,0.1)] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#FF2D55]" />
-                  <div className="w-3 h-3 rounded-full bg-[#FFB800]" />
-                  <div className="w-3 h-3 rounded-full bg-[#00FFB3]" />
-                </div>
-                <span className="terminal-text text-[10px] tracking-[0.3em] uppercase text-[rgba(148,163,184,0.4)]">
-                  sentinel-x://threat-monitor
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#FF2D55] animate-pulse" />
-                <span className="terminal-text text-[10px] tracking-[0.2em] uppercase text-[rgba(255,45,85,0.6)]">
-                  Recording
-                </span>
-              </div>
-            </div>
-
-            {/* Timeline log entries */}
-            <div className="p-5 space-y-3">
-              {THREAT_TIMELINE.map((entry, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.4 }}
-                  className={`flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 p-3 rounded-lg border ${SEVERITY_BG[entry.severity]} transition-all duration-300 hover:translate-x-1`}
-                >
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="terminal-text text-[11px] text-[rgba(148,163,184,0.5)] w-[95px]">
-                      {entry.time}
-                    </span>
-                    <span className={`terminal-text text-[10px] tracking-[0.15em] font-bold ${SEVERITY_COLOR[entry.severity]} w-[58px] text-center`}>
-                      {entry.severity}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="terminal-text text-xs font-bold text-[#E2E8F0] tracking-wide">
-                      {entry.event}
-                    </span>
-                    <p className="text-[11px] text-[rgba(148,163,184,0.5)] mt-1 leading-relaxed">
-                      {entry.detail}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Terminal footer */}
-            <div className="px-5 py-3 border-t border-[rgba(255,45,85,0.08)] flex items-center gap-2">
-              <span className="terminal-text text-[10px] text-[#00FFB3]">$</span>
-              <span className="terminal-text text-[10px] text-[rgba(148,163,184,0.4)]">
-                threat_monitor --status
-              </span>
-              <span className="terminal-cursor text-[#00FFB3] ml-0.5" />
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Genesis / About ── */}
-      <section id="genesis" className="relative z-10 py-24 px-6 scroll-mt-20">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <span className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(0,212,255,0.5)] block mb-3">
-              // DECLASSIFIED
-            </span>
-            <h2 className="terminal-text text-3xl md:text-5xl font-bold text-[#E2E8F0]">
-              THE <span className="neon-text-cyan">GENESIS</span>
-            </h2>
-          </motion.div>
-
-          {/* ASCII art divider */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <pre className="terminal-text text-[10px] text-[rgba(0,212,255,0.2)] leading-tight inline-block">
-{`  ___  ____  _  _  ____  ____  _  _  ____  __       _  _ 
- / __)( ___)( \( )(_  _)(_  _)( \( )( ___)(  )     ( \/ )
- \__ \ )__)  )  (   )(   _)(_  )  (  )__)  )(__  ___  )  ( 
- (___/(____)(_)\_) (__) (____)(_)\_)(____)(____)(___)(__ /)`}
-            </pre>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="border border-[rgba(0,212,255,0.1)] rounded-xl bg-[rgba(10,15,30,0.7)] backdrop-blur-xl p-8 md:p-12"
-          >
-            <div className="space-y-6">
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="text-base md:text-lg text-[rgba(148,163,184,0.7)] leading-relaxed"
-              >
-                Sentinel-X was born from a simple observation: financial fraud detection was still stuck in the past.
-                Legacy systems relied on static rules, manual reviews, and fragmented data. The threat landscape had evolved,
-                but the tools hadn&apos;t.
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="text-base md:text-lg text-[rgba(148,163,184,0.7)] leading-relaxed"
-              >
-                What started as a research project in AI-driven anomaly detection became something bigger: an end-to-end
-                intelligence platform that thinks like an analyst but operates at machine speed. Every transaction scored
-                in milliseconds. Every pattern mapped across billions of data points. Every threat neutralized before it
-                can propagate.
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className="text-base md:text-lg text-[rgba(148,163,184,0.7)] leading-relaxed"
-              >
-                This isn&apos;t just another dashboard. It&apos;s a command center for the new era of financial security,
-                built from the ground up with neural network architecture, real-time graph analysis, and
-                zero-trust authentication.
-              </motion.p>
-
-              {/* Creator credit */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.9, duration: 0.5 }}
-                className="pt-8 mt-8 border-t border-[rgba(0,212,255,0.08)]"
-              >
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center border border-[rgba(0,212,255,0.25)] bg-[rgba(0,212,255,0.08)] glow-cyan shrink-0">
-                    <span className="terminal-text text-xl font-bold text-[#00D4FF]">SB</span>
-                  </div>
-                  <div className="text-center sm:text-left">
-                    <div className="terminal-text text-sm font-bold text-[#E2E8F0] tracking-wide">Sayan Bhattacharya</div>
-                    <div className="terminal-text text-[10px] tracking-[0.3em] uppercase text-[rgba(0,212,255,0.5)] mt-1">
-                      Creator &amp; Lead Architect
-                    </div>
-                    <p className="text-xs text-[rgba(148,163,184,0.5)] mt-2 leading-relaxed max-w-md">
-                      Building at the intersection of AI, security, and fintech.
-                      Sentinel-X is the realization of a vision where intelligent systems
-                      protect financial ecosystems autonomously.
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-
-          {/* Mission terminal block */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-8 border border-[rgba(0,212,255,0.08)] rounded-xl bg-[rgba(10,15,30,0.6)] backdrop-blur-xl p-6"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="terminal-text text-[10px] text-[#00FFB3]">$</span>
-              <span className="terminal-text text-[10px] text-[rgba(148,163,184,0.4)]">
-                cat /etc/sentinel-x/mission.txt
-              </span>
-            </div>
-            <p className="terminal-text text-xs text-[rgba(0,212,255,0.6)] leading-relaxed">
-              &gt; MISSION: Democratize institutional-grade fraud intelligence.<br />
-              &gt; OBJECTIVE: Zero false negatives. Near-zero false positives.<br />
-              &gt; STATUS: Active development. Always evolving.<br />
-              &gt; CLASSIFICATION: Open Source. Community-driven.<br />
-              &gt; END_TRANSMISSION
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── CTA ── */}
-      <section className="relative z-10 py-20 px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <Link href="/auth">
-            <button
-              data-testid="enter-dashboard-btn"
-              className="group inline-flex items-center gap-3 px-10 py-5 rounded-xl terminal-text font-bold text-base tracking-[0.15em] uppercase bg-[rgba(0,212,255,0.1)] border border-[rgba(0,212,255,0.3)] text-[#00D4FF] hover:bg-[rgba(0,212,255,0.18)] hover:border-[rgba(0,212,255,0.5)] glow-cyan transition-all duration-300"
-            >
-              Enter Command Center
-              <ArrowRight size={22} weight="bold" className="group-hover:translate-x-1 transition-transform" />
-            </button>
-          </Link>
-        </motion.div>
-      </section>
-
-      {/* ── Footer ── */}
-      <footer className="py-12 border-t border-[rgba(0,212,255,0.06)] text-center relative z-10">
-        <p className="terminal-text text-[10px] tracking-[0.5em] uppercase text-[rgba(148,163,184,0.3)]">
-          SENTINEL-X \u00A9 2026 | CLASSIFIED | Version 4.0.2
-        </p>
-      </footer>
-    </main>
-  );
-}
+const NAV_LINKS = [
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Features', href: '#features' },
+  { label: 'Tech Stack', href: '#tech-stack' },
+  { label: 'About', href: '#genesis' },
+];
