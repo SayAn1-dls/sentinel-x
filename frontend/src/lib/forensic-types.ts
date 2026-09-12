@@ -268,6 +268,7 @@ export interface AcousticAirGapForensics {
 }
 
 export interface ForensicIntelligence {
+  rfSideChannel?: RFSideChannelForensics;
   memoryForensics?: MemoryForensics;
   quantumForensics?: QuantumAttackForensics;
   hardwareTrojanForensics?: HardwareTrojanForensics;
@@ -387,4 +388,11 @@ export interface CryptoSideChannelForensics {
   isConstantTimeExecutionVerified: boolean;
   cacheSideChannelDetected: boolean;
   signatureMalleabilityRisk: number;
+}
+export interface RFSideChannelForensics {
+  isRadioFrequencyLeakageDetected: boolean;
+  spectrumAnomalyScore: number;
+  isSDRInterceptionLikely: boolean;
+  frequencyHoppingIntegrity: boolean;
+  nearFieldCommunicationRisk: number;
 }

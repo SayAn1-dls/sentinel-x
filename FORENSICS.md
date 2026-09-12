@@ -1,3 +1,22 @@
+## Update: 2026-09-12 - RF Side-Channel Analysis & Electromagnetic Forensic Refinement (v36)
+
+### RF Side-Channel Forensic Analysis
+Implemented detection for electromagnetic leakage and Radio Frequency (RF) side-channel attacks, targeting Software Defined Radio (SDR) based interception and frequency hopping anomalies.
+
+- **Signal**: `rfSideChannel`
+- **Checks**:
+  - **Radio Frequency Leakage**: Detects unusual electromagnetic emissions from system components during sensitive operations.
+  - **SDR Interception Likelihood**: Heuristic analysis for localized RF signals indicative of nearby interceptors.
+  - **Spectrum Anomaly**: Monitors for deviations in the expected frequency spectrum characteristics.
+- **Risk Impact**: Critical (+95) for RF leakage detection, High (+90) for SDR interception likelihood.
+
+### Risk Engine v36
+Integrated RF Side-Channel forensic signals into the `calculateAdvancedRiskScore` engine for holistic electromagnetic security coverage.
+- **Version**: 36.0.0
+- **Weighting**: RF Leakage Detected (+95), SDR Interception Likely (+90).
+
+---
+
 ## Update: 2026-09-11 - Acoustic Air-Gap Analysis & Ultrasonic Forensic Refinement (v35)
 
 ### Acoustic Air-Gap Forensic Analysis
