@@ -6,7 +6,7 @@ import {
   ShieldCheck, Database, Fingerprint, Globe, ArrowRight,
   LockKey, Bell, Graph, Clipboard, MagnifyingGlass,
   CloudArrowUp, Brain, Siren, CaretRight, Code,
-  GitBranch, Stack, CircuitBoard, Cpu, GithubLogo,
+  GitBranch, Stack, Cpu, GithubLogo,
   User, Lightbulb, Rocket, CheckCircle,
 } from '@phosphor-icons/react';
 
@@ -95,7 +95,7 @@ const TECH_STACK = [
   { name: 'Next.js 15', icon: Code, color: '#00D4FF' },
   { name: 'TypeScript', icon: Code, color: '#3178C6' },
   { name: 'FastAPI', icon: Stack, color: '#00FFB3' },
-  { name: 'Python 3.12', icon: CircuitBoard, color: '#FFD43B' },
+  { name: 'Python 3.12', icon: Code, color: '#FFD43B' },
   { name: 'MongoDB Atlas', icon: Database, color: '#00ED64' },
   { name: 'WebAuthn / FIDO2', icon: Fingerprint, color: '#FF6B00' },
   { name: 'Framer Motion', icon: Rocket, color: '#FF2D55' },
