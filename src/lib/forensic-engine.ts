@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics, AcousticAirGapForensics
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics, AcousticAirGapForensics, MultiWindowVelocitySignal
 } from './forensic-types';
 
 /**
@@ -571,7 +571,7 @@ export function analyzeVoiceBiometrics(): VoiceBiometricForensics {
  * v34: Advanced Acoustic Air-Gap Forensic Analysis.
  * Detects inaudible ultrasound exfiltration channels.
  */
-export function analyzeAcousticAirGap(): AcousticAirGapForensics {
+export function analyzeAcousticAirGap(): AcousticAirGapForensics, MultiWindowVelocitySignal {
   const ultrasoundExfiltrationDetected = Math.random() > 0.997;
   return {
     ultrasoundExfiltrationDetected,
@@ -622,7 +622,7 @@ export function calculateAdvancedRiskScore(
     deepfakeForensics?: DeepfakeForensics;
     voiceBiometrics?: VoiceBiometricForensics;
     honeytokenForensics?: HoneytokenForensics;
-    acousticAirGap?: AcousticAirGapForensics;
+    acousticAirGap?: AcousticAirGapForensics, MultiWindowVelocitySignal;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -799,9 +799,33 @@ export function calculateAdvancedRiskScore(
 
   // v34 Acoustic Air-Gap Logic
   if (params.acousticAirGap) {
-    if (params.acousticAirGap.ultrasoundExfiltrationDetected) score += 95;
-    score += params.acousticAirGap.leakConfidence * 50;
+  // v35 Multi-Window Velocity Logic
+  if (params.multiWindowVelocity) {
+    if (params.multiWindowVelocity.burstDetected) score += 40;
+    score += params.multiWindowVelocity.accelerationScore * 10;
   }
+
+    if (params.acousticAirGap.ultrasoundExfiltrationDetected) score += 95;
+  // v35 Multi-Window Velocity Logic
+  if (params.multiWindowVelocity) {
+    if (params.multiWindowVelocity.burstDetected) score += 40;
+    score += params.multiWindowVelocity.accelerationScore * 10;
+  }
+
+    score += params.acousticAirGap.leakConfidence * 50;
+  // v35 Multi-Window Velocity Logic
+  if (params.multiWindowVelocity) {
+    if (params.multiWindowVelocity.burstDetected) score += 40;
+    score += params.multiWindowVelocity.accelerationScore * 10;
+  }
+
+  }
+  // v35 Multi-Window Velocity Logic
+  if (params.multiWindowVelocity) {
+    if (params.multiWindowVelocity.burstDetected) score += 40;
+    score += params.multiWindowVelocity.accelerationScore * 10;
+  }
+
 
   score = Math.min(100, score);
 
@@ -918,5 +942,30 @@ export function analyzeHoneytokenInteraction(
     honeytokenTriggered,
     interactionType,
     attackerProfilingScore: honeytokenTriggered ? Math.min(0.98, 0.4 + triggerCount * 0.2) : 0.02
+  };
+}
+
+/**
+ * v35: Multi-Window Velocity Correlation for burst attack detection.
+ */
+export function analyzeMultiWindowVelocity(
+  transactions: { amount: number; timestamp: number }[]
+): MultiWindowVelocitySignal {
+  const now = Date.now();
+  const getVelocity = (windowMs: number) => transactions.filter(tx => (now - tx.timestamp) < windowMs).length;
+
+  const shortTerm = getVelocity(60 * 1000); // 1 min
+  const mediumTerm = getVelocity(10 * 60 * 1000); // 10 min
+  const longTerm = getVelocity(60 * 60 * 1000); // 60 min
+
+  const acceleration = shortTerm > 0 ? (shortTerm / (mediumTerm / 10 || 1)) : 0;
+  const burstDetected = shortTerm > 5 || acceleration > 3;
+
+  return {
+    burstDetected,
+    shortTermVelocity: shortTerm,
+    mediumTermVelocity: mediumTerm,
+    longTermVelocity: longTerm,
+    accelerationScore: parseFloat(acceleration.toFixed(2))
   };
 }

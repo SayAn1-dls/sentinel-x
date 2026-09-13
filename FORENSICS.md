@@ -589,3 +589,16 @@ Implemented detection for timing leaks and instruction entropy anomalies in GPU 
 Upgraded the `calculateAdvancedRiskScore` function to integrate GPU Side-Channel forensic signals and refined the scoring weighting for hardware-accelerated threats.
 - **Version**: 34.0.0
 - **Weighting**: Parallel Compute Hijack (+90 - Critical), GPU Timing Leak (+75 - High), GPU Isolation Violation (+60).
+## Update: 2026-09-13 - Multi-Window Velocity Correlation & Burst Attack Detection (v35)
+
+### Multi-Window Velocity Correlation
+Implemented advanced transaction velocity analysis that monitors activity across three distinct temporal windows (1 min, 10 min, 60 min). This allows the engine to detect "burst" attacks and sudden accelerations in transaction frequency that standard single-window metrics might miss.
+- **Signal**: `multiWindowVelocity`
+- **Metrics**:
+  - **Short-Term Velocity**: Detects immediate spikes (1 min).
+  - **Acceleration Score**: Measures the rate of change between windows.
+  - **Burst Detection**: Triggers when frequency exceeds safety thresholds or acceleration is anomalous.
+- **Risk Impact**: High (+40) for burst detection, plus acceleration-weighted scaling.
+
+### TypeScript Core Refinement
+Expanded the `ForensicIntelligence` interface and updated the core engine to support multi-stage velocity correlation. Refined the risk scoring algorithm (v35.0.0) to integrate these temporal acceleration metrics.

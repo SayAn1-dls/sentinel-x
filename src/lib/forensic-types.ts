@@ -260,6 +260,14 @@ export interface AcousticAirGapForensics {
   acousticSignatureMatch: boolean;
   leakConfidence: number;
 }
+export interface MultiWindowVelocitySignal {
+  burstDetected: boolean;
+  shortTermVelocity: number;
+  mediumTermVelocity: number;
+  longTermVelocity: number;
+  accelerationScore: number;
+}
+
 
 
 export interface DeepfakeForensics {
@@ -296,6 +304,7 @@ export interface ForensicIntelligence {
   asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;
   velocityMetrics: VelocityMetric;
+  multiWindowVelocity?: MultiWindowVelocitySignal;
   temporalAnomaly?: TemporalAnomalySignal;
   fingerprintEntropy: number;
   behavioralBiometricSignature: string;
