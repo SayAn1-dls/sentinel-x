@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -159,12 +159,13 @@ export function enrichWithForensics(transaction: any): any {
   const linguisticForensics = analyzeLinguisticForensics(transaction.memo || 'Standard treasury transfer execution.');
   const isaAttestation = analyzeISAAttestation();
   const opticalAirGap = analyzeOpticalAirGap();
-  const acousticAirGap = analyzeAcousticAirGap();
+  const acousticAirGap = analyzeAcousticAirGap, analyzeMultiWindowVelocity();
 
   return {
     ...transaction,
     forensics: {
       acousticAirGap,
+      multiWindowVelocity,
       deepfakeForensics,
       voiceBiometrics,
       honeytokenForensics,
