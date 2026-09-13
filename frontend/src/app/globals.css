@@ -178,7 +178,7 @@ body::before {
 }
 
 .terminal-cursor::after {
-  content: '█';
+  content: '\2588';
   animation: cursor-blink 1s step-end infinite;
   color: var(--color-cyan);
 }
@@ -243,4 +243,18 @@ body::before {
 
 @media (max-width: 768px) {
   .silicon { backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); }
+}
+
+/* Data row fade-in animation */
+.data-row-enter {
+  animation: dataRowFade 0.4s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+@keyframes dataRowFade {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
