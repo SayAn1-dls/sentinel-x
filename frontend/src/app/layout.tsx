@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: 'Sentinel-X \u2014 Real-Time Financial Threat Detection Platform',
+        alt: 'Sentinel-X — Real-Time Financial Threat Detection Platform',
       },
     ],
   },
