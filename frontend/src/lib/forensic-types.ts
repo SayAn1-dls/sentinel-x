@@ -268,6 +268,7 @@ export interface AcousticAirGapForensics {
 }
 
 export interface ForensicIntelligence {
+  crossChainLinking?: CrossChainForensicLinking;
   rfSideChannel?: RFSideChannelForensics;
   memoryForensics?: MemoryForensics;
   quantumForensics?: QuantumAttackForensics;
@@ -395,4 +396,12 @@ export interface RFSideChannelForensics {
   isSDRInterceptionLikely: boolean;
   frequencyHoppingIntegrity: boolean;
   nearFieldCommunicationRisk: number;
+}
+
+export interface CrossChainForensicLinking {
+  isBridgeActivityDetected: boolean;
+  linkedNetworks: string[];
+  totalCrossChainVolume: number;
+  suspiciousBridgeUsage: boolean;
+  bridgeRiskScore: number;
 }

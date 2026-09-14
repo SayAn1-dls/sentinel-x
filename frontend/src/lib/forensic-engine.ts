@@ -32,7 +32,7 @@ import {
   QuantumAttackForensics, 
   SatelliteForensics, 
   MFAIntegrityForensics, 
-  AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics
+  AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking
 } from './forensic-types';
 
 /**
@@ -517,7 +517,7 @@ export function analyzeAuthenticatorForensics(): AuthenticatorForensics {
 /**
  * v34: GPU Side-Channel Forensic Analysis - Detects timing leaks and instruction entropy anomalies in GPU shaders.
  */
-export function analyzeGPUSideChannel(): GPUSideChannelForensics {
+export function analyzeGPUSideChannel(): GPUSideChannelForensics, CrossChainForensicLinking {
   return {
     isGpuTimingLeakDetected: false,
     shaderInstructionEntropy: 0.12,
@@ -567,7 +567,7 @@ export function calculateAdvancedRiskScore(
     quantumForensics?: QuantumAttackForensics;
     satelliteForensics?: SatelliteForensics;
     mfaIntegrity?: MFAIntegrityForensics;
-    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics, GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics;
+    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -788,6 +788,13 @@ export function calculateAdvancedRiskScore(
   }
 
   
+  // v37: Cross-Chain Linking Logic
+  if (params.crossChainLinking) {
+    if (params.crossChainLinking.suspiciousBridgeUsage) score += 65;
+    if (params.crossChainLinking.linkedNetworks.length > 5) score += 30;
+    score += params.crossChainLinking.bridgeRiskScore * 50;
+  }
+
   // v36: RF Side-Channel Logic
   if (params.rfSideChannel) {
     if (params.rfSideChannel.isRadioFrequencyLeakageDetected) score += 95;
@@ -971,7 +978,7 @@ export function analyzeMicroInteractions(
 /**
  * v29: Cryptographic Side-Channel Analysis - Detects timing leaks and electromagnetic artifacts in crypto operations.
  */
-export function analyzeCryptoSideChannel(): CryptoSideChannelForensics, GPUSideChannelForensics {
+export function analyzeCryptoSideChannel(): CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking {
   return {
     timingJitterDetected: false,
     powerAnalysisRisk: 0.05,
@@ -1004,5 +1011,27 @@ export function analyzeRFSideChannel(): RFSideChannelForensics {
     isSDRInterceptionLikely: false,
     frequencyHoppingIntegrity: true,
     nearFieldCommunicationRisk: 0.02
+  };
+}
+
+/**
+ * v37: Cross-Chain Forensic Linking - Detects bridge activity and correlates linked network assets.
+ */
+export function analyzeCrossChainLinking(
+  address: string,
+  transactionHistory: { network: string; amount: number; isBridge: boolean }[]
+): any {
+  const bridgeTxs = transactionHistory.filter(tx => tx.isBridge);
+  const linkedNetworks = Array.from(new Set(bridgeTxs.map(tx => tx.network)));
+  const totalVolume = bridgeTxs.reduce((sum, tx) => sum + tx.amount, 0);
+  
+  const suspiciousBridgeUsage = totalVolume > 500000 || linkedNetworks.length > 3;
+  
+  return {
+    isBridgeActivityDetected: bridgeTxs.length > 0,
+    linkedNetworks,
+    totalCrossChainVolume: totalVolume,
+    suspiciousBridgeUsage,
+    bridgeRiskScore: suspiciousBridgeUsage ? 0.85 : (bridgeTxs.length > 0 ? 0.35 : 0.05)
   };
 }
