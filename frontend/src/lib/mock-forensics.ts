@@ -14,7 +14,7 @@ import {
   analyzeAIAgentBehavior,
   analyzeSmartContractRisk,
   analyzeDarkWebExposure,
-  analyzeNetworkPackets,
+  analyzeNetworkPacketAnalysis,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, 
   analyzeSteganography,
@@ -31,7 +31,8 @@ import {
   analyzeQuantumForensics,
   analyzeSatelliteForensics,
   analyzeMFAIntegrity,
-  analyzeAuthenticatorForensics, analyzeAcousticAirGap, analyzeRFSideChannel
+  analyzeAuthenticatorForensics, analyzeAcousticAirGap, analyzeRFSideChannel,
+  analyzeCrossChainLinking
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -149,7 +150,7 @@ export function enrichWithForensics(transaction: any): any {
   ]);
 
   const darkWebExposure = analyzeDarkWebExposure(transaction.senderEmail || 'user@example.com');
-  const networkPacketAnalysis = analyzeNetworkPackets();
+  const networkPacketAnalysis = analyzeNetworkPacketAnalysis();
   
   const cloudInfrastructure = analyzeCloudInfrastructure(geolocation.ip);
   const dnsIntegrity = analyzeDNSIntegrity('sentinel-x.io');
@@ -233,57 +234,19 @@ export function enrichWithForensics(transaction: any): any {
   const syntheticIdentity = analyzeSyntheticIdentity(transaction.userId || "anon_123");
   const microInteractions = analyzeMicroInteractions([Date.now() - 500, Date.now() - 480], [{x: 100, y: 100, t: Date.now() - 1000}]);
   
-
-  const acousticAirGap = {
-    ...analyzeAcousticAirGap, analyzeRFSideChannel(),
-    ultrasonicSignalDetected: Math.random() > 0.999,
-    acousticExfiltrationLikely: Math.random() > 0.995,
-    signalConfidence: Math.random() * 0.1
-  };
+  const acousticAirGap = analyzeAcousticAirGap();
   const cryptoSideChannel = analyzeCryptoSideChannel();
-  const gpuSideChannel = {
-  const rfSideChannel = {
-    ...analyzeRFSideChannel(),
-    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
-    isSDRInterceptionLikely: Math.random() > 0.998,
-    spectrumAnomalyScore: Math.random() * 0.15
-  };
-    ...analyzeGPUSideChannel(),
-  const rfSideChannel = {
-    ...analyzeRFSideChannel(),
-    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
-    isSDRInterceptionLikely: Math.random() > 0.998,
-    spectrumAnomalyScore: Math.random() * 0.15
-  };
-    isGpuTimingLeakDetected: Math.random() > 0.998,
-  const rfSideChannel = {
-    ...analyzeRFSideChannel(),
-    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
-    isSDRInterceptionLikely: Math.random() > 0.998,
-    spectrumAnomalyScore: Math.random() * 0.15
-  };
-    isParallelComputeHijackLikely: Math.random() > 0.999,
-  const rfSideChannel = {
-    ...analyzeRFSideChannel(),
-    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
-    isSDRInterceptionLikely: Math.random() > 0.998,
-    spectrumAnomalyScore: Math.random() * 0.15
-  };
-    shaderInstructionEntropy: Math.random() * 0.2
-  const rfSideChannel = {
-    ...analyzeRFSideChannel(),
-    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
-    isSDRInterceptionLikely: Math.random() > 0.998,
-    spectrumAnomalyScore: Math.random() * 0.15
-  };
-  };
-  const rfSideChannel = {
-    ...analyzeRFSideChannel(),
-    isRadioFrequencyLeakageDetected: Math.random() > 0.999,
-    isSDRInterceptionLikely: Math.random() > 0.998,
-    spectrumAnomalyScore: Math.random() * 0.15
-  };
+  const gpuSideChannel = analyzeGPUSideChannel();
+  const rfSideChannel = analyzeRFSideChannel();
 
+  const crossChainLinking = analyzeCrossChainLinking(
+    transaction.address || '0xUNKNOWN',
+    [
+      { network: 'Ethereum', amount: 1.2, isBridge: true },
+      { network: 'Polygon', amount: 500, isBridge: true },
+      { network: 'Arbitrum', amount: 1000, isBridge: false }
+    ]
+  );
 
   return {
     ...transaction,
@@ -326,7 +289,8 @@ export function enrichWithForensics(transaction: any): any {
       quantumForensics,
       satelliteForensics,
       mfaIntegrity,
-      authenticatorForensics
+      authenticatorForensics,
+      crossChainLinking
     }
   };
 }
