@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState, useCallback, Suspense } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ShieldCheck, Activity, Warning, Eye, ArrowRight, SignOut,
+  ShieldCheck, Activity, Warning, Eye, ArrowRight,
   ChartLine, FingerprintSimple, Globe, Cpu, GearSix, ClockCounterClockwise,
-  Lightning, TrendUp, TrendDown, CaretRight, Bell, User, List
+  Lightning, TrendUp, TrendDown, CaretRight, Bell, User, List,
+  CaretLeft, SignOut, X
 } from '@phosphor-icons/react';
-import { useAuth } from '@/lib/hooks/useAuth';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 
-/* ─── Sidebar ─── */
+/* ── Sidebar ── */
 const navItems = [
   { href: '/dashboard', icon: Activity, label: 'Dashboard', active: true },
   { href: '/analysis', icon: ChartLine, label: 'AI Analysis' },
@@ -22,378 +21,240 @@ const navItems = [
 ];
 
 function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
-  const { user, logout } = useAuth();
   return (
-    <aside className={`fixed left-0 top-0 h-screen bg-[#0C0C14] border-r border-white/[0.06] flex flex-col z-40 transition-all duration-300 ${collapsed ? 'w-16' : 'w-56'}`}>
-      <div className="p-4 flex items-center gap-3 border-b border-white/[0.06]">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-emerald-400 flex items-center justify-center shrink-0">
-          <Cpu weight="bold" className="w-5 h-5 text-[#0A0A0F]" />
-        </div>
-        {!collapsed && <span className="text-sm font-bold text-white tracking-tight">SENTINEL-X</span>}
+    <aside className={`fixed left-0 top-0 h-screen bg-[#0C0C14] border-r border-white/[0.04] transition-all duration-300 z-40 ${collapsed ? 'w-[68px]' : 'w-[240px]'}`}>
+      <div className="flex items-center gap-3 px-4 h-16 border-b border-white/[0.04]">
+        <ShieldCheck weight="duotone" className="w-7 h-7 text-[#00D4FF] flex-shrink-0" />
+        {!collapsed && <span className="text-sm font-bold tracking-tight text-white">SENTINEL-X</span>}
+        <button onClick={onToggle} className="ml-auto text-white/30 hover:text-white/60 transition-colors">
+          {collapsed ? <CaretRight size={16} /> : <CaretLeft size={16} />}
+        </button>
       </div>
-
-      <nav className="flex-1 p-2 space-y-1">
-        {navItems.map(n => (
-          <Link key={n.href} href={n.href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-              n.active
-                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04]'
-            }`}>
-            <n.icon weight={n.active ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
-            {!collapsed && <span>{n.label}</span>}
+      <nav className="mt-4 px-3 space-y-1">
+        {navItems.map((item) => (
+          <Link key={item.href} href={item.href}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${item.active ? 'bg-[#00D4FF]/10 text-[#00D4FF] font-medium' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03]'}`}>
+            <item.icon weight={item.active ? 'duotone' : 'regular'} className="w-5 h-5 flex-shrink-0" />
+            {!collapsed && <span>{item.label}</span>}
           </Link>
         ))}
       </nav>
-
-      <div className="p-3 border-t border-white/[0.06]">
-        {user && !collapsed && (
-          <div className="flex items-center gap-2 px-2 py-2 mb-2">
-            {user.picture ? (
-              <img src={user.picture} alt="" className="w-7 h-7 rounded-full" />
-            ) : (
-              <User weight="fill" className="w-7 h-7 text-white/40 bg-white/10 rounded-full p-1" />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-white/80 truncate">{user.name}</p>
-              <p className="text-[10px] text-white/30 truncate">{user.role}</p>
-            </div>
+      <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-white/[0.04]">
+        <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/[0.02] ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00D4FF]/20 to-[#00FFB3]/20 flex items-center justify-center flex-shrink-0">
+            <User weight="bold" className="w-4 h-4 text-[#00D4FF]" />
           </div>
-        )}
-        <button onClick={logout}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 text-xs transition-all">
-          <SignOut weight="bold" className="w-4 h-4" />
-          {!collapsed && <span>Sign Out</span>}
-        </button>
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-medium text-white/70 truncate">Operator</div>
+              <div className="text-[10px] text-white/30">sentinel-x</div>
+            </div>
+          )}
+        </div>
       </div>
-
-      <button onClick={onToggle}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0C0C14] border border-white/10 flex items-center justify-center text-white/30 hover:text-white/60 transition-colors">
-        <List weight="bold" className="w-3 h-3" />
-      </button>
     </aside>
   );
 }
 
-/* ─── Mock Data ─── */
-const mockTransactions = [
-  { id: 'TXN-4821', amount: '$12,340.00', entity: 'Apex Holdings Ltd', risk: 'HIGH', time: '2m ago', direction: 'outbound' },
-  { id: 'TXN-4820', amount: '$890.50', entity: 'Nordic Trade Co', risk: 'LOW', time: '5m ago', direction: 'inbound' },
-  { id: 'TXN-4819', amount: '$45,200.00', entity: 'Meridian Capital', risk: 'CRITICAL', time: '8m ago', direction: 'outbound' },
-  { id: 'TXN-4818', amount: '$3,100.00', entity: 'Stellar Payments', risk: 'MEDIUM', time: '12m ago', direction: 'inbound' },
-  { id: 'TXN-4817', amount: '$780.00', entity: 'Quantum Retail Inc', risk: 'LOW', time: '18m ago', direction: 'outbound' },
-  { id: 'TXN-4816', amount: '$67,500.00', entity: 'Shadow Creek Finance', risk: 'HIGH', time: '22m ago', direction: 'outbound' },
+/* ── Mock Data ── */
+const MOCK_STATS = [
+  { label: 'Transactions Today', value: '24,891', change: '+12.4%', up: true, icon: Activity, color: '#00D4FF' },
+  { label: 'Threats Blocked', value: '47', change: '+8.2%', up: true, icon: ShieldCheck, color: '#00FFB3' },
+  { label: 'Risk Score', value: '23.4', change: '-5.1%', up: false, icon: Warning, color: '#FFB800' },
+  { label: 'Active Nodes', value: '893', change: '+2.1%', up: true, icon: Globe, color: '#00D4FF' },
 ];
 
-const riskColors: Record<string, string> = {
-  CRITICAL: 'text-red-400 bg-red-500/10 border-red-500/20',
-  HIGH: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
-  MEDIUM: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
-  LOW: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+const MOCK_TRANSACTIONS = [
+  { id: 'TX-8A2F', amount: '$42,180.00', from: 'NODE-7X2', to: 'NODE-3K9', risk: 'LOW', time: '2 min ago', status: 'Cleared' },
+  { id: 'TX-C91D', amount: '$128,500.00', from: 'NODE-1A8', to: 'NODE-9F2', risk: 'HIGH', time: '5 min ago', status: 'Under Review' },
+  { id: 'TX-F4E7', amount: '$8,920.00', from: 'NODE-5M3', to: 'NODE-2J6', risk: 'CLEAR', time: '8 min ago', status: 'Cleared' },
+  { id: 'TX-B28A', amount: '$256,000.00', from: 'NODE-4P1', to: 'NODE-8W5', risk: 'CRITICAL', time: '12 min ago', status: 'Blocked' },
+  { id: 'TX-E5C3', amount: '$15,750.00', from: 'NODE-6T4', to: 'NODE-1R8', risk: 'LOW', time: '15 min ago', status: 'Cleared' },
+  { id: 'TX-A1D9', amount: '$89,300.00', from: 'NODE-2K7', to: 'NODE-5N3', risk: 'MEDIUM', time: '18 min ago', status: 'Flagged' },
+  { id: 'TX-D7F2', amount: '$3,200.00', from: 'NODE-9H6', to: 'NODE-4L1', risk: 'CLEAR', time: '22 min ago', status: 'Cleared' },
+  { id: 'TX-9B4E', amount: '$467,890.00', from: 'NODE-3V2', to: 'NODE-7X8', risk: 'HIGH', time: '25 min ago', status: 'Escalated' },
+];
+
+const MOCK_ALERTS = [
+  { id: 1, severity: 'CRITICAL', message: 'Anomalous cluster #7 detected — 12 linked entities', time: '3 min ago', color: '#FF2D55' },
+  { id: 2, severity: 'HIGH', message: 'Sanctions hit on NODE-3K9 (OFAC SDN match)', time: '8 min ago', color: '#FF6B00' },
+  { id: 3, severity: 'MEDIUM', message: 'Velocity threshold exceeded — NODE-1A8', time: '14 min ago', color: '#FFB800' },
+  { id: 4, severity: 'HIGH', message: 'PEP match pending review — Entity #2847', time: '21 min ago', color: '#FF6B00' },
+  { id: 5, severity: 'LOW', message: 'Routine watchlist refresh completed', time: '30 min ago', color: '#00FFB3' },
+];
+
+const RISK_COLOR: Record<string, string> = {
+  CRITICAL: 'text-[#FF2D55] bg-[#FF2D55]/10', HIGH: 'text-[#FF6B00] bg-[#FF6B00]/10',
+  MEDIUM: 'text-[#FFB800] bg-[#FFB800]/10', LOW: 'text-[#00FFB3] bg-[#00FFB3]/10', CLEAR: 'text-[#00D4FF] bg-[#00D4FF]/10',
 };
 
-const stats = [
-  { label: 'Transactions Scanned', value: '24,891', change: '+12.4%', up: true, icon: Activity },
-  { label: 'Threats Detected', value: '47', change: '+3.1%', up: true, icon: Warning },
-  { label: 'Threat Score', value: '94.2', change: '-1.8%', up: false, icon: ShieldCheck },
-  { label: 'Active Monitors', value: '12', change: '+2', up: true, icon: Eye },
+const MOCK_TIMELINE = [
+  { time: '23:41', event: 'Cluster #7 quarantined — 3 accounts frozen', type: 'action' },
+  { time: '23:39', event: 'L3 escalation triggered for TX-B28A', type: 'alert' },
+  { time: '23:35', event: 'AI scan completed — 2,847 transactions clear', type: 'info' },
+  { time: '23:30', event: 'New sanctions list loaded (OFAC update)', type: 'system' },
+  { time: '23:24', event: 'Network anomaly resolved — NODE-5M3', type: 'resolved' },
 ];
 
-/* ─── Mini Chart (pure CSS/SVG) ─── */
-function MiniChart({ color = '#00D4FF' }: { color?: string }) {
-  const points = [40, 35, 45, 38, 52, 48, 55, 50, 60, 58, 65, 70];
-  const max = Math.max(...points);
-  const svgPoints = points.map((v, i) => `${(i / (points.length - 1)) * 100},${100 - (v / max) * 80}`).join(' ');
-  return (
-    <svg viewBox="0 0 100 100" className="w-full h-12" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id={`grad-${color}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <polygon points={`0,100 ${svgPoints} 100,100`} fill={`url(#grad-${color})`} />
-      <polyline points={svgPoints} fill="none" stroke={color} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-    </svg>
-  );
-}
-
-/* ─── Session Handler ─── */
-function SessionHandler() {
-  const searchParams = useSearchParams();
-  const { setUser } = useAuth();
-  const [sessionError, setSessionError] = useState<string | null>(null);
-  const [processing, setProcessing] = useState(false);
-
-  useEffect(() => {
-    // Check hash for session_id (Emergent OAuth callback)
-    const hash = window.location.hash;
-    const hashMatch = hash.match(/session_id=([^&]+)/);
-    const paramId = searchParams.get('session_id');
-    const sessionId = hashMatch?.[1] || paramId;
-
-    if (!sessionId) return;
-    setProcessing(true);
-
-    fetch('/api/auth/session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ session_id: sessionId }),
-    })
-      .then(async res => {
-        if (!res.ok) {
-          const d = await res.json().catch(() => ({}));
-          throw new Error(d.error || `Authentication failed (${res.status})`);
-        }
-        return res.json();
-      })
-      .then(userData => {
-        setUser(userData);
-        // Clean up URL
-        window.history.replaceState({}, '', '/dashboard');
-      })
-      .catch(err => {
-        setSessionError(err.message);
-      })
-      .finally(() => setProcessing(false));
-  }, [searchParams, setUser]);
-
-  if (processing) {
-    return (
-      <div className="fixed inset-0 bg-[#0A0A0F] z-50 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center space-y-4"
-        >
-          <div className="w-12 h-12 mx-auto rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-          <p className="text-white/60 text-sm">Establishing secure session...</p>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (sessionError) {
-    return (
-      <div className="fixed inset-0 bg-[#0A0A0F] z-50 flex items-center justify-center p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full bg-[#0C0C14] rounded-2xl border border-red-500/20 p-8 text-center space-y-4"
-        >
-          <Warning weight="fill" className="w-12 h-12 text-red-400 mx-auto" />
-          <h2 className="text-xl font-bold text-white">Authentication Failed</h2>
-          <p className="text-white/50 text-sm">{sessionError}</p>
-          <div className="flex gap-3 pt-2">
-            <Link href="/auth"
-              className="flex-1 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white text-sm font-medium hover:bg-white/[0.1] transition-all text-center">
-              Back to Sign In
-            </Link>
-            <button onClick={() => window.location.reload()}
-              className="flex-1 py-2.5 rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-sm font-medium hover:bg-cyan-500/30 transition-all">
-              Try Again
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  return null;
-}
-
-/* ─── Main Dashboard ─── */
-function DashboardContent() {
-  const { user, loading } = useAuth();
+export default function DashboardPage() {
   const [collapsed, setCollapsed] = useState(false);
+  const [showAlertPanel, setShowAlertPanel] = useState(false);
+  const [dismissedAlerts, setDismissedAlerts] = useState<number[]>([]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-      </div>
-    );
-  }
+  const dismissAlert = useCallback((id: number) => {
+    try { setDismissedAlerts(prev => [...prev, id]); } catch (_) {}
+  }, []);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-4"
-        >
-          <ShieldCheck weight="duotone" className="w-16 h-16 text-cyan-400/40 mx-auto" />
-          <h2 className="text-xl font-bold text-white">Session Required</h2>
-          <p className="text-white/50 text-sm">Sign in to access the security dashboard</p>
-          <Link href="/auth"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-white text-sm font-semibold hover:from-cyan-400 hover:to-emerald-400 transition-all">
-            Go to Sign In <ArrowRight weight="bold" className="w-4 h-4" />
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
+  const activeAlerts = MOCK_ALERTS.filter(a => !dismissedAlerts.includes(a.id));
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0A0F1E] text-white">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
-
-      <main className={`transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-56'} p-6 lg:p-8`}>
+      <main className={`transition-all duration-300 ${collapsed ? 'ml-[68px]' : 'ml-[240px]'}`}>
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <header className="sticky top-0 z-30 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/[0.04] px-6 h-16 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">Command Center</h1>
-            <p className="text-white/40 text-sm mt-1">Real-time threat monitoring & analytics</p>
+            <h1 className="text-lg font-bold">Dashboard</h1>
+            <p className="text-xs text-white/30">Real-time threat monitoring</p>
           </div>
           <div className="flex items-center gap-3">
-            <button className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/60 transition-colors relative">
-              <Bell weight="bold" className="w-4 h-4" />
-              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500" />
+            <button onClick={() => setShowAlertPanel(!showAlertPanel)} className="relative p-2 rounded-lg hover:bg-white/5 transition-colors">
+              <Bell weight="duotone" className="w-5 h-5 text-white/50" />
+              {activeAlerts.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FF2D55] text-[10px] font-bold flex items-center justify-center">{activeAlerts.length}</span>
+              )}
             </button>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-emerald-400 text-xs font-medium">System Online</span>
+            <div className="h-8 w-px bg-white/10" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#00FFB3]/10 border border-[#00FFB3]/20">
+              <span className="w-2 h-2 rounded-full bg-[#00FFB3] animate-pulse" />
+              <span className="text-xs text-[#00FFB3] font-medium">System Online</span>
             </div>
+          </div>
+        </header>
+
+        <div className="p-6 space-y-6">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {MOCK_STATS.map((stat) => (
+              <motion.div key={stat.label} whileHover={{ y: -2 }}
+                className="p-5 rounded-xl border border-white/[0.06] bg-[#0D0D14] hover:border-white/[0.1] transition-colors">
+                <div className="flex items-center justify-between mb-3">
+                  <stat.icon weight="duotone" className="w-5 h-5" style={{ color: stat.color }} />
+                  <div className={`flex items-center gap-1 text-xs font-medium ${stat.up ? 'text-[#00FFB3]' : 'text-[#FF2D55]'}`}>
+                    {stat.up ? <TrendUp size={12} /> : <TrendDown size={12} />}
+                    {stat.change}
+                  </div>
+                </div>
+                <div className="text-2xl font-bold tracking-tight">{stat.value}</div>
+                <div className="text-xs text-white/30 mt-1">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Transaction Feed */}
+            <div className="lg:col-span-2 rounded-xl border border-white/[0.06] bg-[#0D0D14] overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.04]">
+                <h2 className="text-sm font-semibold flex items-center gap-2">
+                  <Lightning weight="duotone" className="w-4 h-4 text-[#00D4FF]" />
+                  Live Transaction Feed
+                </h2>
+                <Link href="/analysis" className="text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 flex items-center gap-1">
+                  View All <CaretRight size={12} />
+                </Link>
+              </div>
+              <div className="divide-y divide-white/[0.03]">
+                {MOCK_TRANSACTIONS.map((tx) => (
+                  <div key={tx.id} className="flex items-center gap-4 px-5 py-3 hover:bg-white/[0.02] transition-colors">
+                    <span className="text-xs font-mono text-white/60 w-16">{tx.id}</span>
+                    <span className="text-xs text-white/30 w-24">{tx.from} → {tx.to}</span>
+                    <span className="text-sm font-medium text-white/80 flex-1">{tx.amount}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${RISK_COLOR[tx.risk] || ''}`}>{tx.risk}</span>
+                    <span className="text-xs text-white/30 w-20 text-right">{tx.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Activity Timeline */}
+            <div className="rounded-xl border border-white/[0.06] bg-[#0D0D14] overflow-hidden">
+              <div className="px-5 py-4 border-b border-white/[0.04]">
+                <h2 className="text-sm font-semibold flex items-center gap-2">
+                  <ClockCounterClockwise weight="duotone" className="w-4 h-4 text-[#00FFB3]" />
+                  Activity Timeline
+                </h2>
+              </div>
+              <div className="p-4 space-y-4">
+                {MOCK_TIMELINE.map((item, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="flex flex-col items-center">
+                      <div className={`w-2 h-2 rounded-full mt-1.5 ${item.type === 'alert' ? 'bg-[#FF6B00]' : item.type === 'action' ? 'bg-[#FF2D55]' : item.type === 'resolved' ? 'bg-[#00FFB3]' : 'bg-[#00D4FF]'}`} />
+                      {i < MOCK_TIMELINE.length - 1 && <div className="w-px flex-1 bg-white/[0.06] mt-1" />}
+                    </div>
+                    <div className="pb-4">
+                      <p className="text-xs text-white/60">{item.event}</p>
+                      <span className="text-[10px] text-white/20">{item.time}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: 'Run AI Scan', icon: Cpu, href: '/analysis', color: '#00D4FF' },
+              { label: 'View Audit Log', icon: ClockCounterClockwise, href: '/audit', color: '#00FFB3' },
+              { label: 'Network Map', icon: Globe, href: '/network', color: '#FFB800' },
+              { label: 'Security Panel', icon: FingerprintSimple, href: '/security', color: '#FF6B00' },
+            ].map((action) => (
+              <Link key={action.label} href={action.href}>
+                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}
+                  className="p-4 rounded-xl border border-white/[0.06] bg-[#0D0D14] hover:border-white/[0.1] transition-colors cursor-pointer flex items-center gap-3">
+                  <action.icon weight="duotone" className="w-5 h-5" style={{ color: action.color }} />
+                  <span className="text-sm text-white/60">{action.label}</span>
+                </motion.div>
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {stats.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-[#0C0C14] rounded-xl border border-white/[0.06] p-4"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-white/40 text-xs">{s.label}</span>
-                <s.icon weight="duotone" className="w-4 h-4 text-cyan-400/50" />
+        {/* Alert Side Panel */}
+        <AnimatePresence>
+          {showAlertPanel && (
+            <motion.div initial={{ x: 400, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 400, opacity: 0 }}
+              className="fixed right-0 top-0 h-screen w-[380px] bg-[#0C0C14] border-l border-white/[0.06] z-50 shadow-2xl shadow-black/50">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.04]">
+                <h3 className="text-sm font-semibold flex items-center gap-2">
+                  <Bell weight="duotone" className="w-4 h-4 text-[#FF6B00]" />
+                  Active Alerts ({activeAlerts.length})
+                </h3>
+                <button onClick={() => setShowAlertPanel(false)} className="p-1 rounded hover:bg-white/5"><X size={16} className="text-white/40" /></button>
               </div>
-              <div className="flex items-end justify-between">
-                <span className="text-2xl font-bold text-white">{s.value}</span>
-                <span className={`text-xs font-medium flex items-center gap-0.5 ${s.up ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {s.up ? <TrendUp weight="bold" className="w-3 h-3" /> : <TrendDown weight="bold" className="w-3 h-3" />}
-                  {s.change}
-                </span>
-              </div>
-              <div className="mt-2">
-                <MiniChart color={s.up ? '#00FFB3' : '#FF4444'} />
+              <div className="p-4 space-y-3 overflow-y-auto max-h-[calc(100vh-65px)]">
+                {activeAlerts.map((alert) => (
+                  <motion.div key={alert.id} layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-lg border border-white/[0.06] bg-[#0D0D14]">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ color: alert.color, backgroundColor: `${alert.color}15` }}>{alert.severity}</span>
+                      <span className="text-[10px] text-white/20">{alert.time}</span>
+                    </div>
+                    <p className="text-xs text-white/60 mb-3">{alert.message}</p>
+                    <div className="flex gap-2">
+                      <button onClick={() => dismissAlert(alert.id)} className="text-[10px] px-3 py-1 rounded bg-white/5 text-white/40 hover:bg-white/10 transition-colors">Dismiss</button>
+                      <button className="text-[10px] px-3 py-1 rounded bg-[#00D4FF]/10 text-[#00D4FF] hover:bg-[#00D4FF]/20 transition-colors">Investigate</button>
+                    </div>
+                  </motion.div>
+                ))}
+                {activeAlerts.length === 0 && (
+                  <div className="text-center py-12 text-white/20 text-sm">All clear. No active alerts.</div>
+                )}
               </div>
             </motion.div>
-          ))}
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Live Transaction Feed */}
-          <div className="lg:col-span-2 bg-[#0C0C14] rounded-xl border border-white/[0.06]">
-            <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
-              <div className="flex items-center gap-2">
-                <Lightning weight="fill" className="w-4 h-4 text-cyan-400" />
-                <h3 className="text-sm font-semibold text-white">Live Transaction Feed</h3>
-              </div>
-              <span className="text-white/30 text-xs">Showing mock data — connect MongoDB for live feed</span>
-            </div>
-            <div className="divide-y divide-white/[0.04]">
-              {mockTransactions.map((tx, i) => (
-                <motion.div
-                  key={tx.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-center justify-between p-4 hover:bg-white/[0.02] transition-colors cursor-pointer group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${riskColors[tx.risk]}`}>
-                      {tx.risk[0]}
-                    </div>
-                    <div>
-                      <p className="text-sm text-white/90 font-medium">{tx.entity}</p>
-                      <p className="text-xs text-white/40">{tx.id} · {tx.time}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`text-sm font-mono ${tx.direction === 'outbound' ? 'text-red-300' : 'text-emerald-300'}`}>
-                      {tx.direction === 'outbound' ? '-' : '+'}{tx.amount}
-                    </span>
-                    <CaretRight weight="bold" className="w-3 h-3 text-white/20 group-hover:text-white/40 transition-colors" />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Actions + Threat Summary */}
-          <div className="space-y-6">
-            {/* Threat Summary */}
-            <div className="bg-[#0C0C14] rounded-xl border border-white/[0.06] p-4">
-              <h3 className="text-sm font-semibold text-white mb-4">Threat Distribution</h3>
-              <div className="space-y-3">
-                {[
-                  { level: 'Critical', count: 3, pct: 6, color: 'bg-red-500' },
-                  { level: 'High', count: 12, pct: 26, color: 'bg-orange-500' },
-                  { level: 'Medium', count: 18, pct: 38, color: 'bg-yellow-500' },
-                  { level: 'Low', count: 14, pct: 30, color: 'bg-emerald-500' },
-                ].map(t => (
-                  <div key={t.level}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-white/60">{t.level}</span>
-                      <span className="text-xs text-white/40">{t.count} ({t.pct}%)</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${t.pct}%` }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className={`h-full rounded-full ${t.color}`}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-[#0C0C14] rounded-xl border border-white/[0.06] p-4">
-              <h3 className="text-sm font-semibold text-white mb-3">Quick Actions</h3>
-              <div className="space-y-2">
-                {[
-                  { href: '/analysis', icon: ChartLine, label: 'Run AI Analysis', color: 'text-cyan-400' },
-                  { href: '/audit', icon: ClockCounterClockwise, label: 'View Audit Log', color: 'text-emerald-400' },
-                  { href: '/network', icon: Globe, label: 'Network Map', color: 'text-purple-400' },
-                  { href: '/security', icon: FingerprintSimple, label: 'Security Settings', color: 'text-orange-400' },
-                ].map(a => (
-                  <Link key={a.href} href={a.href}
-                    className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all group">
-                    <div className="flex items-center gap-2.5">
-                      <a.icon weight="duotone" className={`w-4 h-4 ${a.color}`} />
-                      <span className="text-sm text-white/70">{a.label}</span>
-                    </div>
-                    <ArrowRight weight="bold" className="w-3 h-3 text-white/20 group-hover:text-white/40 transition-colors" />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-      </div>
-    }>
-      <SessionHandler />
-      <DashboardContent />
-    </Suspense>
   );
 }
