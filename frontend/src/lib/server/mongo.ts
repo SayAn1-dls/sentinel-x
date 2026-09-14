@@ -6,7 +6,13 @@ declare global {
 }
 
 function getClient(): MongoClient {
-  const uri = process.env.MONGO_URL!;
+  const uri = process.env.MONGO_URL;
+  if (!uri) {
+    throw new Error(
+      'MONGO_URL environment variable is not configured. ' +
+      'Database features are unavailable until a MongoDB connection string is provided.'
+    );
+  }
   if (!global._mongoClient) {
     global._mongoClient = new MongoClient(uri, {
       maxPoolSize: 20,
@@ -18,7 +24,7 @@ function getClient(): MongoClient {
 }
 
 export async function getDb(): Promise<Db> {
-  const dbName = process.env.DB_NAME!;
+  const dbName = process.env.DB_NAME || 'sentinel';
   const client = getClient();
   await client.connect();
   return client.db(dbName);
