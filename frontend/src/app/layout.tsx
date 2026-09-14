@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { AuthProvider } from '@/lib/hooks/useAuth';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -46,7 +45,7 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: 'Sentinel-X — Real-Time Financial Threat Detection Platform',
+        alt: 'Sentinel-X \u2014 Real-Time Financial Threat Detection Platform',
       },
     ],
   },
@@ -82,9 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} bg-[#0A0F1E] min-h-screen scanline antialiased`}>
-        <AuthProvider>
-          <div className="relative z-10">{children}</div>
-        </AuthProvider>
+        <div className="relative z-10">{children}</div>
       </body>
     </html>
   );
