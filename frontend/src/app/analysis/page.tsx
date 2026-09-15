@@ -1,212 +1,322 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import {
-  ShieldCheck, Pulse, ChartLine, FingerprintSimple, Globe, GearSix,
-  ClockCounterClockwise, Cpu, Brain, Lightning, CaretRight, CaretLeft,
-  User, MagnifyingGlass, Warning, Eye, Funnel, ArrowsClockwise
+  Shield,
+  Cpu,
+  Eye,
+  Lightning,
+  ChartBar,
+  Globe,
+  Lock,
+  Gear,
+  User,
+  CaretRight,
+  CaretLeft,
+  House,
+  List,
+  Warning,
+  Check,
+  CircleNotch,
+  Play,
+  MagnifyingGlass,
 } from '@phosphor-icons/react';
-import Link from 'next/link';
 
-const navItems = [
-  { href: '/dashboard', icon: Pulse, label: 'Dashboard' },
-  { href: '/analysis', icon: ChartLine, label: 'AI Analysis', active: true },
-  { href: '/audit', icon: ClockCounterClockwise, label: 'Audit Log' },
-  { href: '/network', icon: Globe, label: 'Network' },
-  { href: '/security', icon: FingerprintSimple, label: 'Security' },
-  { href: '/admin', icon: GearSix, label: 'Admin' },
+const NAV = [
+  { href: '/dashboard', label: 'Dashboard', icon: House },
+  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/audit', label: 'Audit Log', icon: List },
+  { href: '/network', label: 'Network', icon: Globe },
+  { href: '/security', label: 'Security', icon: Lock },
+  { href: '/admin', label: 'Admin', icon: Gear },
 ];
 
-function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
-  return (
-    <aside className={`fixed left-0 top-0 h-screen bg-[#0C0C14] border-r border-white/[0.04] transition-all duration-300 z-40 ${collapsed ? 'w-[68px]' : 'w-[240px]'}`}>
-      <div className="flex items-center gap-3 px-4 h-16 border-b border-white/[0.04]">
-        <ShieldCheck weight="duotone" className="w-7 h-7 text-[#00D4FF] flex-shrink-0" />
-        {!collapsed && <span className="text-sm font-bold tracking-tight text-white">SENTINEL-X</span>}
-        <button onClick={onToggle} className="ml-auto text-white/30 hover:text-white/60 transition-colors">
-          {collapsed ? <CaretRight size={16} /> : <CaretLeft size={16} />}
-        </button>
-      </div>
-      <nav className="mt-4 px-3 space-y-1">
-        {navItems.map((item) => (
-          <Link key={item.href} href={item.href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${item.active ? 'bg-[#00D4FF]/10 text-[#00D4FF] font-medium' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03]'}`}>
-            <item.icon weight={item.active ? 'duotone' : 'regular'} className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
-          </Link>
-        ))}
-      </nav>
-      <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-white/[0.04]">
-        <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/[0.02] ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00D4FF]/20 to-[#00FFB3]/20 flex items-center justify-center flex-shrink-0">
-            <User weight="bold" className="w-4 h-4 text-[#00D4FF]" />
-          </div>
-          {!collapsed && <div className="flex-1 min-w-0"><div className="text-xs font-medium text-white/70 truncate">Operator</div><div className="text-[10px] text-white/30">sentinel-x</div></div>}
-        </div>
-      </div>
-    </aside>
-  );
-}
+const RISK_COLORS: Record<string, string> = {
+  CRITICAL: '#FF2D55',
+  HIGH: '#FF6B00',
+  MEDIUM: '#FFB800',
+  LOW: '#00FFB3',
+  CLEAR: '#00D4FF',
+};
 
-const MOCK_SCAN_RESULTS = [
-  { id: 'SCN-001', entity: 'NODE-7X2', type: 'Isolation Forest', risk: 92, status: 'Anomaly Detected', detail: 'Unusual transaction velocity — 847 TXs in 60s, 12x baseline. Graph cluster #7 flagged.' },
-  { id: 'SCN-002', entity: 'NODE-3K9', type: 'GNN Pattern Match', risk: 78, status: 'Pattern Match', detail: 'Circular flow detected: NODE-3K9 → NODE-8W5 → NODE-1A8 → NODE-3K9. Layering signature.' },
-  { id: 'SCN-003', entity: 'NODE-1A8', type: 'Velocity Check', risk: 65, status: 'Threshold Breach', detail: 'Cumulative transfer volume $2.4M in 24h exceeds $1M threshold for this entity class.' },
-  { id: 'SCN-004', entity: 'NODE-9F2', type: 'Behavioral', risk: 41, status: 'Deviation', detail: 'Transaction timing shifted 6h from established pattern. Low-confidence anomaly.' },
-  { id: 'SCN-005', entity: 'NODE-5M3', type: 'Sanctions Match', risk: 15, status: 'Clear', detail: 'No matches against OFAC, EU, UN consolidated lists. Fuzzy match score 0.12.' },
+const RISK_DIST = [
+  { label: 'CRITICAL', pct: 2.1, color: '#FF2D55' },
+  { label: 'HIGH', pct: 8.4, color: '#FF6B00' },
+  { label: 'MEDIUM', pct: 19.2, color: '#FFB800' },
+  { label: 'LOW', pct: 31.8, color: '#00FFB3' },
+  { label: 'CLEAR', pct: 38.5, color: '#00D4FF' },
 ];
 
-const MOCK_PATTERNS = [
-  { name: 'Circular Flow', count: 3, severity: 'HIGH', color: '#FF6B00' },
-  { name: 'Velocity Spike', count: 7, severity: 'MEDIUM', color: '#FFB800' },
-  { name: 'Fan-out', count: 2, severity: 'HIGH', color: '#FF6B00' },
-  { name: 'Dormant Activation', count: 1, severity: 'CRITICAL', color: '#FF2D55' },
-  { name: 'Micro-structuring', count: 5, severity: 'MEDIUM', color: '#FFB800' },
-  { name: 'Jurisdictional Hop', count: 4, severity: 'LOW', color: '#00FFB3' },
+const ANOMALY_DATA = [
+  { entity: 'ENT-0091', cluster: 'CL-7X', score: 0.97, type: 'SANCTIONS_HIT', status: 'CRITICAL', action: 'Investigate' },
+  { entity: 'ENT-0001', cluster: 'CL-2A', score: 0.94, type: 'VELOCITY_BREACH', status: 'CRITICAL', action: 'Investigate' },
+  { entity: 'ENT-0567', cluster: 'CL-5F', score: 0.82, type: 'GEO_MISMATCH', status: 'HIGH', action: 'Review' },
+  { entity: 'ENT-0445', cluster: 'CL-1B', score: 0.71, type: 'STRUCTURING', status: 'HIGH', action: 'Review' },
+  { entity: 'ENT-0234', cluster: 'CL-9C', score: 0.58, type: 'UNUSUAL_HOUR', status: 'MEDIUM', action: 'Monitor' },
+  { entity: 'ENT-0312', cluster: 'CL-3D', score: 0.44, type: 'RAPID_MOVEMENT', status: 'MEDIUM', action: 'Monitor' },
+  { entity: 'ENT-0673', cluster: 'CL-8E', score: 0.31, type: 'ROUND_AMOUNT', status: 'LOW', action: 'Watch' },
+  { entity: 'ENT-0892', cluster: 'CL-4G', score: 0.18, type: 'MINOR_FLAG', status: 'LOW', action: 'Watch' },
+];
+
+const PIPELINE_STEPS = [
+  { label: 'INGEST', status: 'LIVE', color: '#00FFB3', pulse: false },
+  { label: 'ANALYZE', status: 'PROCESSING', color: '#00D4FF', pulse: true },
+  { label: 'ALERT', status: 'READY', color: '#00FFB3', pulse: false },
 ];
 
 export default function AnalysisPage() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [rowStatuses, setRowStatuses] = useState<Record<string, string>>({});
   const [scanning, setScanning] = useState(false);
-  const [scanComplete, setScanComplete] = useState(true);
-  const [selectedScan, setSelectedScan] = useState<string | null>(null);
-  const [filterRisk, setFilterRisk] = useState<string>('all');
+  const [scanDone, setScanDone] = useState(false);
 
-  const runScan = useCallback(() => {
-    try {
-      setScanning(true);
-      setScanComplete(false);
-      setTimeout(() => { setScanning(false); setScanComplete(true); }, 3000);
-    } catch (_) { setScanning(false); }
-  }, []);
+  const handleAction = (entity: string) => {
+    setRowStatuses((prev) => ({ ...prev, [entity]: 'OPENED' }));
+  };
 
-  const filteredResults = filterRisk === 'all'
-    ? MOCK_SCAN_RESULTS
-    : MOCK_SCAN_RESULTS.filter(r => {
-        if (filterRisk === 'high') return r.risk >= 70;
-        if (filterRisk === 'medium') return r.risk >= 40 && r.risk < 70;
-        return r.risk < 40;
-      });
+  const handleScan = () => {
+    setScanning(true);
+    setScanDone(false);
+    setTimeout(() => {
+      setScanning(false);
+      setScanDone(true);
+      setTimeout(() => setScanDone(false), 5000);
+    }, 2000);
+  };
 
-  const riskColor = (r: number) => r >= 70 ? '#FF2D55' : r >= 40 ? '#FFB800' : '#00FFB3';
+  const metrics = [
+    { label: 'Detection Rate', value: '99.7%', color: '#00FFB3' },
+    { label: 'False Positive Rate', value: '0.3%', color: '#00D4FF' },
+    { label: 'Avg Inference', value: '47ms', color: '#FFB800' },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-white">
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
-      <main className={`transition-all duration-300 ${collapsed ? 'ml-[68px]' : 'ml-[240px]'}`}>
-        <header className="sticky top-0 z-30 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/[0.04] px-6 h-16 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold flex items-center gap-2"><Brain weight="duotone" className="w-5 h-5 text-[#00D4FF]" /> AI Analysis Engine</h1>
-            <p className="text-xs text-white/30">Neural pattern detection & forensic scanning</p>
-          </div>
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={runScan}
-            disabled={scanning}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${scanning ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-[#00D4FF] text-black hover:bg-[#00D4FF]/90'}`}>
-            {scanning ? <ArrowsClockwise className="w-4 h-4 animate-spin" /> : <Lightning weight="bold" className="w-4 h-4" />}
-            {scanning ? 'Scanning...' : 'Run Full Scan'}
-          </motion.button>
-        </header>
+    <div className="flex min-h-screen bg-[#0A0A0F]">
+      {/* Sidebar */}
+      <aside
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        style={{ width: sidebarOpen ? 240 : 64 }}
+      >
+        <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
+          <Shield size={28} weight="fill" color="#00D4FF" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+        </div>
+        <nav className="flex-1 py-4 flex flex-col gap-1">
+          {NAV.map((item) => {
+            const Icon = item.icon;
+            const active = item.href === '/analysis';
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
+                  active
+                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+                }`}
+              >
+                <Icon size={20} weight={active ? 'fill' : 'regular'} />
+                {sidebarOpen && <span>{item.label}</span>}
+              </a>
+            );
+          })}
+        </nav>
+        <div className="border-t border-white/5 p-4">
+          {sidebarOpen && (
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
+                <User size={16} color="#00D4FF" />
+              </div>
+              <div>
+                <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
+                <div className="text-[10px] text-white/40 font-mono">ANALYST</div>
+              </div>
+            </div>
+          )}
+        </div>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+        >
+          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+        </button>
+      </aside>
 
-        <div className="p-6 space-y-6">
-          {/* Scan Progress */}
-          <AnimatePresence>
-            {scanning && (
-              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                className="p-4 rounded-xl border border-[#00D4FF]/20 bg-[#00D4FF]/5">
-                <div className="flex items-center gap-3 mb-2">
-                  <Cpu weight="duotone" className="w-5 h-5 text-[#00D4FF] animate-pulse" />
-                  <span className="text-sm font-medium text-[#00D4FF]">Neural scan in progress...</span>
+      {/* Main */}
+      <main className="flex-1 transition-all duration-300" style={{ marginLeft: sidebarOpen ? 240 : 64 }}>
+        <div className="p-6 max-w-[1600px] mx-auto">
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-8">
+            <h1 className="text-2xl font-bold tracking-wider text-white">AI FORENSICS ENGINE</h1>
+            <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#00FFB3]/10 border border-[#00FFB3]/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FFB3] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00FFB3]" />
+              </span>
+              <span className="text-xs font-bold text-[#00FFB3]">ACTIVE</span>
+            </span>
+          </div>
+
+          {/* Model Metrics */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            {metrics.map((m) => (
+              <div key={m.label} className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+                <div className="text-xs text-white/40 uppercase tracking-wider mb-2">{m.label}</div>
+                <div className="text-3xl font-bold font-mono" style={{ color: m.color }}>
+                  {m.value}
                 </div>
-                <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
-                  <motion.div className="h-full bg-gradient-to-r from-[#00D4FF] to-[#00FFB3] rounded-full"
-                    initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 3, ease: 'easeInOut' }} />
-                </div>
-                <p className="text-[10px] text-white/30 mt-2">Analyzing 24,891 transactions across 893 nodes...</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Pattern Summary */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {MOCK_PATTERNS.map((p) => (
-              <motion.div key={p.name} whileHover={{ y: -2 }}
-                className="p-3 rounded-xl border border-white/[0.06] bg-[#0D0D14] hover:border-white/[0.1] transition-colors cursor-pointer">
-                <div className="text-lg font-bold" style={{ color: p.color }}>{p.count}</div>
-                <div className="text-[10px] text-white/40 mt-0.5">{p.name}</div>
-                <div className="text-[9px] font-bold mt-1 px-1.5 py-0.5 rounded-full inline-block" style={{ color: p.color, backgroundColor: `${p.color}15` }}>{p.severity}</div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Filter Bar */}
-          <div className="flex items-center gap-3">
-            <Funnel weight="duotone" className="w-4 h-4 text-white/30" />
-            {['all', 'high', 'medium', 'low'].map((f) => (
-              <button key={f} onClick={() => setFilterRisk(f)}
-                className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${filterRisk === f ? 'bg-[#00D4FF]/10 text-[#00D4FF] font-medium' : 'text-white/30 hover:text-white/60 hover:bg-white/5'}`}>
-                {f.charAt(0).toUpperCase() + f.slice(1)} Risk
-              </button>
-            ))}
-          </div>
-
-          {/* Scan Results */}
-          <div className="space-y-3">
-            {filteredResults.map((result) => (
-              <motion.div key={result.id} layout whileHover={{ y: -1 }}
-                className="rounded-xl border border-white/[0.06] bg-[#0D0D14] hover:border-white/[0.1] transition-colors overflow-hidden">
-                <button onClick={() => setSelectedScan(selectedScan === result.id ? null : result.id)}
-                  className="w-full flex items-center gap-4 px-5 py-4 text-left">
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${riskColor(result.risk)}10` }}>
-                    <MagnifyingGlass weight="duotone" className="w-5 h-5" style={{ color: riskColor(result.risk) }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{result.entity}</span>
-                      <span className="text-[10px] text-white/20 font-mono">{result.id}</span>
-                    </div>
-                    <span className="text-xs text-white/30">{result.type} — {result.status}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold" style={{ color: riskColor(result.risk) }}>{result.risk}</div>
-                    <div className="text-[10px] text-white/20">risk score</div>
-                  </div>
-                  <CaretRight className={`w-4 h-4 text-white/20 transition-transform ${selectedScan === result.id ? 'rotate-90' : ''}`} />
-                </button>
-                <AnimatePresence>
-                  {selectedScan === result.id && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-white/[0.04] overflow-hidden">
-                      <div className="px-5 py-4">
-                        <p className="text-xs text-white/50 leading-relaxed">{result.detail}</p>
-                        <div className="flex gap-2 mt-3">
-                          <button className="text-[10px] px-3 py-1.5 rounded-lg bg-[#00D4FF]/10 text-[#00D4FF] hover:bg-[#00D4FF]/20 transition-colors">Deep Analyze</button>
-                          <button className="text-[10px] px-3 py-1.5 rounded-lg bg-white/5 text-white/40 hover:bg-white/10 transition-colors">Export Report</button>
-                          <button className="text-[10px] px-3 py-1.5 rounded-lg bg-[#FF6B00]/10 text-[#FF6B00] hover:bg-[#FF6B00]/20 transition-colors">Flag for Review</button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+              </div>
             ))}
           </div>
 
           {/* Risk Distribution */}
-          <div className="rounded-xl border border-white/[0.06] bg-[#0D0D14] p-5">
-            <h3 className="text-sm font-semibold mb-4">Risk Distribution</h3>
-            <div className="flex items-end gap-1 h-32">
-              {[12, 45, 78, 34, 92, 56, 23, 67, 41, 88, 15, 63, 29, 71, 50, 37, 84, 19, 55, 43].map((v, i) => (
-                <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${v}%` }}
-                  transition={{ delay: i * 0.05, duration: 0.5 }}
-                  className="flex-1 rounded-t-sm min-w-[8px]"
-                  style={{ backgroundColor: v >= 70 ? '#FF2D55' : v >= 40 ? '#FFB800' : '#00FFB3', opacity: 0.7 }}
-                  title={`Score: ${v}`} />
+          <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 mb-6">
+            <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-4">Risk Distribution</h2>
+            <div className="flex flex-col gap-3">
+              {RISK_DIST.map((r) => (
+                <div key={r.label} className="flex items-center gap-4">
+                  <span className="w-20 text-xs font-mono text-white/50 text-right">{r.label}</span>
+                  <div className="flex-1 h-6 bg-white/[0.03] rounded overflow-hidden">
+                    <div
+                      className="h-full rounded transition-all duration-1000"
+                      style={{ width: `${r.pct * 2.5}%`, backgroundColor: r.color }}
+                    />
+                  </div>
+                  <span className="w-12 text-xs font-mono text-right" style={{ color: r.color }}>
+                    {r.pct}%
+                  </span>
+                </div>
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-[10px] text-white/20">
-              <span>24h ago</span><span>Now</span>
+          </div>
+
+          {/* Anomaly Detection Table */}
+          <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 mb-6">
+            <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-4">Anomaly Detection</h2>
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-white/30 border-b border-white/5">
+                  <th className="text-left py-2 font-medium">Entity</th>
+                  <th className="text-left py-2 font-medium">Cluster</th>
+                  <th className="text-center py-2 font-medium">Score</th>
+                  <th className="text-left py-2 font-medium">Type</th>
+                  <th className="text-center py-2 font-medium">Status</th>
+                  <th className="text-center py-2 font-medium">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ANOMALY_DATA.map((row) => {
+                  const currentStatus = rowStatuses[row.entity] || row.status;
+                  const statusColor = currentStatus === 'OPENED' ? '#00D4FF' : RISK_COLORS[row.status];
+                  return (
+                    <tr key={row.entity} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 font-mono text-[#00D4FF]">{row.entity}</td>
+                      <td className="py-3 font-mono text-white/50">{row.cluster}</td>
+                      <td className="py-3 text-center">
+                        <span
+                          className="font-mono font-bold"
+                          style={{ color: row.score > 0.8 ? '#FF2D55' : row.score > 0.5 ? '#FFB800' : '#00FFB3' }}
+                        >
+                          {row.score.toFixed(2)}
+                        </span>
+                      </td>
+                      <td className="py-3 font-mono text-white/60">{row.type}</td>
+                      <td className="py-3 text-center">
+                        <span
+                          className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                          style={{
+                            color: statusColor,
+                            backgroundColor: `${statusColor}15`,
+                            border: `1px solid ${statusColor}30`,
+                          }}
+                        >
+                          {currentStatus}
+                        </span>
+                      </td>
+                      <td className="py-3 text-center">
+                        {currentStatus === 'OPENED' ? (
+                          <span className="text-[10px] text-[#00D4FF]/60 font-mono">OPENED</span>
+                        ) : (
+                          <button
+                            onClick={() => handleAction(row.entity)}
+                            className="px-3 py-1 rounded text-[10px] font-bold transition-all hover:opacity-80"
+                            style={{
+                              color: statusColor,
+                              backgroundColor: `${statusColor}15`,
+                              border: `1px solid ${statusColor}30`,
+                            }}
+                          >
+                            {row.action}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ML Pipeline Status */}
+          <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 mb-6">
+            <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-4">ML Pipeline Status</h2>
+            <div className="flex items-center justify-center gap-8">
+              {PIPELINE_STEPS.map((step, i) => (
+                <div key={step.label} className="flex items-center gap-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <div
+                      className={`w-12 h-12 rounded-full border-2 flex items-center justify-center ${
+                        step.pulse ? 'animate-pulse' : ''
+                      }`}
+                      style={{ borderColor: step.color, backgroundColor: `${step.color}10` }}
+                    >
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: step.color }} />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs font-bold text-white/80">{step.label}</div>
+                      <div className="text-[10px] font-mono" style={{ color: step.color }}>
+                        {step.status}
+                      </div>
+                    </div>
+                  </div>
+                  {i < PIPELINE_STEPS.length - 1 && (
+                    <div className="w-16 h-px bg-white/10 relative">
+                      <div
+                        className="absolute inset-0 h-px"
+                        style={{ background: `linear-gradient(90deg, ${step.color}40, ${PIPELINE_STEPS[i + 1].color}40)` }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
+          </div>
+
+          {/* Run Full Scan */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleScan}
+              disabled={scanning}
+              className="px-6 py-3 rounded-xl bg-[#00D4FF]/10 border border-[#00D4FF]/20 text-[#00D4FF] font-bold text-sm hover:bg-[#00D4FF]/20 transition-all disabled:opacity-50 flex items-center gap-2"
+            >
+              {scanning ? (
+                <>
+                  <CircleNotch size={18} className="animate-spin" />
+                  Scanning...
+                </>
+              ) : (
+                <>
+                  <MagnifyingGlass size={18} weight="bold" />
+                  Run Full Scan
+                </>
+              )}
+            </button>
+            {scanDone && (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00FFB3]/10 border border-[#00FFB3]/20">
+                <Check size={16} color="#00FFB3" weight="bold" />
+                <span className="text-sm text-[#00FFB3] font-medium">Scan Complete — 0 new threats detected</span>
+              </div>
+            )}
           </div>
         </div>
       </main>
