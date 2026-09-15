@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ShieldCheck, Activity, ChartLine, FingerprintSimple, Globe, GearSix,
+  ShieldCheck, Pulse, ChartLine, FingerprintSimple, Globe, GearSix,
   ClockCounterClockwise, CaretRight, CaretLeft, User, Shield,
   Key, LockKey, Fingerprint, Eye, EyeSlash, Check, X, Lightning,
   Warning, CheckCircle
@@ -11,7 +11,7 @@ import {
 import Link from 'next/link';
 
 const navItems = [
-  { href: '/dashboard', icon: Activity, label: 'Dashboard' },
+  { href: '/dashboard', icon: Pulse, label: 'Dashboard' },
   { href: '/analysis', icon: ChartLine, label: 'AI Analysis' },
   { href: '/audit', icon: ClockCounterClockwise, label: 'Audit Log' },
   { href: '/network', icon: Globe, label: 'Network' },
