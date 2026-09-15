@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ShieldCheck, Activity, Warning, Eye, ArrowRight,
+  ShieldCheck, Pulse, Warning, Eye, ArrowRight,
   ChartLine, FingerprintSimple, Globe, Cpu, GearSix, ClockCounterClockwise,
   Lightning, TrendUp, TrendDown, CaretRight, Bell, User, List,
   CaretLeft, SignOut, X
@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 /* ── Sidebar ── */
 const navItems = [
-  { href: '/dashboard', icon: Activity, label: 'Dashboard', active: true },
+  { href: '/dashboard', icon: Pulse, label: 'Dashboard', active: true },
   { href: '/analysis', icon: ChartLine, label: 'AI Analysis' },
   { href: '/audit', icon: ClockCounterClockwise, label: 'Audit Log' },
   { href: '/network', icon: Globe, label: 'Network' },
@@ -58,7 +58,7 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
 
 /* ── Mock Data ── */
 const MOCK_STATS = [
-  { label: 'Transactions Today', value: '24,891', change: '+12.4%', up: true, icon: Activity, color: '#00D4FF' },
+  { label: 'Transactions Today', value: '24,891', change: '+12.4%', up: true, icon: Pulse, color: '#00D4FF' },
   { label: 'Threats Blocked', value: '47', change: '+8.2%', up: true, icon: ShieldCheck, color: '#00FFB3' },
   { label: 'Risk Score', value: '23.4', change: '-5.1%', up: false, icon: Warning, color: '#FFB800' },
   { label: 'Active Nodes', value: '893', change: '+2.1%', up: true, icon: Globe, color: '#00D4FF' },
@@ -176,12 +176,12 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Activity Timeline */}
+            {/* Pulse Timeline */}
             <div className="rounded-xl border border-white/[0.06] bg-[#0D0D14] overflow-hidden">
               <div className="px-5 py-4 border-b border-white/[0.04]">
                 <h2 className="text-sm font-semibold flex items-center gap-2">
                   <ClockCounterClockwise weight="duotone" className="w-4 h-4 text-[#00FFB3]" />
-                  Activity Timeline
+                  Pulse Timeline
                 </h2>
               </div>
               <div className="p-4 space-y-4">

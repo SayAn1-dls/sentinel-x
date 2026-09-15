@@ -3,14 +3,14 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ShieldCheck, Activity, ChartLine, FingerprintSimple, Globe, GearSix,
+  ShieldCheck, Pulse, ChartLine, FingerprintSimple, Globe, GearSix,
   ClockCounterClockwise, Cpu, Brain, Lightning, CaretRight, CaretLeft,
   User, MagnifyingGlass, Warning, Eye, Funnel, ArrowsClockwise
 } from '@phosphor-icons/react';
 import Link from 'next/link';
 
 const navItems = [
-  { href: '/dashboard', icon: Activity, label: 'Dashboard' },
+  { href: '/dashboard', icon: Pulse, label: 'Dashboard' },
   { href: '/analysis', icon: ChartLine, label: 'AI Analysis', active: true },
   { href: '/audit', icon: ClockCounterClockwise, label: 'Audit Log' },
   { href: '/network', icon: Globe, label: 'Network' },
