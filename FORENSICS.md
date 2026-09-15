@@ -104,3 +104,11 @@ The risk scoring engine incorporates:
 - [x] Behavioral Biometric Bot Detection
 - [x] Cross-Chain Forensic Linking (New)
 
+
+## Kernel-Level Forensic Enhancements (v38)
+Deep system-level analysis for rootkit detection and kernel integrity verification.
+
+- **Instruction Pointer Anomaly**: Detects jumps to non-executable memory segments or suspicious code redirection.
+- **Rootkit Detection Engine**: Heuristic analysis for hidden processes, files, and network connections at the Ring 0 level.
+- **Kernel Patch Protection (KPP)**: Monitors for unauthorized modifications to critical kernel structures.
+- **LVI Vulnerability Detection**: Identifies potential Load Value Injection artifacts in cryptographic operations.

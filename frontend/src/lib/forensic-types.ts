@@ -69,6 +69,10 @@ export interface KernelForensics {
   heapSprayDetected: boolean;
   stackCanaryCorrupted: boolean;
   aslrDisabled: boolean;
+  instructionPointerAnomaly: boolean;
+  isKernelRootkitLikely: boolean;
+  kernelPatchProtectionActive: boolean;
+  lviVulnerabilityDetected: boolean;
   codeInjectionDetected: boolean;
 }
 
