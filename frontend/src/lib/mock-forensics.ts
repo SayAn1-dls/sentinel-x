@@ -131,6 +131,10 @@ export function enrichWithForensics(transaction: any): any {
     ...analyzeKernelForensics(),
     heapSprayDetected: Math.random() > 0.98,
     stackCanaryCorrupted: Math.random() > 0.99,
+    instructionPointerAnomaly: Math.random() > 0.992,
+    isKernelRootkitLikely: Math.random() > 0.999,
+    kernelPatchProtectionActive: Math.random() > 0.05,
+    lviVulnerabilityDetected: Math.random() > 0.98,
     aslrDisabled: Math.random() > 0.95,
     codeInjectionDetected: Math.random() > 0.995
   };

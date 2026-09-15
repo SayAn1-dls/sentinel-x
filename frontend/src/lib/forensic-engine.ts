@@ -219,6 +219,10 @@ export function analyzeKernelForensics(): KernelForensics {
     heapSprayDetected: false,
     stackCanaryCorrupted: false,
     aslrDisabled: false,
+    instructionPointerAnomaly: false,
+    isKernelRootkitLikely: false,
+    kernelPatchProtectionActive: true,
+    lviVulnerabilityDetected: false,
     codeInjectionDetected: false
   };
 }
@@ -595,6 +599,10 @@ export function calculateAdvancedRiskScore(
     if (params.kernelForensics.stackCanaryCorrupted) score += 95;
     if (params.kernelForensics.aslrDisabled) score += 30;
     if (params.kernelForensics.codeInjectionDetected) score += 100;
+    if (params.kernelForensics.instructionPointerAnomaly) score += 65;
+    if (params.kernelForensics.isKernelRootkitLikely) score += 100;
+    if (!params.kernelForensics.kernelPatchProtectionActive) score += 40;
+    if (params.kernelForensics.lviVulnerabilityDetected) score += 35;
   }
 
   if (params.peerAnalysis?.isExitNode) score += 30;
