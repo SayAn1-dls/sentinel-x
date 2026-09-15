@@ -1,200 +1,369 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import {
-  ShieldCheck, Pulse, ChartLine, FingerprintSimple, Globe, GearSix,
-  ClockCounterClockwise, CaretRight, CaretLeft, User, Lock, LockOpen,
-  WifiHigh, WifiSlash, CloudArrowUp, Shield, Warning, Lightning,
-  ArrowsClockwise, SealCheck, X
+  Shield,
+  Cpu,
+  Globe,
+  Lock,
+  Gear,
+  User,
+  CaretRight,
+  CaretLeft,
+  House,
+  List,
+  Warning,
+  Crosshair,
+  Broadcast,
 } from '@phosphor-icons/react';
-import Link from 'next/link';
 
-const navItems = [
-  { href: '/dashboard', icon: Pulse, label: 'Dashboard' },
-  { href: '/analysis', icon: ChartLine, label: 'AI Analysis' },
-  { href: '/audit', icon: ClockCounterClockwise, label: 'Audit Log' },
-  { href: '/network', icon: Globe, label: 'Network', active: true },
-  { href: '/security', icon: FingerprintSimple, label: 'Security' },
-  { href: '/admin', icon: GearSix, label: 'Admin' },
-];
-
-function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
-  return (
-    <aside className={`fixed left-0 top-0 h-screen bg-[#0C0C14] border-r border-white/[0.04] transition-all duration-300 z-40 ${collapsed ? 'w-[68px]' : 'w-[240px]'}`}>
-      <div className="flex items-center gap-3 px-4 h-16 border-b border-white/[0.04]">
-        <ShieldCheck weight="duotone" className="w-7 h-7 text-[#00D4FF] flex-shrink-0" />
-        {!collapsed && <span className="text-sm font-bold tracking-tight text-white">SENTINEL-X</span>}
-        <button onClick={onToggle} className="ml-auto text-white/30 hover:text-white/60 transition-colors">
-          {collapsed ? <CaretRight size={16} /> : <CaretLeft size={16} />}
-        </button>
-      </div>
-      <nav className="mt-4 px-3 space-y-1">
-        {navItems.map((item) => (
-          <Link key={item.href} href={item.href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${item.active ? 'bg-[#00D4FF]/10 text-[#00D4FF] font-medium' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03]'}`}>
-            <item.icon weight={item.active ? 'duotone' : 'regular'} className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
-          </Link>
-        ))}
-      </nav>
-      <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-white/[0.04]">
-        <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/[0.02] ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00D4FF]/20 to-[#00FFB3]/20 flex items-center justify-center flex-shrink-0">
-            <User weight="bold" className="w-4 h-4 text-[#00D4FF]" />
-          </div>
-          {!collapsed && <div className="flex-1 min-w-0"><div className="text-xs font-medium text-white/70 truncate">Operator</div><div className="text-[10px] text-white/30">sentinel-x</div></div>}
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-const MOCK_NODES = [
-  { id: 'NODE-7X2', ip: '10.0.14.72', status: 'online', latency: '12ms', packets: '1.2M', encrypted: true, risk: 'HIGH', region: 'US-East', uptime: '99.97%' },
-  { id: 'NODE-3K9', ip: '10.0.22.39', status: 'online', latency: '8ms', packets: '892K', encrypted: true, risk: 'CRITICAL', region: 'EU-West', uptime: '99.94%' },
-  { id: 'NODE-1A8', ip: '10.0.31.18', status: 'online', latency: '23ms', packets: '2.1M', encrypted: true, risk: 'MEDIUM', region: 'AP-South', uptime: '99.99%' },
-  { id: 'NODE-9F2', ip: '10.0.45.92', status: 'degraded', latency: '145ms', packets: '340K', encrypted: true, risk: 'LOW', region: 'US-West', uptime: '98.2%' },
-  { id: 'NODE-5M3', ip: '10.0.18.53', status: 'online', latency: '6ms', packets: '1.8M', encrypted: true, risk: 'CLEAR', region: 'EU-Central', uptime: '100%' },
-  { id: 'NODE-8W5', ip: '10.0.55.85', status: 'offline', latency: '---', packets: '0', encrypted: false, risk: 'HIGH', region: 'ME-South', uptime: '0%' },
-  { id: 'NODE-4P1', ip: '10.0.12.41', status: 'online', latency: '15ms', packets: '967K', encrypted: true, risk: 'LOW', region: 'US-Central', uptime: '99.98%' },
-  { id: 'NODE-2J6', ip: '10.0.67.26', status: 'online', latency: '31ms', packets: '445K', encrypted: true, risk: 'CLEAR', region: 'AP-East', uptime: '99.96%' },
-];
-
-const MOCK_GATEWAYS = [
-  { name: 'Primary Gateway', status: 'active', throughput: '2.4 Gbps', connections: 1247, region: 'US-East' },
-  { name: 'Failover Gateway', status: 'standby', throughput: '0 Gbps', connections: 0, region: 'EU-West' },
-  { name: 'Edge Relay', status: 'active', throughput: '890 Mbps', connections: 342, region: 'AP-South' },
+const NAV = [
+  { href: '/dashboard', label: 'Dashboard', icon: House },
+  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/audit', label: 'Audit Log', icon: List },
+  { href: '/network', label: 'Network', icon: Globe },
+  { href: '/security', label: 'Security', icon: Lock },
+  { href: '/admin', label: 'Admin', icon: Gear },
 ];
 
 const RISK_COLORS: Record<string, string> = {
-  CRITICAL: '#FF2D55', HIGH: '#FF6B00', MEDIUM: '#FFB800', LOW: '#00FFB3', CLEAR: '#00D4FF',
+  CRITICAL: '#FF2D55',
+  HIGH: '#FF6B00',
+  MEDIUM: '#FFB800',
+  LOW: '#00FFB3',
+  CLEAR: '#00D4FF',
 };
 
-const STATUS_COLORS: Record<string, string> = { online: '#00FFB3', degraded: '#FFB800', offline: '#FF2D55' };
+type NodeData = {
+  id: string;
+  x: number;
+  y: number;
+  risk: string;
+  conn: number;
+  txns: number;
+};
+
+const NODES: NodeData[] = [
+  { id: 'N-01', x: 80, y: 60, risk: 'CRITICAL', conn: 8, txns: 234 },
+  { id: 'N-02', x: 200, y: 40, risk: 'HIGH', conn: 5, txns: 156 },
+  { id: 'N-03', x: 350, y: 80, risk: 'MEDIUM', conn: 7, txns: 89 },
+  { id: 'N-04', x: 450, y: 50, risk: 'LOW', conn: 3, txns: 42 },
+  { id: 'N-05', x: 100, y: 160, risk: 'CLEAR', conn: 6, txns: 311 },
+  { id: 'N-06', x: 250, y: 140, risk: 'HIGH', conn: 9, txns: 178 },
+  { id: 'N-07', x: 400, y: 160, risk: 'CRITICAL', conn: 12, txns: 445 },
+  { id: 'N-08', x: 60, y: 260, risk: 'MEDIUM', conn: 4, txns: 67 },
+  { id: 'N-09', x: 180, y: 240, risk: 'LOW', conn: 6, txns: 93 },
+  { id: 'N-10', x: 320, y: 270, risk: 'CLEAR', conn: 5, txns: 201 },
+  { id: 'N-11', x: 460, y: 240, risk: 'HIGH', conn: 7, txns: 134 },
+  { id: 'N-12', x: 100, y: 360, risk: 'LOW', conn: 3, txns: 55 },
+  { id: 'N-13', x: 240, y: 350, risk: 'MEDIUM', conn: 8, txns: 122 },
+  { id: 'N-14', x: 380, y: 350, risk: 'CRITICAL', conn: 10, txns: 389 },
+  { id: 'N-15', x: 480, y: 330, risk: 'CLEAR', conn: 4, txns: 77 },
+];
+
+const EDGES: [string, string][] = [
+  ['N-01', 'N-06'], ['N-01', 'N-05'], ['N-02', 'N-06'], ['N-03', 'N-07'], ['N-04', 'N-07'],
+  ['N-05', 'N-09'], ['N-06', 'N-10'], ['N-07', 'N-11'], ['N-08', 'N-13'], ['N-09', 'N-13'],
+  ['N-10', 'N-14'], ['N-11', 'N-15'], ['N-12', 'N-13'], ['N-13', 'N-14'], ['N-14', 'N-15'],
+  ['N-01', 'N-02'], ['N-02', 'N-03'], ['N-03', 'N-04'], ['N-08', 'N-09'], ['N-12', 'N-08'],
+];
 
 export default function NetworkPage() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [lockedNodes, setLockedNodes] = useState<string[]>([]);
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedNode, setSelectedNode] = useState<string>('N-07');
+  const [nodeOverrides, setNodeOverrides] = useState<Record<string, string>>({});
+  const [toast, setToast] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const toggleLock = useCallback((nodeId: string) => {
-    try {
-      setLockedNodes(prev => prev.includes(nodeId) ? prev.filter(n => n !== nodeId) : [...prev, nodeId]);
-    } catch (_) {}
-  }, []);
+  const getNode = (id: string) => NODES.find((n) => n.id === id)!;
+  const getNodeRisk = (id: string) => nodeOverrides[id] || getNode(id).risk;
 
-  const refresh = useCallback(() => {
-    try {
-      setRefreshing(true);
-      setTimeout(() => setRefreshing(false), 2000);
-    } catch (_) { setRefreshing(false); }
-  }, []);
+  const selected = getNode(selectedNode);
+  const selectedRisk = getNodeRisk(selectedNode);
+  const isFlagged = nodeOverrides[selectedNode] === 'CRITICAL';
+
+  const toggleFlag = () => {
+    setNodeOverrides((prev) => {
+      const current = prev[selectedNode];
+      if (current === 'CRITICAL') {
+        const copy = { ...prev };
+        delete copy[selectedNode];
+        return copy;
+      }
+      return { ...prev, [selectedNode]: 'CRITICAL' };
+    });
+  };
+
+  const isolateNode = () => {
+    setToast(`Node ${selectedNode} isolated from network`);
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const nodeMap = new Map(NODES.map((n) => [n.id, n]));
+
+  const trafficStats = [
+    { label: 'Tx/sec', value: '1,247', color: '#00D4FF' },
+    { label: 'Blocked', value: '23', color: '#FF2D55' },
+    { label: 'Flagged', value: '156', color: '#FF6B00' },
+    { label: 'Clean', value: '1,068', color: '#00FFB3' },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-white">
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
-      <main className={`transition-all duration-300 ${collapsed ? 'ml-[68px]' : 'ml-[240px]'}`}>
-        <header className="sticky top-0 z-30 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/[0.04] px-6 h-16 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold flex items-center gap-2"><Globe weight="duotone" className="w-5 h-5 text-[#FFB800]" /> Network Topology</h1>
-            <p className="text-xs text-white/30">Node management & packet monitoring</p>
-          </div>
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={refresh}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-white/60 text-sm hover:bg-white/10 transition-colors">
-            <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing...' : 'Refresh'}
-          </motion.button>
-        </header>
+    <div className="flex min-h-screen bg-[#0A0A0F]">
+      {/* Sidebar */}
+      <aside
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        style={{ width: sidebarOpen ? 240 : 64 }}
+      >
+        <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
+          <Shield size={28} weight="fill" color="#00D4FF" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+        </div>
+        <nav className="flex-1 py-4 flex flex-col gap-1">
+          {NAV.map((item) => {
+            const Icon = item.icon;
+            const active = item.href === '/network';
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
+                  active
+                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+                }`}
+              >
+                <Icon size={20} weight={active ? 'fill' : 'regular'} />
+                {sidebarOpen && <span>{item.label}</span>}
+              </a>
+            );
+          })}
+        </nav>
+        <div className="border-t border-white/5 p-4">
+          {sidebarOpen && (
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
+                <User size={16} color="#00D4FF" />
+              </div>
+              <div>
+                <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
+                <div className="text-[10px] text-white/40 font-mono">ANALYST</div>
+              </div>
+            </div>
+          )}
+        </div>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+        >
+          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+        </button>
+      </aside>
 
-        <div className="p-6 space-y-6">
-          {/* Gateway Status */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {MOCK_GATEWAYS.map((gw) => (
-              <div key={gw.name} className="p-4 rounded-xl border border-white/[0.06] bg-[#0D0D14]">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <CloudArrowUp weight="duotone" className="w-4 h-4 text-[#00D4FF]" />
-                    <span className="text-sm font-medium">{gw.name}</span>
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${gw.status === 'active' ? 'text-[#00FFB3] bg-[#00FFB3]/10' : 'text-[#FFB800] bg-[#FFB800]/10'}`}>
-                    {gw.status.toUpperCase()}
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div><div className="text-xs font-bold text-white/70">{gw.throughput}</div><div className="text-[10px] text-white/20">Throughput</div></div>
-                  <div><div className="text-xs font-bold text-white/70">{gw.connections.toLocaleString()}</div><div className="text-[10px] text-white/20">Connections</div></div>
-                  <div><div className="text-xs font-bold text-white/70">{gw.region}</div><div className="text-[10px] text-white/20">Region</div></div>
-                </div>
+      {/* Main */}
+      <main className="flex-1 transition-all duration-300" style={{ marginLeft: sidebarOpen ? 240 : 64 }}>
+        <div className="p-6 max-w-[1600px] mx-auto">
+          {/* Toast */}
+          {toast && (
+            <div className="fixed top-6 right-6 z-[100] px-4 py-3 rounded-lg bg-[#00FFB3]/10 border border-[#00FFB3]/20 text-sm text-[#00FFB3] font-medium animate-pulse">
+              {toast}
+            </div>
+          )}
+
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-8">
+            <h1 className="text-2xl font-bold tracking-wider text-white">NETWORK TOPOLOGY</h1>
+            <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#00FFB3]/10 border border-[#00FFB3]/20">
+              <Broadcast size={14} color="#00FFB3" />
+              <span className="text-xs font-bold text-[#00FFB3]">893 Active Nodes</span>
+            </span>
+          </div>
+
+          {/* Traffic Stats */}
+          <div className="flex items-center gap-6 mb-6 px-1">
+            {trafficStats.map((s) => (
+              <div key={s.label} className="flex items-center gap-2">
+                <span className="text-xs text-white/40">{s.label}:</span>
+                <span className="text-sm font-mono font-bold" style={{ color: s.color }}>
+                  {s.value}
+                </span>
               </div>
             ))}
           </div>
 
-          {/* Network Summary */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="p-3 rounded-xl border border-white/[0.06] bg-[#0D0D14] text-center">
-              <div className="text-xl font-bold text-[#00FFB3]">{MOCK_NODES.filter(n => n.status === 'online').length}</div>
-              <div className="text-[10px] text-white/30">Online Nodes</div>
+          {/* Main Content */}
+          <div className="grid grid-cols-5 gap-4">
+            {/* SVG Visualization */}
+            <div className="col-span-3">
+              <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-4">
+                <svg
+                  viewBox="0 0 540 420"
+                  className="w-full rounded-lg"
+                  style={{ backgroundColor: '#0D0D14' }}
+                  key={refreshKey}
+                >
+                  <defs>
+                    <style>{`
+                      @keyframes nodePulse {
+                        0%, 100% { opacity: 0.4; }
+                        50% { opacity: 1; }
+                      }
+                      .critical-pulse { animation: nodePulse 2s ease-in-out infinite; }
+                    `}</style>
+                  </defs>
+                  {/* Edges */}
+                  {EDGES.map(([a, b], i) => {
+                    const na = nodeMap.get(a)!;
+                    const nb = nodeMap.get(b)!;
+                    return (
+                      <line
+                        key={i}
+                        x1={na.x}
+                        y1={na.y}
+                        x2={nb.x}
+                        y2={nb.y}
+                        stroke="rgba(255,255,255,0.06)"
+                        strokeWidth={1}
+                      />
+                    );
+                  })}
+                  {/* Nodes */}
+                  {NODES.map((node) => {
+                    const risk = getNodeRisk(node.id);
+                    const color = RISK_COLORS[risk];
+                    const isSelected = selectedNode === node.id;
+                    const isCritical = risk === 'CRITICAL';
+                    return (
+                      <g
+                        key={node.id}
+                        onClick={() => setSelectedNode(node.id)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {isCritical && (
+                          <circle
+                            cx={node.x}
+                            cy={node.y}
+                            r={24}
+                            fill={`${color}15`}
+                            className="critical-pulse"
+                          />
+                        )}
+                        {isSelected && (
+                          <circle
+                            cx={node.x}
+                            cy={node.y}
+                            r={22}
+                            fill="none"
+                            stroke={color}
+                            strokeWidth={1}
+                            strokeDasharray="4 2"
+                            opacity={0.5}
+                          />
+                        )}
+                        <circle
+                          cx={node.x}
+                          cy={node.y}
+                          r={16}
+                          fill={`${color}30`}
+                          stroke={color}
+                          strokeWidth={isSelected ? 2.5 : 1.5}
+                        />
+                        <text
+                          x={node.x}
+                          y={node.y + 1}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fill="white"
+                          fontSize={8}
+                          fontFamily="monospace"
+                          fontWeight="bold"
+                        >
+                          {node.id}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+                <button
+                  onClick={() => setRefreshKey((k) => k + 1)}
+                  className="mt-3 px-4 py-2 rounded-lg bg-white/[0.03] border border-white/10 text-xs text-white/50 hover:text-white/80 hover:border-[#00D4FF]/30 transition-all"
+                >
+                  Refresh Topology
+                </button>
+              </div>
             </div>
-            <div className="p-3 rounded-xl border border-white/[0.06] bg-[#0D0D14] text-center">
-              <div className="text-xl font-bold text-[#FFB800]">{MOCK_NODES.filter(n => n.status === 'degraded').length}</div>
-              <div className="text-[10px] text-white/30">Degraded</div>
-            </div>
-            <div className="p-3 rounded-xl border border-white/[0.06] bg-[#0D0D14] text-center">
-              <div className="text-xl font-bold text-[#FF2D55]">{MOCK_NODES.filter(n => n.status === 'offline').length}</div>
-              <div className="text-[10px] text-white/30">Offline</div>
-            </div>
-            <div className="p-3 rounded-xl border border-white/[0.06] bg-[#0D0D14] text-center">
-              <div className="text-xl font-bold text-[#00D4FF]">{lockedNodes.length}</div>
-              <div className="text-[10px] text-white/30">Locked Down</div>
-            </div>
-          </div>
 
-          {/* Node Grid */}
-          <div className="rounded-xl border border-white/[0.06] bg-[#0D0D14] overflow-hidden">
-            <div className="px-5 py-4 border-b border-white/[0.04] flex items-center justify-between">
-              <h2 className="text-sm font-semibold flex items-center gap-2">
-                <WifiHigh weight="duotone" className="w-4 h-4 text-[#00FFB3]" />
-                Active Nodes
-              </h2>
-              <span className="text-[10px] text-white/20">{MOCK_NODES.length} nodes registered</span>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-white/[0.03]">
-              {MOCK_NODES.map((node) => (
-                <div key={node.id} className="p-4 bg-[#0D0D14] hover:bg-white/[0.02] transition-colors">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: STATUS_COLORS[node.status] || '#666' }} />
-                      <span className="text-sm font-medium font-mono">{node.id}</span>
-                      <span className="text-[10px] text-white/20 font-mono">{node.ip}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                        style={{ color: RISK_COLORS[node.risk], backgroundColor: `${RISK_COLORS[node.risk]}15` }}>
-                        {node.risk}
-                      </span>
-                      <button onClick={() => toggleLock(node.id)} title={lockedNodes.includes(node.id) ? 'Unlock node' : 'Lock down node'}
-                        className={`p-1.5 rounded-lg transition-colors ${lockedNodes.includes(node.id) ? 'bg-[#FF2D55]/10 text-[#FF2D55]' : 'hover:bg-white/5 text-white/20 hover:text-white/40'}`}>
-                        {lockedNodes.includes(node.id) ? <Lock size={14} weight="bold" /> : <LockOpen size={14} />}
-                      </button>
-                    </div>
+            {/* Node Detail Panel */}
+            <div className="col-span-2">
+              <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5">
+                <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-5">Node Details</h2>
+
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">Node ID</span>
+                    <span className="text-sm font-mono font-bold text-[#00D4FF]">{selected.id}</span>
                   </div>
-                  <div className="grid grid-cols-4 gap-2 text-center">
-                    <div><div className="text-xs font-medium text-white/60">{node.latency}</div><div className="text-[10px] text-white/15">Latency</div></div>
-                    <div><div className="text-xs font-medium text-white/60">{node.packets}</div><div className="text-[10px] text-white/15">Packets</div></div>
-                    <div><div className="text-xs font-medium text-white/60">{node.region}</div><div className="text-[10px] text-white/15">Region</div></div>
-                    <div><div className="text-xs font-medium text-white/60">{node.uptime}</div><div className="text-[10px] text-white/15">Uptime</div></div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">Risk Level</span>
+                    <span
+                      className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                      style={{
+                        color: RISK_COLORS[selectedRisk],
+                        backgroundColor: `${RISK_COLORS[selectedRisk]}15`,
+                        border: `1px solid ${RISK_COLORS[selectedRisk]}30`,
+                      }}
+                    >
+                      {selectedRisk}
+                    </span>
                   </div>
-                  {lockedNodes.includes(node.id) && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-                      className="mt-3 p-2 rounded-lg bg-[#FF2D55]/5 border border-[#FF2D55]/10 flex items-center gap-2">
-                      <Lock size={12} className="text-[#FF2D55]" />
-                      <span className="text-[10px] text-[#FF2D55]">Node locked — all inbound/outbound traffic blocked</span>
-                    </motion.div>
-                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">Connections</span>
+                    <span className="text-sm font-mono text-white/70">{selected.conn}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">Transactions</span>
+                    <span className="text-sm font-mono text-white/70">{selected.txns}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">Status</span>
+                    <span className="text-xs font-bold text-[#00FFB3]">ACTIVE</span>
+                  </div>
                 </div>
-              ))}
+
+                <div className="border-t border-white/5 mt-5 pt-5 flex flex-col gap-3">
+                  <button
+                    onClick={toggleFlag}
+                    className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${
+                      isFlagged
+                        ? 'bg-[#FF2D55]/10 border border-[#FF2D55]/20 text-[#FF2D55] hover:bg-[#FF2D55]/20'
+                        : 'bg-[#FF6B00]/10 border border-[#FF6B00]/20 text-[#FF6B00] hover:bg-[#FF6B00]/20'
+                    }`}
+                  >
+                    <Warning size={14} className="inline mr-1" />
+                    {isFlagged ? 'Unflag Node' : 'Flag Node'}
+                  </button>
+                  <button
+                    onClick={isolateNode}
+                    className="w-full py-2.5 rounded-lg text-xs font-bold bg-[#FF2D55]/10 border border-[#FF2D55]/20 text-[#FF2D55] hover:bg-[#FF2D55]/20 transition-all"
+                  >
+                    <Crosshair size={14} className="inline mr-1" />
+                    Isolate Node
+                  </button>
+                </div>
+
+                {/* Legend */}
+                <div className="border-t border-white/5 mt-5 pt-5">
+                  <div className="text-[10px] text-white/30 uppercase tracking-wider mb-3">Risk Legend</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(RISK_COLORS).map(([label, color]) => (
+                      <div key={label} className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+                        <span className="text-[10px] text-white/40">{label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
