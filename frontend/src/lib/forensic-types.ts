@@ -271,7 +271,16 @@ export interface AcousticAirGapForensics {
   signalConfidence: number;
 }
 
+export interface SyscallTimingAnomaly {
+  detected: boolean;
+  meanLatencyNs: number;
+  varianceNs: number;
+  outlierCount: number;
+  isSandboxed: boolean;
+}
+
 export interface ForensicIntelligence {
+  syscallTiming?: SyscallTimingAnomaly;
   crossChainLinking?: CrossChainForensicLinking;
   rfSideChannel?: RFSideChannelForensics;
   memoryForensics?: MemoryForensics;

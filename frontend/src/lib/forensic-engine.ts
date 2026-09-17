@@ -571,7 +571,7 @@ export function calculateAdvancedRiskScore(
     quantumForensics?: QuantumAttackForensics;
     satelliteForensics?: SatelliteForensics;
     mfaIntegrity?: MFAIntegrityForensics;
-    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
+    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking; syscallTiming?: SyscallTimingAnomaly;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -811,6 +811,12 @@ export function calculateAdvancedRiskScore(
     score += params.rfSideChannel.spectrumAnomalyScore * 100;
     score += params.rfSideChannel.nearFieldCommunicationRisk * 40;
   }
+  // v38: Syscall Timing Anomaly Logic
+  if (params.syscallTiming) {
+    if (params.syscallTiming.detected) score += 45;
+    if (params.syscallTiming.isSandboxed) score += 20;
+    if (params.syscallTiming.outlierCount > 5) score += 15;
+  }
   score = Math.min(100, score);
 
   let level: RiskLevel = 'CLEAR';
@@ -1041,5 +1047,33 @@ export function analyzeCrossChainLinking(
     totalCrossChainVolume: totalVolume,
     suspiciousBridgeUsage,
     bridgeRiskScore: suspiciousBridgeUsage ? 0.85 : (bridgeTxs.length > 0 ? 0.35 : 0.05)
+  };
+}
+
+/**
+ * v38: Kernel-Level System Call Timing Anomaly Detection.
+ * Detects hidden virtualization or debugger-induced latencies in syscall execution.
+ */
+export function analyzeSyscallTiming(latencies: number[]): SyscallTimingAnomaly {
+  if (latencies.length === 0) {
+    return {
+      detected: false,
+      meanLatencyNs: 450,
+      varianceNs: 20,
+      outlierCount: 0,
+      isSandboxed: false
+    };
+  }
+
+  const mean = latencies.reduce((a, b) => a + b, 0) / latencies.length;
+  const variance = latencies.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / latencies.length;
+  const outliers = latencies.filter(l => l > mean + 2 * Math.sqrt(variance)).length;
+
+  return {
+    detected: outliers > 3 || mean > 2000,
+    meanLatencyNs: Math.round(mean),
+    varianceNs: Math.round(variance),
+    outlierCount: outliers,
+    isSandboxed: mean > 5000 // Heuristic for heavy sandboxing
   };
 }

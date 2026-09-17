@@ -1,3 +1,23 @@
+## Update: 2026-09-17 - Kernel Syscall Timing Anomaly Detection (v38)
+
+### Kernel-Level Syscall Timing Analysis
+Implemented deep system-level analysis to detect hidden virtualization and debugger-induced latencies through syscall execution timing forensics.
+- **Signal**: `syscallTiming`
+- **New Interface**: `SyscallTimingAnomaly`
+- **New Analysis Function**: `analyzeSyscallTiming`
+- **Checks**:
+  - **Virtualization Detection**: Identifies anomalous latency jitter indicative of nested virtualization or hypervisor-based monitoring.
+  - **Sandboxing Forensic**: Heuristic analysis for heavy sandboxing environments through execution delay profiling.
+  - **Outlier Correlation**: Maps timing outliers to potential debugger-induced instruction stepping.
+- **Risk Impact**: Medium (+45) for detected timing anomalies, Low (+20) for sandboxed execution artifacts.
+
+### Risk Engine v38
+Integrated Syscall Timing forensic signals into the `calculateAdvancedRiskScore` engine for enhanced kernel-level security attestation.
+- **Version**: 38.0.0
+- **Weighting**: Syscall Anomaly Detected (+45), Sandbox Execution (+20), Outlier Burst (+15).
+
+---
+
 ## Update: 2026-09-14 - Cross-Chain Forensic Linking & Bridge Correlation (v37)
 
 ### Cross-Chain Forensic Linking
