@@ -272,6 +272,7 @@ export interface AcousticAirGapForensics {
 }
 
 export interface SyscallTimingAnomaly {
+  tlsForensics?: TLSForensics;
   detected: boolean;
   meanLatencyNs: number;
   varianceNs: number;
@@ -417,4 +418,19 @@ export interface CrossChainForensicLinking {
   totalCrossChainVolume: number;
   suspiciousBridgeUsage: boolean;
   bridgeRiskScore: number;
+}
+
+export interface JA3Fingerprint {
+  hash: string;
+  isKnownBot: boolean;
+  commonUsage: string;
+  reliabilityScore: number;
+}
+
+export interface TLSForensics {
+  ja3: JA3Fingerprint;
+  ja3s: string;
+  cipherSuite: string;
+  tlsVersion: string;
+  extensions: string[];
 }
