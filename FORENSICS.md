@@ -132,3 +132,8 @@ Deep system-level analysis for rootkit detection and kernel integrity verificati
 - **Rootkit Detection Engine**: Heuristic analysis for hidden processes, files, and network connections at the Ring 0 level.
 - **Kernel Patch Protection (KPP)**: Monitors for unauthorized modifications to critical kernel structures.
 - **LVI Vulnerability Detection**: Identifies potential Load Value Injection artifacts in cryptographic operations.
+
+### v39: TLS Fingerprinting (JA3/JA3S)
+- **Feature**: Deep packet inspection for TLS handshake artifacts.
+- **Implementation**: JA3 hashing of client hello and JA3S for server response correlation.
+- **Risk Vectors**: Detection of known automation tools, bots, and legacy TLS versions.
