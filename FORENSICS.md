@@ -1,3 +1,24 @@
+## Update: 2026-09-19 - WebRTC IP Leak Detection & Proxy/VPN Bypass Forensics (v39)
+
+### WebRTC IP Leak Forensic Analysis
+Implemented deep forensic analysis to detect real IP disclosure through WebRTC ICE candidates, bypassing traditional proxy and VPN-based obfuscation.
+
+- **Signal**: `webRTCLeak`
+- **New Interface**: `WebRTCLeakSignal`
+- **New Analysis Function**: `analyzeWebRTCLeak`
+- **Checks**:
+  - **Local IP Enumeration**: Identifies internal network addresses (10.x, 192.168.x) exposed via WebRTC.
+  - **Public IP Mismatch**: Correlates WebRTC-discovered public IPs against the reported transaction IP to identify proxy/VPN usage.
+  - **ICE Candidate Entropy**: Analyzes the diversity of connection candidates for suspicious routing patterns.
+- **Risk Impact**: Critical (+85) for confirmed WebRTC leaks, with an additional (+15) for explicit IP mismatches.
+
+### Risk Engine v39
+Integrated WebRTC Leak forensic signals into the `calculateAdvancedRiskScore` engine for enhanced identity verification.
+- **Version**: 39.0.0
+- **Weighting**: WebRTC Leak Detected (+85), Public IP Mismatch (+100 total).
+
+---
+
 ## Update: 2026-09-17 - Kernel Syscall Timing Anomaly Detection (v38)
 
 ### Kernel-Level Syscall Timing Analysis
