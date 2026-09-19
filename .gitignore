@@ -61,3 +61,12 @@ credentials.json
 *.pem
 *.key
 .credentials
+
+# Platform internals (never commit)
+.emergent/
+.gitconfig
+.streak_log
+
+# Streak maintenance artifacts
+daily-logs/
+contribution-surge/
