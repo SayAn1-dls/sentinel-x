@@ -325,6 +325,7 @@ export interface ForensicIntelligence {
   syntheticIdentity?: SyntheticIdentityForensics;
   microInteractions?: MicroInteractionsForensics;
   cryptoSideChannel?: CryptoSideChannelForensics;
+  cognitiveLoad?: CognitiveLoadForensics;
 }
 
 export interface SupplyChainForensics {
@@ -433,4 +434,13 @@ export interface TLSForensics {
   cipherSuite: string;
   tlsVersion: string;
   extensions: string[];
+}
+
+export interface CognitiveLoadForensics {
+  isHighStressDetected: boolean;
+  interactionLatencyAnomaly: boolean;
+  correctionRate: number;
+  hesitationScore: number;
+  isCoachingLikely: boolean;
+  cognitiveDissonanceIndex: number;
 }
