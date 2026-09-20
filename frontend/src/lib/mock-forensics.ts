@@ -32,7 +32,7 @@ import {
   analyzeSatelliteForensics,
   analyzeMFAIntegrity,
   analyzeAuthenticatorForensics, analyzeAcousticAirGap, analyzeRFSideChannel,
-  analyzeCrossChainLinking, analyzeTLSForensics, analyzeSyscallTiming
+  analyzeCrossChainLinking, analyzeTLSForensics, analyzeSyscallTiming, analyzeCognitiveLoad
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -243,9 +243,9 @@ export function enrichWithForensics(transaction: any): any {
   const gpuSideChannel = analyzeGPUSideChannel();
   const rfSideChannel = analyzeRFSideChannel();
   const syscallTiming = analyzeSyscallTiming([420, 480, 510, 2200, 450]);
+  const cognitiveLoad = analyzeCognitiveLoad([1200, 1400, 1100, 1500, 2500], 4);
 
-      tlsForensics,
-  const crossChainLinking = analyzeCrossChainLinking, analyzeTLSForensics(
+  const crossChainLinking = analyzeCrossChainLinking(
     transaction.address || '0xUNKNOWN',
     [
       { network: 'Ethereum', amount: 1.2, isBridge: true },
@@ -297,7 +297,7 @@ export function enrichWithForensics(transaction: any): any {
       mfaIntegrity,
       authenticatorForensics,
       syscallTiming,
-      tlsForensics,
+      cognitiveLoad,
       crossChainLinking
     }
   };

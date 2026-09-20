@@ -32,7 +32,7 @@ import {
   QuantumAttackForensics, 
   SatelliteForensics, 
   MFAIntegrityForensics, 
-  AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, TLSForensics
+  AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, CognitiveLoadForensics, TLSForensics
 } from './forensic-types';
 
 /**
@@ -521,7 +521,7 @@ export function analyzeAuthenticatorForensics(): AuthenticatorForensics {
 /**
  * v34: GPU Side-Channel Forensic Analysis - Detects timing leaks and instruction entropy anomalies in GPU shaders.
  */
-export function analyzeGPUSideChannel(): GPUSideChannelForensics, CrossChainForensicLinking, TLSForensics {
+export function analyzeGPUSideChannel(): GPUSideChannelForensics {
   return {
     isGpuTimingLeakDetected: false,
     shaderInstructionEntropy: 0.12,
@@ -571,8 +571,8 @@ export function calculateAdvancedRiskScore(
     hardwareTrojanForensics?: HardwareTrojanForensics;
     quantumForensics?: QuantumAttackForensics;
     satelliteForensics?: SatelliteForensics;
-    mfaIntegrity?: MFAIntegrityForensics;
-    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, TLSForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking, TLSForensics; syscallTiming?: SyscallTimingAnomaly;
+    mfaIntegrity?: MFAIntegrityForensics; cognitiveLoad?: CognitiveLoadForensics;
+    authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics; gpuSideChannel?: GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -825,7 +825,14 @@ export function calculateAdvancedRiskScore(
     if (params.syscallTiming.isSandboxed) score += 20;
     if (params.syscallTiming.outlierCount > 5) score += 15;
   }
-  score = Math.min(100, score);
+  // v39: Cognitive Load Logic
+  if (params.cognitiveLoad) {
+    if (params.cognitiveLoad.isHighStressDetected) score += 40;
+    if (params.cognitiveLoad.isCoachingLikely) score += 65;
+    if (params.cognitiveLoad.interactionLatencyAnomaly) score += 20;
+    score += params.cognitiveLoad.cognitiveDissonanceIndex * 50;
+  }
+  }
 
   let level: RiskLevel = 'CLEAR';
   if (score > 85) level = 'CRITICAL';
@@ -1000,7 +1007,7 @@ export function analyzeMicroInteractions(
 /**
  * v29: Cryptographic Side-Channel Analysis - Detects timing leaks and electromagnetic artifacts in crypto operations.
  */
-export function analyzeCryptoSideChannel(): CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, TLSForensics {
+export function analyzeCryptoSideChannel(): CryptoSideChannelForensics {
   return {
     timingJitterDetected: false,
     powerAnalysisRisk: 0.05,
@@ -1101,5 +1108,33 @@ export function analyzeTLSForensics(): TLSForensics {
     cipherSuite: 'TLS_AES_256_GCM_SHA384',
     tlsVersion: 'TLSv1.3',
     extensions: ['server_name', 'renegotiation_info', 'supported_groups']
+  };
+}
+
+/**
+ * v39: Cognitive Load Forensic Analysis.
+ * Detects psychological stress or social engineering coaching artifacts.
+ */
+export function analyzeCognitiveLoad(
+  inputLatencies: number[],
+  backspaceCount: number
+): CognitiveLoadForensics {
+  const meanLatency = inputLatencies.length > 0 
+    ? inputLatencies.reduce((a, b) => a + b, 0) / inputLatencies.length 
+    : 200;
+  
+  const interactionLatencyAnomaly = meanLatency > 1200 || meanLatency < 50;
+  const correctionRate = inputLatencies.length > 0 ? backspaceCount / inputLatencies.length : 0;
+  
+  const isHighStressDetected = meanLatency > 1500 && correctionRate > 0.3;
+  const isCoachingLikely = meanLatency > 2000 && correctionRate < 0.05;
+
+  return {
+    isHighStressDetected,
+    interactionLatencyAnomaly,
+    correctionRate,
+    hesitationScore: Math.min(1, meanLatency / 3000),
+    isCoachingLikely,
+    cognitiveDissonanceIndex: (isHighStressDetected ? 0.8 : 0.1) + (interactionLatencyAnomaly ? 0.15 : 0)
   };
 }
