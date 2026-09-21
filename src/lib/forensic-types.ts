@@ -329,6 +329,7 @@ export interface ForensicIntelligence {
   opticalAirGap?: OpticalAirGapForensics;
   honeytokenForensics?: HoneytokenForensics;
   webRTCLeak?: WebRTCLeakSignal;
+  gpuPipeline?: GPUPipelineSignal;
 }
 
 export interface SteganographyAnalysis {
@@ -372,6 +373,14 @@ export interface HoneytokenForensics {
   honeytokenTriggered: boolean;
   interactionType: 'TRAP_FIELD' | 'GHOST_ENDPOINT' | 'CANARY_TOKEN' | 'NONE';
   attackerProfilingScore: number;
+}
+
+export interface GPUPipelineSignal {
+  shaderPrecisionVariance: number;
+  pipelineStallDetected: boolean;
+  memoryWriteLatencyAnomaly: boolean;
+  gpuVendorMismatch: boolean;
+  entropyScore: number;
 }
 
 export interface WebRTCLeakSignal {

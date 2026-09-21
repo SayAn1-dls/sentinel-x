@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeWebRTCLeak
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeWebRTCLeak, analyzeGPUPipeline
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -159,7 +159,8 @@ export function enrichWithForensics(transaction: any): any {
   
   const acousticAirGap = analyzeAcousticAirGap();
   const multiWindowVelocity = analyzeMultiWindowVelocity(transaction.history || []);
-  const webRTCLeak = analyzeWebRTCLeak(Math.random() > 0.95 ? [geolocation.ip, "10.0.0.5", "192.168.1.12"] : [geolocation.ip], geolocation.ip);
+  const webRTCLeak = analyzeWebRTCLeak, analyzeGPUPipeline(Math.random() > 0.95 ? [geolocation.ip, "10.0.0.5", "192.168.1.12"] : [geolocation.ip], geolocation.ip);
+  const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
 
   return {
     ...transaction,
@@ -167,6 +168,7 @@ export function enrichWithForensics(transaction: any): any {
       acousticAirGap,
       multiWindowVelocity,
       webRTCLeak,
+      gpuPipeline,
       deepfakeForensics,
       voiceBiometrics,
       honeytokenForensics,
