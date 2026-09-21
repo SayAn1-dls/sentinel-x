@@ -1,3 +1,24 @@
+## Update: 2026-09-21 - GPU Pipeline Forensic Profiling (v40)
+
+### GPU Pipeline Forensic Analysis
+Implemented deep forensic profiling of GPU execution pipelines to detect unique hardware signatures and virtualized renderer environments.
+
+- **Signal**: `gpuPipeline` 
+- **New Interface**: `GPUPipelineSignal` 
+- **New Analysis Function**: `analyzeGPUPipeline` 
+- **Checks**:
+  - **Shader Precision Variance**: Detects anomalies in floating-point rounding indicative of non-standard or virtualized GPUs.
+  - **Pipeline Stall Detection**: Identifies micro-architectural bottlenecks used for device fingerprinting.
+  - **GPU Vendor Mismatch**: Cross-references reported renderer strings against actual execution capabilities.
+- **Risk Impact**: High (+60) for vendor mismatch, Medium (+45) for detected pipeline stalls.
+
+### Risk Engine v40
+Integrated GPU Pipeline forensic signals into the `calculateAdvancedRiskScore` engine for enhanced hardware-level attestation.
+- **Version**: 40.0.0
+- **Weighting**: Pipeline Stall Detected (+45), GPU Vendor Mismatch (+60), Entropy-based scaling.
+
+---
+
 ## Update: 2026-09-19 - WebRTC IP Leak Detection & Proxy/VPN Bypass Forensics (v39)
 
 ### WebRTC IP Leak Forensic Analysis

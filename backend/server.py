@@ -32,6 +32,8 @@ MOCK_TRANSACTIONS = [
 ]
 
 MOCK_ALERTS = [
+    {"id": "ALT-000", "type": "GPU_FINGERPRINT_MISMATCH", "entity": "ENT-0091",    "severity": "HIGH",     "message": "GPU execution signature mismatch detected (v40)", "timestamp": "2026-09-21T10:05:00Z", "status": "OPEN"},
+
     {"id": "ALT-001", "type": "SANCTIONS_HIT",    "entity": "ENT-0091",    "severity": "CRITICAL", "message": "Entity flagged against OFAC SDN list",              "timestamp": "2026-09-15T09:12:43Z", "status": "OPEN"},
     {"id": "ALT-002", "type": "VELOCITY_BREACH",  "entity": "ENT-0001",    "severity": "CRITICAL", "message": "890K transfer exceeds 24h velocity limit",           "timestamp": "2026-09-15T09:09:03Z", "status": "OPEN"},
     {"id": "ALT-003", "type": "CLUSTER_ANOMALY",  "entity": "CLUSTER-7X",  "severity": "HIGH",     "message": "Unusual node connectivity pattern detected",          "timestamp": "2026-09-15T08:55:12Z", "status": "INVESTIGATING"},
@@ -40,6 +42,8 @@ MOCK_ALERTS = [
 ]
 
 MOCK_AUDIT = [
+    {"id": "AUD-000", "timestamp": "2026-09-21T10:05:00Z", "actor": "ml-engine@sentinel-x","action": "GPU_PIPELINE_STALL", "target": "TX-4F2A1B",       "severity": "MEDIUM",   "ip": "10.0.0.3"},
+
     {"id": "AUD-001", "timestamp": "2026-09-15T09:12:43Z", "actor": "system@sentinel-x",  "action": "SANCTIONS_HIT",     "target": "ENT-0091",        "severity": "CRITICAL", "ip": "10.0.0.1"},
     {"id": "AUD-002", "timestamp": "2026-09-15T09:09:03Z", "actor": "ml-engine@sentinel-x","action": "VELOCITY_BREACH",  "target": "TX-6D1F2C",       "severity": "CRITICAL", "ip": "10.0.0.2"},
     {"id": "AUD-003", "timestamp": "2026-09-15T09:00:00Z", "actor": "analyst@sentinel-x", "action": "ALERT_DISMISSED",   "target": "ALT-006",         "severity": "LOW",      "ip": "192.168.1.45"},
