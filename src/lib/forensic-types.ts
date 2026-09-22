@@ -286,7 +286,15 @@ export interface VoiceBiometricForensics {
   syntheticArtifactsDetected: boolean;
 }
 
+
+export interface GeolocationCorrelationSignal {
+  isUnusualLocation: boolean;
+  confidenceScore: number;
+  historicalProximityKm: number;
+  knownLocationMatch: boolean;
+}
 export interface ForensicIntelligence {
+  geolocationCorrelation?: GeolocationCorrelationSignal;
   acousticAirGap?: AcousticAirGapForensics;
   deepfakeForensics?: DeepfakeForensics;
   voiceBiometrics?: VoiceBiometricForensics;

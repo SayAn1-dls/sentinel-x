@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeWebRTCLeak, analyzeGPUPipeline
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -162,9 +162,13 @@ export function enrichWithForensics(transaction: any): any {
   const webRTCLeak = analyzeWebRTCLeak, analyzeGPUPipeline(Math.random() > 0.95 ? [geolocation.ip, "10.0.0.5", "192.168.1.12"] : [geolocation.ip], geolocation.ip);
   const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
 
+
+  const geolocationCorrelation = analyzeGeolocationCorrelation(geolocation, { lat: 40.7128, lon: -74.0060 }); // NYC is home
+
   return {
     ...transaction,
     forensics: {
+      geolocationCorrelation,
       acousticAirGap,
       multiWindowVelocity,
       webRTCLeak,

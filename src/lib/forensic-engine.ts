@@ -18,7 +18,7 @@ import {
   DarkWebExposure,
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
-  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics, AcousticAirGapForensics, MultiWindowVelocitySignal, WebRTCLeakSignal, GPUPipelineSignal
+  DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics, AcousticAirGapForensics, MultiWindowVelocitySignal, GeolocationCorrelationSignal, WebRTCLeakSignal, GPUPipelineSignal
 } from './forensic-types';
 
 /**
@@ -596,6 +596,27 @@ export function analyzeGPUPipeline(renderer: string): GPUPipelineSignal {
   };
 }
 
+
+/**
+ * v36: Analyzes Geolocation Correlation against historical "home" coordinates.
+ * Detects anomalies when a user accesses from a distant, unknown location.
+ */
+export function analyzeGeolocationCorrelation(
+  current: IPGeolocation,
+  historicalHome: { lat: number; lon: number }
+): GeolocationCorrelationSignal {
+  const distance = calculateDistance(current.latitude, current.longitude, historicalHome.lat, historicalHome.lon);
+  const isUnusual = distance > 500; // Over 500km from home is unusual
+  const knownLocationMatch = distance < 50; // Within 50km is a match
+
+  return {
+    isUnusualLocation: isUnusual,
+    confidenceScore: isUnusual ? 0.92 : 0.98,
+    historicalProximityKm: Math.round(distance),
+    knownLocationMatch
+  };
+}
+
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
@@ -636,6 +657,7 @@ export function calculateAdvancedRiskScore(
     deepfakeForensics?: DeepfakeForensics;
     voiceBiometrics?: VoiceBiometricForensics;
     honeytokenForensics?: HoneytokenForensics;
+    geolocationCorrelation?: GeolocationCorrelationSignal;
     acousticAirGap?: AcousticAirGapForensics;
     multiWindowVelocity?: MultiWindowVelocitySignal;
     webRTCLeak?: WebRTCLeakSignal, GPUPipelineSignal;
@@ -833,6 +855,14 @@ export function calculateAdvancedRiskScore(
     if (params.gpuPipeline.pipelineStallDetected) score += 45;
     if (params.gpuPipeline.gpuVendorMismatch) score += 60;
     score += params.gpuPipeline.entropyScore * 30;
+  }
+
+  
+  // v36 Geolocation Correlation Logic
+  if (params.geolocationCorrelation) {
+    if (params.geolocationCorrelation.isUnusualLocation) score += 35;
+    if (!params.geolocationCorrelation.knownLocationMatch) score += 10;
+    score += (params.geolocationCorrelation.historicalProximityKm / 1000) * 5; // Distance weight
   }
 
   score = Math.min(100, score);

@@ -179,3 +179,23 @@ Deep system-level analysis for rootkit detection and kernel integrity verificati
 - **Feature**: Deep packet inspection for TLS handshake artifacts.
 - **Implementation**: JA3 hashing of client hello and JA3S for server response correlation.
 - **Risk Vectors**: Detection of known automation tools, bots, and legacy TLS versions.
+
+## Update: 2026-09-22 - Geolocation Correlation & Forensic Logic Fixes (v36)
+
+### IP Geolocation Correlation Analysis
+Implemented advanced correlation logic to compare current session coordinates against historical "home base" data. This allows for detection of unusual access patterns even if they don't trigger "impossible travel" (e.g., using a VPN or local data center that is distant from the user's typical residence).
+- **Signal**: `geolocationCorrelation`
+- **Metrics**: 
+  - `isUnusualLocation`: True if distance from home > 500km.
+  - `historicalProximityKm`: Physical distance from the primary user location.
+- **Risk Impact**: Medium (+35) for unusual locations, with scaling weight based on distance.
+
+### Forensic Engine Logic Restored
+Fixed critical syntax errors in `forensic-engine.ts` and `mock-forensics.ts` where multi-value returns were incorrectly typed and called. 
+- Restored `analyzeAcousticAirGap` return structure.
+- Corrected `multiWindowVelocity` initialization in mock data pipelines.
+
+### Risk Engine v36
+Integrated Geolocation Correlation signals into the `calculateAdvancedRiskScore` function.
+- **Version**: 36.0.0
+- **New Weights**: Unusual Location (+35), Distance-weighted scaling factor.
