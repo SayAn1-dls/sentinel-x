@@ -293,7 +293,16 @@ export interface GeolocationCorrelationSignal {
   historicalProximityKm: number;
   knownLocationMatch: boolean;
 }
+export interface DKOMForensics {
+  isProcessHidden: boolean;
+  eprocessListIntegrity: boolean;
+  unlinkedModuleDetected: boolean;
+  handleTableAnomaly: boolean;
+  dkomConfidence: number;
+}
+
 export interface ForensicIntelligence {
+  dkomForensics?: DKOMForensics;
   geolocationCorrelation?: GeolocationCorrelationSignal;
   acousticAirGap?: AcousticAirGapForensics;
   deepfakeForensics?: DeepfakeForensics;

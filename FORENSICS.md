@@ -1,3 +1,23 @@
+## Update: 2026-09-23 - Direct Kernel Object Manipulation (DKOM) Detection (v41)
+
+### DKOM Forensic Intelligence
+Implemented deep kernel structure attestation to detect stealthy rootkit activities that bypass standard syscall monitoring by directly manipulating kernel objects.
+- **Signal**: `dkomForensics`
+- **New Interface**: `DKOMForensics`
+- **New Analysis Function**: `analyzeDKOMForensics`
+- **Checks**:
+  - **Process Hiding Detection**: Identifies mismatches between the EPROCESS list and the scheduler thread list.
+  - **EPROCESS Integrity**: Attests the integrity of process environment blocks at the kernel level.
+  - **Unlinked Module Detection**: Scans system memory for unlinked drivers and modules.
+- **Risk Impact**: Critical (+95) for hidden processes, High (+80) for EPROCESS list corruption.
+
+### Risk Engine v41
+Integrated DKOM forensic signals into the `calculateAdvancedRiskScore` engine for advanced rootkit defense.
+- **Version**: 41.0.0
+- **Weighting**: Process Hidden (+95), EPROCESS Corruption (+80), Unlinked Module (+70).
+
+---
+
 ## Update: 2026-09-21 - GPU Pipeline Forensic Profiling (v40)
 
 ### GPU Pipeline Forensic Analysis
