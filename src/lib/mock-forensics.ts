@@ -1,4 +1,4 @@
-import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics, QuantumForensics, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics } from './forensic-types';
+import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics, QuantumForensics, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, DKOMForensics } from './forensic-types';
 import { 
   detectTemporalAnomaly, 
   detectCrossChainLinks, 
@@ -16,7 +16,7 @@ import {
   analyzeDarkWebExposure,
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
-  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
+  analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
 } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
@@ -158,6 +158,8 @@ export function enrichWithForensics(transaction: any): any {
   const opticalAirGap = analyzeOpticalAirGap();
   
   const acousticAirGap = analyzeAcousticAirGap();
+  const multiWindowVelocity = analyzeMultiWindowVelocity([]);
+  const dkomForensics = analyzeDKOMForensics();
   const multiWindowVelocity = analyzeMultiWindowVelocity(transaction.history || []);
   const webRTCLeak = analyzeWebRTCLeak, analyzeGPUPipeline(Math.random() > 0.95 ? [geolocation.ip, "10.0.0.5", "192.168.1.12"] : [geolocation.ip], geolocation.ip);
   const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
@@ -168,6 +170,7 @@ export function enrichWithForensics(transaction: any): any {
   return {
     ...transaction,
     forensics: {
+      dkomForensics,
       geolocationCorrelation,
       acousticAirGap,
       multiWindowVelocity,
