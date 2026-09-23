@@ -15,3 +15,4 @@ __all__ = [
     "AlertChannel",
     "AlertPriority",
 ]
+from .threat_scorer import ThreatScorer, DetectorSignal, ThreatReport
