@@ -301,7 +301,17 @@ export interface DKOMForensics {
   dkomConfidence: number;
 }
 
+
+export interface PEBForensics {
+  beingDebugged: boolean;
+  isWow64: boolean;
+  imagePathMismatched: boolean;
+  pebLdrOrderAnomaly: boolean;
+  pebAttestationConfidence: number;
+}
+
 export interface ForensicIntelligence {
+  pebForensics?: PEBForensics;
   dkomForensics?: DKOMForensics;
   geolocationCorrelation?: GeolocationCorrelationSignal;
   acousticAirGap?: AcousticAirGapForensics;
