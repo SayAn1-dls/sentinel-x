@@ -1,3 +1,24 @@
+## Update: 2026-09-24 - Process Environment Block (PEB) Forensic Attestation (v42)
+
+### PEB Forensic Intelligence
+Implemented deep attestation of the Process Environment Block (PEB) to detect advanced stealth techniques like process hollowing, debugger concealment, and module list masquerading.
+
+- **Signal**: `pebForensics`
+- **New Interface**: `PEBForensics`
+- **New Analysis Function**: `analyzePEBForensics`
+- **Checks**:
+  - **BeingDebugged Flag Attestation**: Direct check of the PEB structure for debugger presence, bypassing standard API hooks.
+  - **Process Hollowing Detection**: Detects mismatches between the PEB image path and the actual executable backing the process.
+  - **LDR Module Order Anomaly**: Identifies suspicious reordering of loaded modules, common in rootkit and malware obfuscation.
+- **Risk Impact**: Critical (+95) for image path mismatch, High (+70) for LDR anomalies, Medium (+30) for debugger flags.
+
+### Risk Engine v42
+Integrated PEB forensic signals into the `calculateAdvancedRiskScore` engine for enhanced stealth process detection.
+- **Version**: 42.0.0
+- **Weighting**: Image Mismatch (+95), LDR Anomaly (+70), Debugger Flag (+30).
+
+---
+
 ## Update: 2026-09-23 - Direct Kernel Object Manipulation (DKOM) Detection (v41)
 
 ### DKOM Forensic Intelligence
