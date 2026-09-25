@@ -310,7 +310,15 @@ export interface PEBForensics {
   pebAttestationConfidence: number;
 }
 
+export interface CrossProtocolSignal {
+  isLinked: boolean;
+  protocols: ('HTTPS' | 'WSS' | 'RPC' | 'P2P')[];
+  mismatchedArtifacts: string[];
+  correlationConfidence: number;
+}
+
 export interface ForensicIntelligence {
+  crossProtocol?: CrossProtocolSignal;
   pebForensics?: PEBForensics;
   dkomForensics?: DKOMForensics;
   geolocationCorrelation?: GeolocationCorrelationSignal;

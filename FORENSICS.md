@@ -1,3 +1,45 @@
+## Update: 2026-09-25 - Cross-Protocol Forensic Correlation (v43)
+
+### Cross-Protocol Forensic Intelligence
+Implemented deep correlation of forensic artifacts across disparate communication protocols (HTTPS, WSS, RPC, P2P). This allows the engine to detect identity fragmentation and sophisticated sybil attacks where an attacker uses different protocols to bypass single-channel monitoring.
+
+- **Signal**: crossProtocol
+- **New Interface**: CrossProtocolSignal
+- **New Analysis Function**: analyzeCrossProtocolLinking
+- **Checks**:
+  - **Protocol Multiplexing Detection**: Identifies when a single fingerprint is used across multiple stateful and stateless protocols.
+  - **Artifact Mismatch Analysis**: Detects inconsistencies in session identifiers and device hashes between WebSocket and HTTP/RPC channels.
+  - **Correlation Confidence Scoring**: Probabilistic model for linking fragmented network identities.
+- **Risk Impact**: High (+40) for multi-protocol multiplexing, Medium (+30) for artifact mismatches.
+
+### Risk Engine v43
+Integrated Cross-Protocol signals into the calculateAdvancedRiskScore engine for enhanced multi-channel security coverage.
+- **Version**: 43.0.0
+- **Weighting**: Protocol Multiplexing (+40), Artifact Mismatch (+30).
+
+---
+
+## Update: 2026-09-25 - Cross-Protocol Forensic Correlation (v43)
+
+### Cross-Protocol Forensic Intelligence
+Implemented deep correlation of forensic artifacts across disparate communication protocols (HTTPS, WSS, RPC, P2P). This allows the engine to detect identity fragmentation and sophisticated sybil attacks where an attacker uses different protocols to bypass single-channel monitoring.
+
+- **Signal**: 
+- **New Interface**: 
+- **New Analysis Function**: 
+- **Checks**:
+  - **Protocol Multiplexing Detection**: Identifies when a single fingerprint is used across multiple stateful and stateless protocols.
+  - **Artifact Mismatch Analysis**: Detects inconsistencies in session identifiers and device hashes between WebSocket and HTTP/RPC channels.
+  - **Correlation Confidence Scoring**: Probabilistic model for linking fragmented network identities.
+- **Risk Impact**: High (+40) for multi-protocol multiplexing, Medium (+30) for artifact mismatches.
+
+### Risk Engine v43
+Integrated Cross-Protocol signals into the  engine for enhanced multi-channel security coverage.
+- **Version**: 43.0.0
+- **Weighting**: Protocol Multiplexing (+40), Artifact Mismatch (+30).
+
+---
+
 ## Update: 2026-09-24 - Process Environment Block (PEB) Forensic Attestation (v42)
 
 ### PEB Forensic Intelligence

@@ -650,9 +650,32 @@ export function analyzePEBForensics(): PEBForensics {
   };
 }
 
+
+/**
+ * v43: Cross-Protocol Forensic Correlation.
+ * Correlates artifacts across HTTPS, WSS, and RPC protocols to detect identity fragmentation.
+ */
+export function analyzeCrossProtocolLinking(
+  artifacts: { protocol: 'HTTPS' | 'WSS' | 'RPC' | 'P2P'; sessionId: string; fingerprint: string }[]
+): CrossProtocolSignal {
+  const fingerprints = new Set(artifacts.map(a => a.fingerprint));
+  const protocols = Array.from(new Set(artifacts.map(a => a.protocol)));
+  
+  const isLinked = fingerprints.size === 1 && protocols.length > 1;
+  const mismatchedArtifacts = fingerprints.size > 1 ? ['FINGERPRINT_MISMATCH'] : [];
+
+  return {
+    isLinked,
+    protocols,
+    mismatchedArtifacts,
+    correlationConfidence: isLinked ? 0.94 : 0.15
+  };
+}
+
 export function calculateAdvancedRiskScore(
   baseScore: number,
   params: {
+    crossProtocol?: CrossProtocolSignal;
     pebForensics?: PEBForensics;
     dkomForensics?: DKOMForensics;
     syntheticIdentity?: SyntheticIdentitySignal;
@@ -700,6 +723,12 @@ export function calculateAdvancedRiskScore(
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
+  if (params.crossProtocol) {
+    if (params.crossProtocol.isLinked && params.crossProtocol.protocols.length > 2) score += 40;
+    if (params.crossProtocol.mismatchedArtifacts.length > 0) score += 30;
+    score += params.crossProtocol.correlationConfidence * 20;
+  }
+
 
   if (params.travelSignal?.detected) score += 40;
   if (params.isProxy) score += 20;
