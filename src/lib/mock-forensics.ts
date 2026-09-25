@@ -80,6 +80,11 @@ export function enrichWithForensics(transaction: any): any {
     canvasHash: 'cf83e1357eefb8bd',
     webGLRenderer: 'Apple M1'
   };
+  const crossProtocol = analyzeCrossProtocolLinking([
+    { protocol: 'HTTPS', sessionId: 'sess-123', fingerprint: mockFingerprint.canvasHash },
+    { protocol: 'WSS', sessionId: 'ws-456', fingerprint: mockFingerprint.canvasHash }
+  ]);
+
 
   const fingerprintEntropy = calculateFingerprintEntropy(mockFingerprint);
   
@@ -170,6 +175,7 @@ export function enrichWithForensics(transaction: any): any {
   return {
     ...transaction,
     forensics: {
+      crossProtocol,
       dkomForensics,
       pebForensics,
       geolocationCorrelation,

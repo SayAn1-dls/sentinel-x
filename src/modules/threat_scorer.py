@@ -27,6 +27,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "rate_of_change": 0.75,
     "correlation":   1.1,
     "geolocation":   1.2,
+    "cross_protocol": 1.3,
 }
 
 
