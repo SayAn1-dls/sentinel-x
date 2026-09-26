@@ -280,6 +280,15 @@ export interface SyscallTimingAnomaly {
   isSandboxed: boolean;
 }
 
+
+export interface InterruptForensics {
+  isInterruptStormDetected: boolean;
+  irqHookingLikely: boolean;
+  meanInterruptLatencyNs: number;
+  interruptFrequencyHz: number;
+  isSideChannelExfiltrationLikely: boolean;
+}
+
 export interface ForensicIntelligence {
   syscallTiming?: SyscallTimingAnomaly;
   crossChainLinking?: CrossChainForensicLinking;
@@ -301,6 +310,7 @@ export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;
+    interruptForensics?: InterruptForensics;
   velocityMetrics: VelocityMetric;
   temporalAnomaly?: TemporalAnomalySignal;
   fingerprintEntropy: number;
