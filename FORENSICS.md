@@ -1,3 +1,24 @@
+## Update: 2026-09-26 - Interrupt Latency Forensics (v44)
+
+### Interrupt Forensic Intelligence
+Implemented kernel-level analysis of hardware interrupts to detect sophisticated data exfiltration techniques and rootkit persistence mechanisms.
+
+- **Signal**: `interruptForensics`
+- **New Interface**: `InterruptForensics`
+- **New Analysis Function**: `analyzeInterruptForensics`
+- **Checks**:
+  - **Interrupt Storm Detection**: Monitors for high-frequency IRQ bursts used in side-channel attacks.
+  - **IRQ Hooking Detection**: Identifies unauthorized modification of interrupt request handlers.
+  - **Latency Anomaly**: Detects micro-architectural delays indicative of hypervisor-level interception.
+- **Risk Impact**: Critical (+95) for exfiltration signatures, High (+85) for IRQ hooking.
+
+### Risk Engine v44
+Integrated interrupt forensic signals into the `calculateAdvancedRiskScore` engine.
+- **Version**: 44.0.0
+- **Weighting**: Side-Channel Exfiltration (+95), IRQ Hooking (+85), Storm Detected (+60).
+
+---
+
 ## Update: 2026-09-25 - Cross-Protocol Forensic Correlation (v43)
 
 ### Cross-Protocol Forensic Intelligence

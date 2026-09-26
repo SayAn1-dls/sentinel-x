@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-} from './forensic-engine';
+, analyzeInterruptForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -96,6 +96,14 @@ export function enrichWithForensics(transaction: any): any {
 
   const behavioralBiometricSignature = 'SIG-' + Math.random().toString(36).substr(2, 9).toUpperCase();
   
+  
+  const interruptForensics = {
+    ...analyzeInterruptForensics(),
+    isInterruptStormDetected: Math.random() > 0.99,
+    irqHookingLikely: Math.random() > 0.995,
+    interruptFrequencyHz: 120 + Math.random() * 50
+  };
+
   const velocityMetrics = analyzeTransactionVelocity([
     { amount: transaction.amount || 1000, timestamp: Date.now() },
     { amount: 500, timestamp: Date.now() - 10000 },
@@ -192,7 +200,7 @@ export function enrichWithForensics(transaction: any): any {
       opticalAirGap,
       geolocation,
       asnReputation,
-      velocityMetrics,
+      interruptForensics, velocityMetrics,
       temporalAnomaly,
       fingerprintEntropy,
       behavioralBiometricSignature,

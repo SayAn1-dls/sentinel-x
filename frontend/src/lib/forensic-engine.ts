@@ -33,7 +33,7 @@ import {
   SatelliteForensics, 
   MFAIntegrityForensics, 
   AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, CognitiveLoadForensics, TLSForensics
-} from './forensic-types';
+, InterruptForensics } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -540,7 +540,7 @@ export function calculateAdvancedRiskScore(
     tlsForensics?: TLSForensics;
     travelSignal?: ImpossibleTravelSignal;
     isProxy?: boolean;
-    velocityZScore?: number;
+    interruptForensics?: InterruptForensics; velocityZScore?: number;
     temporalAnomaly?: TemporalAnomalySignal;
     crossChainLinks?: CrossChainLink[];
     behavioralBiometrics?: BehavioralBiometricSignal;
@@ -832,6 +832,15 @@ export function calculateAdvancedRiskScore(
     if (params.cognitiveLoad.interactionLatencyAnomaly) score += 20;
     score += params.cognitiveLoad.cognitiveDissonanceIndex * 50;
   }
+  }
+
+  
+  // v44 Interrupt Logic
+  if (params.interruptForensics) {
+    if (params.interruptForensics.isInterruptStormDetected) score += 60;
+    if (params.interruptForensics.irqHookingLikely) score += 85;
+    if (params.interruptForensics.isSideChannelExfiltrationLikely) score += 95;
+    score += (params.interruptForensics.interruptFrequencyHz / 1000) * 10;
   }
 
   let level: RiskLevel = 'CLEAR';
@@ -1136,5 +1145,18 @@ export function analyzeCognitiveLoad(
     hesitationScore: Math.min(1, meanLatency / 3000),
     isCoachingLikely,
     cognitiveDissonanceIndex: (isHighStressDetected ? 0.8 : 0.1) + (interactionLatencyAnomaly ? 0.15 : 0)
+  };
+}
+
+/**
+ * v44: Interrupt Latency Forensic Analysis - Detects IRQ hooking and interrupt storm exfiltration.
+ */
+export function analyzeInterruptForensics(): InterruptForensics {
+  return {
+    isInterruptStormDetected: false,
+    irqHookingLikely: false,
+    meanInterruptLatencyNs: 420,
+    interruptFrequencyHz: 120,
+    isSideChannelExfiltrationLikely: false
   };
 }

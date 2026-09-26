@@ -317,6 +317,15 @@ export interface CrossProtocolSignal {
   correlationConfidence: number;
 }
 
+
+export interface InterruptForensics {
+  isInterruptStormDetected: boolean;
+  irqHookingLikely: boolean;
+  meanInterruptLatencyNs: number;
+  interruptFrequencyHz: number;
+  isSideChannelExfiltrationLikely: boolean;
+}
+
 export interface ForensicIntelligence {
   crossProtocol?: CrossProtocolSignal;
   pebForensics?: PEBForensics;
@@ -338,6 +347,7 @@ export interface ForensicIntelligence {
   geolocation: IPGeolocation;
   asnReputation?: ASNReputation;
   impossibleTravel?: ImpossibleTravelSignal;
+    interruptForensics?: InterruptForensics;
   velocityMetrics: VelocityMetric;
   multiWindowVelocity?: MultiWindowVelocitySignal;
   temporalAnomaly?: TemporalAnomalySignal;
