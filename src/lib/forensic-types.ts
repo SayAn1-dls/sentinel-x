@@ -374,6 +374,7 @@ export interface ForensicIntelligence {
   opticalAirGap?: OpticalAirGapForensics;
   honeytokenForensics?: HoneytokenForensics;
   webRTCLeak?: WebRTCLeakSignal;
+  pageTableForensics?: PageTableForensics;
   gpuPipeline?: GPUPipelineSignal;
 }
 
@@ -434,4 +435,14 @@ export interface WebRTCLeakSignal {
   publicIps: string[];
   isMismatched: boolean;
   leakConfidence: number;
+}
+
+export interface PageTableForensics {
+  isPteManipulationDetected: boolean;
+  tlbFlushAnomalyDetected: boolean;
+  shadowPageTableInconsistency: boolean;
+  largePageExploitDetected: boolean;
+  nxBitViolationDetected: boolean;
+  pageFaultRateAnomaly: number;
+  translationLookasideBufferEntropy: number;
 }

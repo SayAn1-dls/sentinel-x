@@ -29,6 +29,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "geolocation":   1.2,
     "interrupt_forensics": 1.4,
     "cross_protocol": 1.3,
+    "page_table_forensics": 1.5,
 }
 
 

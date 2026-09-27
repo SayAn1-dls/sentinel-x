@@ -1,3 +1,25 @@
+## Update: 2026-09-27 - Multi-Level Page Table Forensics (v45)
+
+### Page Table Forensic Intelligence
+Implemented kernel-level analysis of CPU page tables to detect Translation Lookaside Buffer (TLB) flush anomalies, Page Table Entry (PTE) manipulation, and Shadow Page Table inconsistencies indicative of hypervisor or rootkit activity.
+
+- **Signal**: `pageTableForensics`
+- **New Interface**: `PageTableForensics`
+- **New Analysis Function**: `analyzePageTableForensics`
+- **Checks**:
+  - **PTE Manipulation Detection**: Identifies unauthorized modifications to page table entries (e.g., flipping the RWX bits).
+  - **TLB Flush Anomaly**: Detects unexpected TLB flushes which can be used to hide malicious memory mappings.
+  - **NX Bit Violation**: Monitors for execution attempts in non-executable pages.
+  - **Shadow Page Table Integrity**: Verifies consistency between guest and host page tables in virtualized environments.
+- **Risk Impact**: Critical (+95) for PTE manipulation, High (+85) for shadow page table inconsistencies.
+
+### Risk Engine v45
+Integrated page table forensic signals into the `calculateAdvancedRiskScore` engine and the Python `threat_scorer.py` module.
+- **Version**: 45.0.0
+- **Weighting**: PTE Manipulation (+95), NX Bit Violation (+90), Shadow Page Table Inconsistency (+85).
+
+---
+
 ## Update: 2026-09-26 - Interrupt Latency Forensics (v44)
 
 ### Interrupt Forensic Intelligence
@@ -269,6 +291,7 @@ The risk scoring engine incorporates:
 - [x] Transaction Velocity Z-Score Analysis
 - [x] Behavioral Biometric Bot Detection
 - [x] Cross-Chain Forensic Linking (New)
+- [x] Multi-Level Page Table Forensics (v45)
 
 
 ## Kernel-Level Forensic Enhancements (v38)

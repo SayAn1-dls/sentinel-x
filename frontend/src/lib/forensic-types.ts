@@ -336,6 +336,7 @@ export interface ForensicIntelligence {
   microInteractions?: MicroInteractionsForensics;
   cryptoSideChannel?: CryptoSideChannelForensics;
   cognitiveLoad?: CognitiveLoadForensics;
+  pageTableForensics?: PageTableForensics;
 }
 
 export interface SupplyChainForensics {
@@ -453,4 +454,14 @@ export interface CognitiveLoadForensics {
   hesitationScore: number;
   isCoachingLikely: boolean;
   cognitiveDissonanceIndex: number;
+}
+
+export interface PageTableForensics {
+  isPteManipulationDetected: boolean;
+  tlbFlushAnomalyDetected: boolean;
+  shadowPageTableInconsistency: boolean;
+  largePageExploitDetected: boolean;
+  nxBitViolationDetected: boolean;
+  pageFaultRateAnomaly: number;
+  translationLookasideBufferEntropy: number;
 }
