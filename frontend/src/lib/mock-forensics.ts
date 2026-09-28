@@ -33,7 +33,7 @@ import {
   analyzeMFAIntegrity,
   analyzeAuthenticatorForensics, analyzeAcousticAirGap, analyzeRFSideChannel,
   analyzeCrossChainLinking, analyzeTLSForensics, analyzeSyscallTiming, analyzeCognitiveLoad
-, analyzeInterruptForensics } from './forensic-engine';
+, analyzeInterruptForensics, analyzeBehavioralBiometricEntropy } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -262,6 +262,14 @@ export function enrichWithForensics(transaction: any): any {
     ]
   );
 
+
+  const behavioralBiometricEntropy = {
+    ...analyzeBehavioralBiometricEntropy(),
+    keystrokeJitterEntropy: Math.random() * 0.2,
+    mousePathCurvatureVariance: Math.random() * 0.15,
+    syntheticEventInjectionLikely: Math.random() > 0.998,
+    isNeurologicalSignatureConsistent: Math.random() > 0.02
+  };
   return {
     ...transaction,
     forensics: {
@@ -307,6 +315,7 @@ export function enrichWithForensics(transaction: any): any {
       syscallTiming,
       cognitiveLoad,
       crossChainLinking
+      behavioralBiometricEntropy,
     }
   };
 }

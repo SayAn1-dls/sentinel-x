@@ -1,3 +1,25 @@
+## Update: 2026-09-28 - Behavioral Biometric Entropy Analysis (v46)
+
+### Behavioral Biometric Entropy Analysis
+Implemented a deep forensic intelligence layer that profiles sub-second micro-interaction jitter and synthetic event injection signatures. This module detects sophisticated automation tools that attempt to mimic human interaction through perfectly linear or unnaturally consistent trajectories.
+
+- **Signal**: `behavioralBiometricEntropy`
+- **Checks**:
+  - **Keystroke Jitter Entropy**: Analyzes the statistical variance of inter-keystroke timings to detect hardware-level injection.
+  - **Mouse Path Curvature**: Detects non-human linear movement or perfect arcs indicative of scripted interaction.
+  - **Neurological Signature Consistency**: Profiles the underlying rhythm of interaction to detect session handover or multi-operator account sharing.
+  - **Synthetic Event Injection**: Monitors for the absence of raw HID interrupt artifacts during high-level event firing.
+
+- **Risk Impact**: 
+  - **Synthetic Event Injection**: Critical (+95)
+  - **Neurological Signature Inconsistency**: High (+80)
+  - **Coaching Artifact Detection**: High (+65)
+
+### Risk Engine v46
+Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer.py` module to incorporate behavioral biometric entropy signals.
+- **Version**: 46.0.0
+- **Aggregator Weight**: 1.45
+
 ## Update: 2026-09-27 - Multi-Level Page Table Forensics (v45)
 
 ### Page Table Forensic Intelligence

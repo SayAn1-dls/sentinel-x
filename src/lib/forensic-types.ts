@@ -327,6 +327,7 @@ export interface InterruptForensics {
 }
 
 export interface ForensicIntelligence {
+  behavioralBiometricEntropy?: BehavioralBiometricEntropy;
   crossProtocol?: CrossProtocolSignal;
   pebForensics?: PEBForensics;
   dkomForensics?: DKOMForensics;
@@ -445,4 +446,13 @@ export interface PageTableForensics {
   nxBitViolationDetected: boolean;
   pageFaultRateAnomaly: number;
   translationLookasideBufferEntropy: number;
+}
+
+export interface BehavioralBiometricEntropy {
+  keystrokeJitterEntropy: number;
+  mousePathCurvatureVariance: number;
+  touchInteractionForceAnomaly: boolean;
+  isNeurologicalSignatureConsistent: boolean;
+  coachingArtifactProbability: number;
+  syntheticEventInjectionLikely: boolean;
 }
