@@ -31,6 +31,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "cross_protocol": 1.3,
     "page_table_forensics": 1.5,
     "behavioral_biometric_entropy": 1.45,
+    "temporal_forensics": 1.35,
 }
 
 

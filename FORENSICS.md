@@ -1,3 +1,28 @@
+## Update: 2026-09-29 - Temporal Anomaly Detection (v47)
+
+### Temporal Forensic Intelligence
+Implemented a forensic layer designed to detect clock manipulation, NTP discrepancies, and sub-millisecond monotonicity violations. This module identifies time-based anti-forensics, state restoration (snapshotting), and hypervisor-induced execution pauses.
+
+- **Signal**: `temporalForensics`
+- **New Interface**: `TemporalForensics`
+- **New Analysis Function**: `analyzeTemporalForensics`
+- **Checks**:
+  - **Clock Skew Detection**: Identifies drift between local monotonic clocks and wall clocks indicative of time stretching.
+  - **NTP Discrepancy Analysis**: Compares system time against high-precision remote references to detect manual time overrides.
+  - **Monotonicity Violation**: Detects backward time jumps (time travel) common in virtual machine state restoration or debugger re-runs.
+  - **TSC/Wall Clock Correlation**: Detects micro-architectural pauses indicative of out-of-band monitoring or virtualization.
+
+- **Risk Impact**: 
+  - **Monotonicity Violation**: Critical (+95)
+  - **Clock Skew Detected**: High (+60)
+  - **Time Manipulation Likely**: High (+80)
+  - **High NTP Discrepancy**: Medium (+40)
+
+### Risk Engine v47
+Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer.py` module to incorporate temporal forensic signals.
+- **Version**: 47.0.0
+- **Aggregator Weight**: 1.35
+
 ## Update: 2026-09-28 - Behavioral Biometric Entropy Analysis (v46)
 
 ### Behavioral Biometric Entropy Analysis

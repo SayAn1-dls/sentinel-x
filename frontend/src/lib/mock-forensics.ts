@@ -270,6 +270,13 @@ export function enrichWithForensics(transaction: any): any {
     syntheticEventInjectionLikely: Math.random() > 0.998,
     isNeurologicalSignatureConsistent: Math.random() > 0.02
   };
+
+  const temporalForensics = {
+    ...analyzeTemporalForensics(),
+    isClockSkewDetected: Math.random() > 0.999,
+    isMonotonicityViolationDetected: Math.random() > 0.9995,
+    ntpDiscrepancyMs: Math.random() * 50
+  };
   return {
     ...transaction,
     forensics: {
@@ -314,8 +321,9 @@ export function enrichWithForensics(transaction: any): any {
       authenticatorForensics,
       syscallTiming,
       cognitiveLoad,
-      crossChainLinking
+      crossChainLinking,
       behavioralBiometricEntropy,
+      temporalForensics,
     }
   };
 }

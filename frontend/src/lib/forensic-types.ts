@@ -338,6 +338,7 @@ export interface ForensicIntelligence {
   cryptoSideChannel?: CryptoSideChannelForensics;
   cognitiveLoad?: CognitiveLoadForensics;
   pageTableForensics?: PageTableForensics;
+  temporalForensics?: TemporalForensics;
 }
 
 export interface SupplyChainForensics {
@@ -474,4 +475,13 @@ export interface BehavioralBiometricEntropy {
   isNeurologicalSignatureConsistent: boolean;
   coachingArtifactProbability: number;
   syntheticEventInjectionLikely: boolean;
+}
+
+export interface TemporalForensics {
+  isClockSkewDetected: boolean;
+  driftRatePpm: number;
+  ntpDiscrepancyMs: number;
+  isMonotonicityViolationDetected: boolean;
+  tscClockConsistencyScore: number;
+  isTimeManipulationLikely: boolean;
 }

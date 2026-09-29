@@ -376,6 +376,7 @@ export interface ForensicIntelligence {
   honeytokenForensics?: HoneytokenForensics;
   webRTCLeak?: WebRTCLeakSignal;
   pageTableForensics?: PageTableForensics;
+  temporalForensics?: TemporalForensics;
   gpuPipeline?: GPUPipelineSignal;
 }
 
@@ -455,4 +456,13 @@ export interface BehavioralBiometricEntropy {
   isNeurologicalSignatureConsistent: boolean;
   coachingArtifactProbability: number;
   syntheticEventInjectionLikely: boolean;
+}
+
+export interface TemporalForensics {
+  isClockSkewDetected: boolean;
+  driftRatePpm: number;
+  ntpDiscrepancyMs: number;
+  isMonotonicityViolationDetected: boolean;
+  tscClockConsistencyScore: number;
+  isTimeManipulationLikely: boolean;
 }
