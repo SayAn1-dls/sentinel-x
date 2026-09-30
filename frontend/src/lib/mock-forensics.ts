@@ -277,6 +277,15 @@ export function enrichWithForensics(transaction: any): any {
     isMonotonicityViolationDetected: Math.random() > 0.9995,
     ntpDiscrepancyMs: Math.random() * 50
   };
+  const hardwareDebuggerForensics = {
+    dr0toDr7RegisterConsistency: Math.random() > 0.1,
+    hardwareBreakpointDetected: Math.random() > 0.95,
+    watchpointAnomalyLikely: Math.random() > 0.9,
+    isInstructionTracingActive: Math.random() > 0.98,
+    debugRegisterObfuscationDetected: Math.random() > 0.9,
+    trapFlagMonitored: true
+  };
+
   return {
     ...transaction,
     forensics: {
@@ -324,6 +333,7 @@ export function enrichWithForensics(transaction: any): any {
       crossChainLinking,
       behavioralBiometricEntropy,
       temporalForensics,
+      hardwareDebuggerForensics,
     }
   };
 }

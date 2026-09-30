@@ -339,6 +339,7 @@ export interface ForensicIntelligence {
   cognitiveLoad?: CognitiveLoadForensics;
   pageTableForensics?: PageTableForensics;
   temporalForensics?: TemporalForensics;
+  hardwareDebuggerForensics?: HardwareDebuggerForensics;
 }
 
 export interface SupplyChainForensics {
@@ -484,4 +485,13 @@ export interface TemporalForensics {
   isMonotonicityViolationDetected: boolean;
   tscClockConsistencyScore: number;
   isTimeManipulationLikely: boolean;
+}
+
+export interface HardwareDebuggerForensics {
+  dr0toDr7RegisterConsistency: boolean;
+  hardwareBreakpointDetected: boolean;
+  watchpointAnomalyLikely: boolean;
+  isInstructionTracingActive: boolean;
+  debugRegisterObfuscationDetected: boolean;
+  trapFlagMonitored: boolean;
 }

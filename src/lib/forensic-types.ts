@@ -377,6 +377,7 @@ export interface ForensicIntelligence {
   webRTCLeak?: WebRTCLeakSignal;
   pageTableForensics?: PageTableForensics;
   temporalForensics?: TemporalForensics;
+  hardwareDebuggerForensics?: HardwareDebuggerForensics;
   gpuPipeline?: GPUPipelineSignal;
 }
 
@@ -465,4 +466,13 @@ export interface TemporalForensics {
   isMonotonicityViolationDetected: boolean;
   tscClockConsistencyScore: number;
   isTimeManipulationLikely: boolean;
+}
+
+export interface HardwareDebuggerForensics {
+  dr0toDr7RegisterConsistency: boolean;
+  hardwareBreakpointDetected: boolean;
+  watchpointAnomalyLikely: boolean;
+  isInstructionTracingActive: boolean;
+  debugRegisterObfuscationDetected: boolean;
+  trapFlagMonitored: boolean;
 }

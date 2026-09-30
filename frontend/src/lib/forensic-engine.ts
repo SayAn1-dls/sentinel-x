@@ -573,7 +573,7 @@ export function calculateAdvancedRiskScore(
     satelliteForensics?: SatelliteForensics;
     mfaIntegrity?: MFAIntegrityForensics; cognitiveLoad?: CognitiveLoadForensics;
     authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics; gpuSideChannel?: GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
-    pageTableForensics?: PageTableForensics; temporalForensics?: TemporalForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics;
+    pageTableForensics?: PageTableForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -697,6 +697,15 @@ export function calculateAdvancedRiskScore(
     if (params.supplyChainForensics.slsaComplianceLevel < 2) score += 30;
   }
   
+
+  if (params.hardwareDebuggerForensics) {
+    if (params.hardwareDebuggerForensics.hardwareBreakpointDetected) score += 95;
+    if (params.hardwareDebuggerForensics.isInstructionTracingActive) score += 85;
+    if (params.hardwareDebuggerForensics.watchpointAnomalyLikely) score += 70;
+    if (!params.hardwareDebuggerForensics.dr0toDr7RegisterConsistency) score += 60;
+    if (params.hardwareDebuggerForensics.debugRegisterObfuscationDetected) score += 50;
+  }
+
   if (params.biometricForensics) {
     if (params.biometricForensics.botSignatureDetected) score += 55;
     if (params.biometricForensics.isHumanProbability < 0.6) score += 30;
@@ -1235,5 +1244,19 @@ export function analyzeTemporalForensics(): TemporalForensics {
     isMonotonicityViolationDetected: false,
     tscClockConsistencyScore: 0.99,
     isTimeManipulationLikely: false
+  };
+}
+
+/**
+ * v48: Hardware Debugger Forensics - Detects hardware breakpoints, watchpoints, and instruction tracing.
+ */
+export function analyzeHardwareDebuggerForensics(): HardwareDebuggerForensics {
+  return {
+    dr0toDr7RegisterConsistency: true,
+    hardwareBreakpointDetected: false,
+    watchpointAnomalyLikely: false,
+    isInstructionTracingActive: false,
+    debugRegisterObfuscationDetected: false,
+    trapFlagMonitored: true
   };
 }

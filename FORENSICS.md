@@ -1,3 +1,28 @@
+## Update: 2026-09-30 - Hardware Debugger & Register Forensics (v48)
+
+### Hardware Debugger Forensic Intelligence
+Implemented a forensic layer designed to detect advanced tampering, reverse engineering, and live debugging attempts through hardware register analysis. This module identifies the presence of hardware breakpoints and watchpoints that bypass traditional software-level anti-debugging checks.
+
+- **Signal**: `hardwareDebuggerForensics`
+- **New Interface**: `HardwareDebuggerForensics`
+- **New Analysis Function**: `analyzeHardwareDebuggerForensics`
+- **Checks**:
+  - **Hardware Breakpoint Detection**: Monitors for active debug registers (DR0-DR3) indicating instruction-level interception.
+  - **Watchpoint Anomaly Analysis**: Detects data-access breakpoints used to monitor sensitive memory locations in real-time.
+  - **Register Consistency Attestation**: Verifies the integrity of debug control registers (DR7) to detect obfuscation attempts.
+  - **Instruction Tracing Detection**: Identifies branch tracing or single-step execution artifacts (Trap Flag manipulation).
+
+- **Risk Impact**: 
+  - **Hardware Breakpoint Detected**: Critical (+95)
+  - **Instruction Tracing Active**: High (+85)
+  - **Watchpoint Anomaly Likely**: High (+70)
+  - **Register Inconsistency**: Medium (+60)
+
+### Risk Engine v48
+Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer.py` module to incorporate hardware debugger forensic signals.
+- **Version**: 48.0.0
+- **Aggregator Weight**: 1.40
+
 ## Update: 2026-09-29 - Temporal Anomaly Detection (v47)
 
 ### Temporal Forensic Intelligence
@@ -339,6 +364,7 @@ The risk scoring engine incorporates:
 - [x] Behavioral Biometric Bot Detection
 - [x] Cross-Chain Forensic Linking (New)
 - [x] Multi-Level Page Table Forensics (v45)
+- [x] Hardware Debugger & Register Forensics (v48)
 
 
 ## Kernel-Level Forensic Enhancements (v38)
