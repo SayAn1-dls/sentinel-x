@@ -33,6 +33,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "behavioral_biometric_entropy": 1.45,
     "temporal_forensics": 1.35,
     "hardware_debugger_forensics": 1.4,
+    "micro_arch_port_forensics": 1.55,
 }
 
 

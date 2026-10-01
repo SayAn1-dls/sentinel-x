@@ -378,6 +378,7 @@ export interface ForensicIntelligence {
   pageTableForensics?: PageTableForensics;
   temporalForensics?: TemporalForensics;
   hardwareDebuggerForensics?: HardwareDebuggerForensics;
+  microArchPortForensics?: MicroArchPortForensics;
   gpuPipeline?: GPUPipelineSignal;
 }
 
@@ -475,4 +476,13 @@ export interface HardwareDebuggerForensics {
   isInstructionTracingActive: boolean;
   debugRegisterObfuscationDetected: boolean;
   trapFlagMonitored: boolean;
+}
+
+export interface MicroArchPortForensics {
+  isPortContentionDetected: boolean;
+  executionUnitStallRate: number;
+  pipelinePortSaturation: boolean;
+  hyperthreadingLeakageLikely: boolean;
+  smtInterferenceScore: number;
+  portTimingVarianceNs: number;
 }

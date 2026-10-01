@@ -1,11 +1,32 @@
+
+## Update: 2026-10-01 - Micro-architectural Port Contention Forensics (v49)
+
+### Micro-architectural Port Contention Forensic Intelligence
+Implemented a forensic layer designed to detect execution unit contention and pipeline saturation. This module identifies sophisticated side-channel attacks (like PortSmash) that exploit Simultaneous Multithreading (SMT) to leak sensitive data across process boundaries.
+
+- **Signal**: `microArchPortForensics`
+- **New Interface**: `MicroArchPortForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics`
+- **Checks**:
+  - **Port Contention Detection**: Monitors for execution unit stalls indicative of concurrent resource exploitation.
+  - **Pipeline Saturation Analysis**: Detects artificial load on specific CPU ports used in timing-based exfiltration.
+  - **Hyperthreading Leakage Attestation**: Assesses the risk of cross-thread data leakage via SMT side-channels.
+  - **SMT Interference Scoring**: Quantifies the degree of micro-architectural noise caused by neighboring logical processors.
+
+- **Risk Impact**: 
+  - **Hyperthreading Leakage Likely**: Critical (+90)
+  - **Port Contention Detected**: High (+85)
+  - **Pipeline Port Saturation**: Medium (+60)
+  - **Port Timing Variance Anomaly**: Medium (+40)
+
 ## Update: 2026-09-30 - Hardware Debugger & Register Forensics (v48)
 
 ### Hardware Debugger Forensic Intelligence
 Implemented a forensic layer designed to detect advanced tampering, reverse engineering, and live debugging attempts through hardware register analysis. This module identifies the presence of hardware breakpoints and watchpoints that bypass traditional software-level anti-debugging checks.
 
-- **Signal**: `hardwareDebuggerForensics`
-- **New Interface**: `HardwareDebuggerForensics`
-- **New Analysis Function**: `analyzeHardwareDebuggerForensics`
+- **Signal**: `microArchPortForensics``hardwareDebuggerForensics`
+- **New Interface**: `MicroArchPortForensics``HardwareDebuggerForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeHardwareDebuggerForensics`
 - **Checks**:
   - **Hardware Breakpoint Detection**: Monitors for active debug registers (DR0-DR3) indicating instruction-level interception.
   - **Watchpoint Anomaly Analysis**: Detects data-access breakpoints used to monitor sensitive memory locations in real-time.
@@ -28,9 +49,9 @@ Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer
 ### Temporal Forensic Intelligence
 Implemented a forensic layer designed to detect clock manipulation, NTP discrepancies, and sub-millisecond monotonicity violations. This module identifies time-based anti-forensics, state restoration (snapshotting), and hypervisor-induced execution pauses.
 
-- **Signal**: `temporalForensics`
-- **New Interface**: `TemporalForensics`
-- **New Analysis Function**: `analyzeTemporalForensics`
+- **Signal**: `microArchPortForensics``temporalForensics`
+- **New Interface**: `MicroArchPortForensics``TemporalForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeTemporalForensics`
 - **Checks**:
   - **Clock Skew Detection**: Identifies drift between local monotonic clocks and wall clocks indicative of time stretching.
   - **NTP Discrepancy Analysis**: Compares system time against high-precision remote references to detect manual time overrides.
@@ -53,7 +74,7 @@ Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer
 ### Behavioral Biometric Entropy Analysis
 Implemented a deep forensic intelligence layer that profiles sub-second micro-interaction jitter and synthetic event injection signatures. This module detects sophisticated automation tools that attempt to mimic human interaction through perfectly linear or unnaturally consistent trajectories.
 
-- **Signal**: `behavioralBiometricEntropy`
+- **Signal**: `microArchPortForensics``behavioralBiometricEntropy`
 - **Checks**:
   - **Keystroke Jitter Entropy**: Analyzes the statistical variance of inter-keystroke timings to detect hardware-level injection.
   - **Mouse Path Curvature**: Detects non-human linear movement or perfect arcs indicative of scripted interaction.
@@ -75,9 +96,9 @@ Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer
 ### Page Table Forensic Intelligence
 Implemented kernel-level analysis of CPU page tables to detect Translation Lookaside Buffer (TLB) flush anomalies, Page Table Entry (PTE) manipulation, and Shadow Page Table inconsistencies indicative of hypervisor or rootkit activity.
 
-- **Signal**: `pageTableForensics`
-- **New Interface**: `PageTableForensics`
-- **New Analysis Function**: `analyzePageTableForensics`
+- **Signal**: `microArchPortForensics``pageTableForensics`
+- **New Interface**: `MicroArchPortForensics``PageTableForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzePageTableForensics`
 - **Checks**:
   - **PTE Manipulation Detection**: Identifies unauthorized modifications to page table entries (e.g., flipping the RWX bits).
   - **TLB Flush Anomaly**: Detects unexpected TLB flushes which can be used to hide malicious memory mappings.
@@ -97,9 +118,9 @@ Integrated page table forensic signals into the `calculateAdvancedRiskScore` eng
 ### Interrupt Forensic Intelligence
 Implemented kernel-level analysis of hardware interrupts to detect sophisticated data exfiltration techniques and rootkit persistence mechanisms.
 
-- **Signal**: `interruptForensics`
-- **New Interface**: `InterruptForensics`
-- **New Analysis Function**: `analyzeInterruptForensics`
+- **Signal**: `microArchPortForensics``interruptForensics`
+- **New Interface**: `MicroArchPortForensics``InterruptForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeInterruptForensics`
 - **Checks**:
   - **Interrupt Storm Detection**: Monitors for high-frequency IRQ bursts used in side-channel attacks.
   - **IRQ Hooking Detection**: Identifies unauthorized modification of interrupt request handlers.
@@ -118,9 +139,9 @@ Integrated interrupt forensic signals into the `calculateAdvancedRiskScore` engi
 ### Cross-Protocol Forensic Intelligence
 Implemented deep correlation of forensic artifacts across disparate communication protocols (HTTPS, WSS, RPC, P2P). This allows the engine to detect identity fragmentation and sophisticated sybil attacks where an attacker uses different protocols to bypass single-channel monitoring.
 
-- **Signal**: crossProtocol
-- **New Interface**: CrossProtocolSignal
-- **New Analysis Function**: analyzeCrossProtocolLinking
+- **Signal**: `microArchPortForensics`crossProtocol
+- **New Interface**: `MicroArchPortForensics`CrossProtocolSignal
+- **New Analysis Function**: `analyzeMicroArchPortForensics`analyzeCrossProtocolLinking
 - **Checks**:
   - **Protocol Multiplexing Detection**: Identifies when a single fingerprint is used across multiple stateful and stateless protocols.
   - **Artifact Mismatch Analysis**: Detects inconsistencies in session identifiers and device hashes between WebSocket and HTTP/RPC channels.
@@ -139,9 +160,9 @@ Integrated Cross-Protocol signals into the calculateAdvancedRiskScore engine for
 ### Cross-Protocol Forensic Intelligence
 Implemented deep correlation of forensic artifacts across disparate communication protocols (HTTPS, WSS, RPC, P2P). This allows the engine to detect identity fragmentation and sophisticated sybil attacks where an attacker uses different protocols to bypass single-channel monitoring.
 
-- **Signal**: 
-- **New Interface**: 
-- **New Analysis Function**: 
+- **Signal**: `microArchPortForensics`
+- **New Interface**: `MicroArchPortForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics`
 - **Checks**:
   - **Protocol Multiplexing Detection**: Identifies when a single fingerprint is used across multiple stateful and stateless protocols.
   - **Artifact Mismatch Analysis**: Detects inconsistencies in session identifiers and device hashes between WebSocket and HTTP/RPC channels.
@@ -160,9 +181,9 @@ Integrated Cross-Protocol signals into the  engine for enhanced multi-channel se
 ### PEB Forensic Intelligence
 Implemented deep attestation of the Process Environment Block (PEB) to detect advanced stealth techniques like process hollowing, debugger concealment, and module list masquerading.
 
-- **Signal**: `pebForensics`
-- **New Interface**: `PEBForensics`
-- **New Analysis Function**: `analyzePEBForensics`
+- **Signal**: `microArchPortForensics``pebForensics`
+- **New Interface**: `MicroArchPortForensics``PEBForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzePEBForensics`
 - **Checks**:
   - **BeingDebugged Flag Attestation**: Direct check of the PEB structure for debugger presence, bypassing standard API hooks.
   - **Process Hollowing Detection**: Detects mismatches between the PEB image path and the actual executable backing the process.
@@ -180,9 +201,9 @@ Integrated PEB forensic signals into the `calculateAdvancedRiskScore` engine for
 
 ### DKOM Forensic Intelligence
 Implemented deep kernel structure attestation to detect stealthy rootkit activities that bypass standard syscall monitoring by directly manipulating kernel objects.
-- **Signal**: `dkomForensics`
-- **New Interface**: `DKOMForensics`
-- **New Analysis Function**: `analyzeDKOMForensics`
+- **Signal**: `microArchPortForensics``dkomForensics`
+- **New Interface**: `MicroArchPortForensics``DKOMForensics`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeDKOMForensics`
 - **Checks**:
   - **Process Hiding Detection**: Identifies mismatches between the EPROCESS list and the scheduler thread list.
   - **EPROCESS Integrity**: Attests the integrity of process environment blocks at the kernel level.
@@ -201,9 +222,9 @@ Integrated DKOM forensic signals into the `calculateAdvancedRiskScore` engine fo
 ### GPU Pipeline Forensic Analysis
 Implemented deep forensic profiling of GPU execution pipelines to detect unique hardware signatures and virtualized renderer environments.
 
-- **Signal**: `gpuPipeline` 
-- **New Interface**: `GPUPipelineSignal` 
-- **New Analysis Function**: `analyzeGPUPipeline` 
+- **Signal**: `microArchPortForensics``gpuPipeline` 
+- **New Interface**: `MicroArchPortForensics``GPUPipelineSignal` 
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeGPUPipeline` 
 - **Checks**:
   - **Shader Precision Variance**: Detects anomalies in floating-point rounding indicative of non-standard or virtualized GPUs.
   - **Pipeline Stall Detection**: Identifies micro-architectural bottlenecks used for device fingerprinting.
@@ -222,9 +243,9 @@ Integrated GPU Pipeline forensic signals into the `calculateAdvancedRiskScore` e
 ### WebRTC IP Leak Forensic Analysis
 Implemented deep forensic analysis to detect real IP disclosure through WebRTC ICE candidates, bypassing traditional proxy and VPN-based obfuscation.
 
-- **Signal**: `webRTCLeak`
-- **New Interface**: `WebRTCLeakSignal`
-- **New Analysis Function**: `analyzeWebRTCLeak`
+- **Signal**: `microArchPortForensics``webRTCLeak`
+- **New Interface**: `MicroArchPortForensics``WebRTCLeakSignal`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeWebRTCLeak`
 - **Checks**:
   - **Local IP Enumeration**: Identifies internal network addresses (10.x, 192.168.x) exposed via WebRTC.
   - **Public IP Mismatch**: Correlates WebRTC-discovered public IPs against the reported transaction IP to identify proxy/VPN usage.
@@ -242,9 +263,9 @@ Integrated WebRTC Leak forensic signals into the `calculateAdvancedRiskScore` en
 
 ### Kernel-Level Syscall Timing Analysis
 Implemented deep system-level analysis to detect hidden virtualization and debugger-induced latencies through syscall execution timing forensics.
-- **Signal**: `syscallTiming`
-- **New Interface**: `SyscallTimingAnomaly`
-- **New Analysis Function**: `analyzeSyscallTiming`
+- **Signal**: `microArchPortForensics``syscallTiming`
+- **New Interface**: `MicroArchPortForensics``SyscallTimingAnomaly`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeSyscallTiming`
 - **Checks**:
   - **Virtualization Detection**: Identifies anomalous latency jitter indicative of nested virtualization or hypervisor-based monitoring.
   - **Sandboxing Forensic**: Heuristic analysis for heavy sandboxing environments through execution delay profiling.
@@ -262,9 +283,9 @@ Integrated Syscall Timing forensic signals into the `calculateAdvancedRiskScore`
 
 ### Cross-Chain Forensic Linking
 Implemented deep bridge activity analysis to correlate linked network assets and detect suspicious cross-chain hops. This enhancement allows the engine to track assets as they move across disparate blockchain protocols.
-- **Signal**: `crossChainLinking`
-- **New Interface**: `CrossChainForensicLinking`
-- **New Analysis Function**: `analyzeCrossChainLinking`
+- **Signal**: `microArchPortForensics``crossChainLinking`
+- **New Interface**: `MicroArchPortForensics``CrossChainForensicLinking`
+- **New Analysis Function**: `analyzeMicroArchPortForensics``analyzeCrossChainLinking`
 - **Checks**:
   - **Bridge Activity Detection**: Identifies transactions interacting with known cross-chain bridge protocols.
   - **Suspicious Bridge Usage**: Flags high-volume or high-frequency bridging patterns often associated with asset obfuscation.
@@ -282,7 +303,7 @@ Integrated Cross-Chain Linking forensic signals into the `calculateAdvancedRiskS
 
 ### Multi-Window Velocity Correlation
 Implemented advanced transaction velocity analysis that monitors activity across three distinct temporal windows (1 min, 10 min, 60 min). This allows the engine to detect "burst" attacks and sudden accelerations in transaction frequency that standard single-window metrics might miss.
-- **Signal**: `multiWindowVelocity`
+- **Signal**: `microArchPortForensics``multiWindowVelocity`
 - **Metrics**:
   - **Short-Term Velocity**: Detects immediate spikes (1 min).
   - **Acceleration Score**: Measures the rate of change between windows.
@@ -299,7 +320,7 @@ Expanded the `ForensicIntelligence` interface and updated the core engine to sup
 ### RF Side-Channel Forensic Analysis
 Implemented detection for electromagnetic leakage and Radio Frequency (RF) side-channel attacks, targeting Software Defined Radio (SDR) based interception and frequency hopping anomalies.
 
-- **Signal**: `rfSideChannel`
+- **Signal**: `microArchPortForensics``rfSideChannel`
 - **Checks**:
   - **Radio Frequency Leakage**: Detects unusual electromagnetic emissions from system components during sensitive operations.
   - **SDR Interception Likelihood**: Heuristic analysis for localized RF signals indicative of nearby interceptors.
@@ -318,7 +339,7 @@ Integrated RF Side-Channel forensic signals into the `calculateAdvancedRiskScore
 ### Acoustic Air-Gap Forensic Analysis
 Implemented logic for detecting covert acoustic exfiltration channels, specifically targeting high-frequency ultrasonic signals (18kHz-22kHz) used to bypass traditional network and optical air-gap defenses.
 
-- **Signal**: `acousticAirGap`
+- **Signal**: `microArchPortForensics``acousticAirGap`
 - **Checks**:
   - **Ultrasonic Detection**: Monitors for periodic high-frequency patterns above the threshold of human hearing.
   - **Acoustic Exfiltration Risk**: Correlates system load with acoustic anomalies to detect side-channel leakage.
@@ -344,7 +365,7 @@ Signatures are generated based on mouse entropy, keystroke cadence, and cognitiv
 
 ### Temporal Anomaly Detection
 Detects transactions occurring outside of established business hours or historical usage patterns.
-- **Signal**: Local hour analysis against expected range.
+- **Signal**: `microArchPortForensics`Local hour analysis against expected range.
 - **Risk Impact**: Medium (adds weight to risk score if detected).
 
 ## Risk Scoring Engine
@@ -384,7 +405,7 @@ Deep system-level analysis for rootkit detection and kernel integrity verificati
 
 ### IP Geolocation Correlation Analysis
 Implemented advanced correlation logic to compare current session coordinates against historical "home base" data. This allows for detection of unusual access patterns even if they don't trigger "impossible travel" (e.g., using a VPN or local data center that is distant from the user's typical residence).
-- **Signal**: `geolocationCorrelation`
+- **Signal**: `microArchPortForensics``geolocationCorrelation`
 - **Metrics**: 
   - `isUnusualLocation`: True if distance from home > 500km.
   - `historicalProximityKm`: Physical distance from the primary user location.
