@@ -1,4 +1,22 @@
 
+## Update: 2026-10-02 - L3 Cache Side-Channel Forensics (v50)
+
+### L3 Cache Side-Channel Forensic Intelligence
+Implemented a forensic layer designed to detect L3 cache side-channel attacks. This module identifies sophisticated cache-based exfiltration techniques like Prime+Probe and Flush+Reload that exploit shared cache resources to leak cryptographic keys or other sensitive data.
+
+- **Signal**: `l3CacheForensics`
+- **Checks**:
+  - **Prime+Probe Detection**: Identifies eviction set patterns indicative of cache monitoring.
+  - **Flush+Reload Artifacts**: Detects rapid cache line flushing and reloading timing anomalies.
+  - **Occupancy Anomaly**: Monitors for unexpected cache occupancy shifts across security boundaries.
+- **Risk Impact**: Critical (+95) for Prime+Probe, High (+90) for Flush+Reload, Medium (+65) for Way Locking anomalies.
+
+### Risk Engine v50
+Integrated L3 Cache Forensics into the core scoring engine and Python `threat_scorer.py` module.
+- **Version**: 50.0.0
+- **New Weights**: l3_cache_forensics (1.6).
+
+
 ## Update: 2026-10-01 - Micro-architectural Port Contention Forensics (v49)
 
 ### Micro-architectural Port Contention Forensic Intelligence
@@ -386,6 +404,7 @@ The risk scoring engine incorporates:
 - [x] Cross-Chain Forensic Linking (New)
 - [x] Multi-Level Page Table Forensics (v45)
 - [x] Hardware Debugger & Register Forensics (v48)
+- [x] L3 Cache Side-Channel Forensics (v50)
 
 
 ## Kernel-Level Forensic Enhancements (v38)

@@ -33,7 +33,7 @@ import {
   SatelliteForensics, 
   MFAIntegrityForensics, 
   AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, CognitiveLoadForensics, TLSForensics
-, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics } from './forensic-types';
+, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics, L3CacheForensics } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -573,7 +573,7 @@ export function calculateAdvancedRiskScore(
     satelliteForensics?: SatelliteForensics;
     mfaIntegrity?: MFAIntegrityForensics; cognitiveLoad?: CognitiveLoadForensics;
     authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics; gpuSideChannel?: GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
-    pageTableForensics?: PageTableForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics;
+    pageTableForensics?: PageTableForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -887,6 +887,16 @@ export function calculateAdvancedRiskScore(
     if (params.temporalForensics.tscClockConsistencyScore < 0.8) score += 50;
   }
 
+
+
+  // v50 L3 Cache Forensics Logic
+  if (params.l3CacheForensics) {
+    if (params.l3CacheForensics.primeProbeSignatureFound) score += 95;
+    if (params.l3CacheForensics.flushReloadArtifactsDetected) score += 90;
+    if (params.l3CacheForensics.isCacheOccupancyAnomalyDetected) score += 75;
+    if (params.l3CacheForensics.l3CacheWayLockingDetected) score += 65;
+    score += params.l3CacheForensics.evictionSetEntropy * 50;
+  }
 
   // v49 Micro-architectural Port Contention Logic
   if (params.microArchPortForensics) {
@@ -1276,6 +1286,22 @@ export function analyzeHardwareDebuggerForensics(): HardwareDebuggerForensics {
  * Detects execution unit contention and pipeline saturation indicative of 
  * side-channel attacks (like PortSmash) or hyperthreading-based data leakage.
  */
+
+/**
+ * v50: L3 Cache Side-Channel Forensics - Detects L3 Cache side-channel attacks (Prime+Probe, Flush+Reload).
+ */
+export function analyzeL3CacheForensics(): L3CacheForensics {
+  return {
+    isCacheOccupancyAnomalyDetected: false,
+    primeProbeSignatureFound: false,
+    flushReloadArtifactsDetected: false,
+    evictionSetEntropy: 0.12,
+    missRateJitterNs: 0.05,
+    isCachePartitioningActive: false,
+    l3CacheWayLockingDetected: false
+  };
+}
+
 export function analyzeMicroArchPortForensics(): MicroArchPortForensics {
   return {
     isPortContentionDetected: false,

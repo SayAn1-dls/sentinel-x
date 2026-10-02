@@ -33,7 +33,7 @@ import {
   analyzeMFAIntegrity,
   analyzeAuthenticatorForensics, analyzeAcousticAirGap, analyzeRFSideChannel,
   analyzeCrossChainLinking, analyzeTLSForensics, analyzeSyscallTiming, analyzeCognitiveLoad
-, analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics } from './forensic-engine';
+, analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -278,6 +278,14 @@ export function enrichWithForensics(transaction: any): any {
     ntpDiscrepancyMs: Math.random() * 50
   };
 
+
+  const l3CacheForensics = {
+    ...analyzeL3CacheForensics(),
+    primeProbeSignatureFound: Math.random() > 0.999,
+    flushReloadArtifactsDetected: Math.random() > 0.998,
+    isCacheOccupancyAnomalyDetected: Math.random() > 0.99
+  };
+
   const microArchPortForensics = {
     ...analyzeMicroArchPortForensics(),
     isPortContentionDetected: Math.random() > 0.99,
@@ -343,6 +351,7 @@ export function enrichWithForensics(transaction: any): any {
       temporalForensics,
       hardwareDebuggerForensics,
       microArchPortForensics,
+      l3CacheForensics,
     }
   };
 }

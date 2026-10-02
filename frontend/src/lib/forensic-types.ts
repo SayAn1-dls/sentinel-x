@@ -341,6 +341,7 @@ export interface ForensicIntelligence {
   temporalForensics?: TemporalForensics;
   hardwareDebuggerForensics?: HardwareDebuggerForensics;
   microArchPortForensics?: MicroArchPortForensics;
+  l3CacheForensics?: L3CacheForensics;
 }
 
 export interface SupplyChainForensics {
@@ -495,6 +496,17 @@ export interface HardwareDebuggerForensics {
   isInstructionTracingActive: boolean;
   debugRegisterObfuscationDetected: boolean;
   trapFlagMonitored: boolean;
+}
+
+
+export interface L3CacheForensics {
+  isCacheOccupancyAnomalyDetected: boolean;
+  primeProbeSignatureFound: boolean;
+  flushReloadArtifactsDetected: boolean;
+  evictionSetEntropy: number;
+  missRateJitterNs: number;
+  isCachePartitioningActive: boolean;
+  l3CacheWayLockingDetected: boolean;
 }
 
 export interface MicroArchPortForensics {
