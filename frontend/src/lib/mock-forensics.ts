@@ -33,7 +33,7 @@ import {
   analyzeMFAIntegrity,
   analyzeAuthenticatorForensics, analyzeAcousticAirGap, analyzeRFSideChannel,
   analyzeCrossChainLinking, analyzeTLSForensics, analyzeSyscallTiming, analyzeCognitiveLoad
-, analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics } from './forensic-engine';
+, analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics, analyzeBPUForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -302,7 +302,17 @@ export function enrichWithForensics(transaction: any): any {
     trapFlagMonitored: true
   };
 
+
+  const bpuForensics = {
+    ...analyzeBPUForensics(),
+    isBranchTargetBufferPoisoningDetected: Math.random() > 0.999,
+    indirectBranchPredictionAnomaly: Math.random() > 0.998,
+    isBpuTrainingObserved: Math.random() > 0.99,
+    isSpectreVariantLikely: Math.random() > 0.9995 ? 'V2_BRANCH_TARGET_INJECTION' : 'NONE'
+  };
+
   return {
+
     ...transaction,
     forensics: {
       geolocation,
@@ -352,6 +362,7 @@ export function enrichWithForensics(transaction: any): any {
       hardwareDebuggerForensics,
       microArchPortForensics,
       l3CacheForensics,
+      bpuForensics,
     }
   };
 }

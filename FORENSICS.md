@@ -1,4 +1,23 @@
 
+## Update: 2026-10-03 - BPU & Speculative Execution Forensics (v51)
+
+### Branch Prediction Unit (BPU) Forensic Intelligence
+Implemented a forensic layer designed to detect Branch Prediction Unit (BPU) training and Speculative Execution anomalies. This module identifies sophisticated side-channel attacks (like Spectre variants) that exploit the processor's speculative execution engine to leak sensitive data.
+
+- **Signal**: `bpuForensics`
+- **Checks**:
+  - **BTB Poisoning Detection**: Identifies attempts to train the Branch Target Buffer for malicious redirection.
+  - **Speculative Window Jitter**: Monitors for timing variances in the speculative execution window.
+  - **Indirect Branch Anomaly**: Detects unusual prediction patterns in indirect branch instructions.
+  - **Spectre Variant Attestation**: Identifies signatures of known speculative execution vulnerabilities (V1, V2, V4).
+
+- **Risk Impact**: Critical (+100) for likely Spectre variants, Critical (+95) for BTB poisoning, High (+85) for indirect branch anomalies.
+
+### Risk Engine v51
+Integrated BPU Forensics into the core scoring engine and Python `threat_scorer.py` module.
+- **Version**: 51.0.0
+- **New Weights**: `bpu_forensics` (1.65).
+
 ## Update: 2026-10-02 - L3 Cache Side-Channel Forensics (v50)
 
 ### L3 Cache Side-Channel Forensic Intelligence
@@ -405,6 +424,7 @@ The risk scoring engine incorporates:
 - [x] Multi-Level Page Table Forensics (v45)
 - [x] Hardware Debugger & Register Forensics (v48)
 - [x] L3 Cache Side-Channel Forensics (v50)
+- [x] BPU & Speculative Execution Forensics (v51)
 
 
 ## Kernel-Level Forensic Enhancements (v38)

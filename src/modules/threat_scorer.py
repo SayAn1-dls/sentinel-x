@@ -35,6 +35,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "hardware_debugger_forensics": 1.4,
     "micro_arch_port_forensics": 1.55,
     "l3_cache_forensics": 1.6,
+    "bpu_forensics": 1.65,
 }
 
 

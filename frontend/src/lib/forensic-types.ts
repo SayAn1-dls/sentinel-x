@@ -342,6 +342,7 @@ export interface ForensicIntelligence {
   hardwareDebuggerForensics?: HardwareDebuggerForensics;
   microArchPortForensics?: MicroArchPortForensics;
   l3CacheForensics?: L3CacheForensics;
+  bpuForensics?: BPUForensics;
 }
 
 export interface SupplyChainForensics {
@@ -516,4 +517,13 @@ export interface MicroArchPortForensics {
   hyperthreadingLeakageLikely: boolean;
   smtInterferenceScore: number;
   portTimingVarianceNs: number;
+}
+
+export interface BPUForensics {
+  isBranchTargetBufferPoisoningDetected: boolean;
+  speculativeExecutionWindowJitterNs: number;
+  indirectBranchPredictionAnomaly: boolean;
+  isBpuTrainingObserved: boolean;
+  branchMispredictionRateJitter: number;
+  isSpectreVariantLikely: 'V1_BOUNDS_CHECK' | 'V2_BRANCH_TARGET_INJECTION' | 'V4_SPECULATIVE_STORE_BYPASS' | 'NONE';
 }
