@@ -21,4 +21,3 @@ export async function GET(req: NextRequest) {
     data: users.map(u => ({ ...u, passkey_count: counts[u.user_id] || 0 })),
   });
 }
-
