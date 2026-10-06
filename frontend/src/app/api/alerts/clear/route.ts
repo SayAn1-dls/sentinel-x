@@ -26,4 +26,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ resolved: result.modifiedCount });
 }
-
