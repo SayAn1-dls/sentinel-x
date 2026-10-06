@@ -40,4 +40,3 @@ export async function POST(req: NextRequest) {
   });
   return NextResponse.json({ locked: false, count: gateways.length });
 }
-
