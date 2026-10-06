@@ -51,3 +51,4 @@ export function AnalysisPanel({ scan }: AnalysisPanelProps) {
     </SiliconCard>
   );
 }
+
