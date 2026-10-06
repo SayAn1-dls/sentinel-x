@@ -54,4 +54,3 @@ export function AnomalyChart({ transactions }: AnomalyChartProps) {
     </SiliconCard>
   );
 }
-
