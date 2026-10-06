@@ -75,4 +75,3 @@ export function ScanEngine({ onComplete }: { onComplete?: () => void }) {
     </SiliconCard>
   );
 }
-
