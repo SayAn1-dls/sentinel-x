@@ -44,4 +44,3 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 }
-
