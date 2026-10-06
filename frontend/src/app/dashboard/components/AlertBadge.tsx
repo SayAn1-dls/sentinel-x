@@ -124,3 +124,4 @@ export const AlertBadge: React.FC<AlertBadgeProps> = ({
 };
 
 export default AlertBadge;
+
