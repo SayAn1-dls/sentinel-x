@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Agent memory (never commit credentials)
+memory/test_credentials.md
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Forensic artifacts (never commit scan results)
+scan-results/
+forensic-exports/
+audit-exports/
+*.forensic
+*.scan
+
+# Temporary
+*.tmp
+*.temp
+.cache/
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
+
+# Platform internals (never commit)
+.emergent/
+.gitconfig
+.streak_log
+
+# Streak maintenance artifacts
+daily-logs/
+contribution-surge/

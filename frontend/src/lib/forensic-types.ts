@@ -1,0 +1,548 @@
+export type RiskLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'CLEAR';
+
+export interface IPGeolocation {
+  ip: string;
+  country: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  isp: string;
+  proxy: boolean;
+  vpn: boolean;
+  tor: boolean;
+}
+
+export interface ImpossibleTravelSignal {
+  detected: boolean;
+  previousLocation: string;
+  currentLocation: string;
+  distanceKm: number;
+  timeDeltaMinutes: number;
+  requiredVelocityKph: number;
+}
+
+export interface VelocityMetric {
+  windowMinutes: number;
+  transactionCount: number;
+  totalAmount: number;
+  averageAmount: number;
+  velocityZScore: number;
+}
+
+export interface TemporalAnomalySignal {
+  isAnomaly: boolean;
+  localHour: number;
+  expectedRange: string;
+  confidenceScore: number;
+}
+
+export interface CrossChainLink {
+  linkedAddress: string;
+  network: string;
+  confidence: number;
+  reason: 'SHARED_IP' | 'SAME_FINGERPRINT' | 'SEQUENTIAL_TX';
+}
+
+export interface BehavioralBiometricSignal {
+  keystrokeDynamicsScore: number;
+  mouseTrajectoryEntropy: number;
+  scrollPatternConsistency: number;
+  isBotLikely: boolean;
+}
+
+export interface DeviceFingerprint {
+  userAgent: string;
+  language: string;
+  colorDepth: number;
+  hardwareConcurrency: number;
+  deviceMemory: number;
+  canvasHash: string;
+  webGLRenderer: string;
+}
+
+export interface KernelForensics {
+  isVirtualMachine: boolean;
+  isDebuggerPresent: boolean;
+  syscallHookingDetected: boolean;
+  integrityHash: string;
+  osBuild: string;
+  heapSprayDetected: boolean;
+  stackCanaryCorrupted: boolean;
+  aslrDisabled: boolean;
+  instructionPointerAnomaly: boolean;
+  isKernelRootkitLikely: boolean;
+  kernelPatchProtectionActive: boolean;
+  lviVulnerabilityDetected: boolean;
+  codeInjectionDetected: boolean;
+}
+
+export interface PeerNetworkAnalysis {
+  proximityScore: number;
+  peerCount: number;
+  isExitNode: boolean;
+  networkCongestion: number;
+}
+
+export interface SessionReplaySignal {
+  detected: boolean;
+  replayLikelihood: number;
+  eventSequenceAnomaly: boolean;
+  recordingBufferDetected: boolean;
+}
+
+export interface ASNReputation {
+  asn: number;
+  name: string;
+  type: 'ISP' | 'Business' | 'Hosting' | 'Proxy' | 'Wireless' | 'Unknown';
+  abuseScore: number;
+}
+
+export interface SecureEnclaveForensics {
+  isEnclaveActive: boolean;
+  enclaveType: 'Apple_SEP' | 'Intel_SGX' | 'ARM_TrustZone' | 'None';
+  attestationTokenPresent: boolean;
+  keyIsolationVerified: boolean;
+  memoryEncryptionActive: boolean;
+  tamperResistanceScore: number;
+}
+
+export interface AIAgentDetectionSignal {
+  isAIAgent: boolean;
+  promptInjectionRisk: number;
+  responseSyntacticEntropy: number;
+  reasoningChainDetected: boolean;
+  agentSignature: string;
+}
+
+export interface SmartContractForensics {
+  interactionCount: number;
+  knownDrainersContacted: boolean;
+  mixerUsageDetected: boolean;
+  unverifiedContractRatio: number;
+  lastContractAddress: string;
+}
+
+export interface BrowserIntegritySignal {
+  isAutomationDetected: boolean;
+  webdriverPresent: boolean;
+  inconsistentPermissions: boolean;
+  cdcPropsPresent: boolean;
+  chromeObjectMissing: boolean;
+  automationScore: number;
+}
+
+export interface DarkWebExposure {
+  isExposed: boolean;
+  breachCount: number;
+  lastExposureDate?: string;
+  exposureSource?: string;
+  riskRating: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+}
+
+export interface NetworkPacketAnalysis {
+  tcpWindowSize: number;
+  ttlValue: number;
+  isNmapScanDetected: boolean;
+  isMitmLikely: boolean;
+  packetInterArrivalTimeJitter: number;
+}
+
+export interface CloudInfrastructureSignal {
+  provider: 'AWS' | 'GCP' | 'Azure' | 'DigitalOcean' | 'Oracle' | 'None';
+  instanceType?: string;
+  region?: string;
+  isKnownTorRelay: boolean;
+  datacenterRiskScore: number;
+}
+
+export interface DNSIntegritySignal {
+  dnsServer: string;
+  isPublicResolver: boolean;
+  dnsLatencyMs: number;
+  isHijackedLikely: boolean;
+  resolvedIpMatchesExpected: boolean;
+}
+
+export interface CrossChainForensics {
+  linkedWallets: string[];
+  bridgeProtocols: string[];
+  crossChainVelocity: number;
+  hopCount: number;
+  isMixerAssociated: boolean;
+}
+
+export interface SteganographyAnalysis {
+  detected: boolean;
+  carrierType: 'IMAGE' | 'AUDIO' | 'DOCUMENT' | 'NETWORK_PACKET';
+  hiddenPayloadSize?: number;
+  encryptionDetected: boolean;
+  stegoToolSignature?: string;
+  leakLikelihood: number;
+}
+
+export interface HIDForensics {
+  isKeystrokeInjectionDetected: boolean;
+  reportingRateAnomaly: boolean;
+  pollingRateHz: number;
+  isRubberDuckySignaturePresent: boolean;
+  syntheticEventRatio: number;
+}
+
+export interface ZKPForensics {
+  proofSystem: 'Groth16' | 'Plonk' | 'STARK' | 'Bulletproofs';
+  isSoundnessRiskDetected: boolean;
+  trustedSetupHash?: string;
+  verificationLatencyMs: number;
+  isInvalidProof: boolean;
+}
+
+export interface OpticalAirGapForensics {
+  screenBrightnessAnomalies: boolean;
+  highFrequencyFlickerDetected: boolean;
+  qrRapidExfiltrationLikely: boolean;
+  visualSteganographyConfidence: number;
+}
+
+export interface MemoryForensics {
+  ramScrapingDetected: boolean;
+  dmaAttackVectorFound: boolean;
+  coldBootVulnerabilityLikely: boolean;
+  kernelMemoryLeakage: boolean;
+  pagingIntegrityVerified: boolean;
+  anomalyScore: number;
+}
+
+export interface QuantumAttackForensics {
+  isShorAlgorithmDetected: boolean;
+  groverIterationCount: number;
+  quantumEntropyAnomaly: boolean;
+  isPostQuantumSecure: boolean;
+  latticeBasisReductionDetected: boolean;
+  qbitCoherenceRisk: number;
+}
+
+export interface HardwareTrojanForensics {
+  isSideChannelPowerAnomaly: boolean;
+  isClockGlitchDetected: boolean;
+  isSubThresholdLeakageDetected: boolean;
+  thermalSignatureAnomaly: number;
+  isTamperFuseBlown: boolean;
+  trojanLikelihood: number;
+}
+
+export interface SatelliteForensics {
+  isSatelliteLink: boolean;
+  constellation: 'Starlink' | 'OneWeb' | 'Iridium' | 'Kuiper' | 'Unknown';
+  signalPropagationDelayMs: number;
+  atmosphericInterferenceLevel: number;
+  groundStationGeofenceMismatch: boolean;
+}
+
+export interface MFAIntegrityForensics {
+  simSwapDetected: boolean;
+  networkOperatorAnomaly: boolean;
+  roamingStatusMismatch: boolean;
+  otpBypassAttemptDetected: boolean;
+  rapidOTPRequestRate: number;
+  lastMFAVerificationMethod: 'SMS' | 'EMAIL' | 'TOTP' | 'WEBAUTHN' | 'PUSH';
+}
+
+export interface AuthenticatorForensics {
+  isHardwareSecurityKey: boolean;
+  authenticatorAAGUID?: string;
+  counterCheckFailed: boolean;
+  isClonedAuthenticatorLikely: boolean;
+  attestationType: 'BASIC' | 'SELF' | 'ATTCA' | 'ECDAA' | 'NONE';
+  signatureCounter: number;
+}
+
+export interface GPUSideChannelForensics {
+  isGpuTimingLeakDetected: boolean;
+  shaderInstructionEntropy: number;
+  memoryBandwidthAnomaly: boolean;
+  isParallelComputeHijackLikely: boolean;
+  gpuProcessIsolationVerified: boolean;
+}
+
+export interface AcousticAirGapForensics {
+  ultrasonicSignalDetected: boolean;
+  acousticExfiltrationLikely: boolean;
+  frequencyHz: number;
+  signalConfidence: number;
+}
+
+export interface SyscallTimingAnomaly {
+  tlsForensics?: TLSForensics;
+  detected: boolean;
+  meanLatencyNs: number;
+  varianceNs: number;
+  outlierCount: number;
+  isSandboxed: boolean;
+}
+
+
+export interface InterruptForensics {
+  isInterruptStormDetected: boolean;
+  irqHookingLikely: boolean;
+  meanInterruptLatencyNs: number;
+  interruptFrequencyHz: number;
+  isSideChannelExfiltrationLikely: boolean;
+}
+
+export interface ForensicIntelligence {
+  behavioralBiometricEntropy?: BehavioralBiometricEntropy;
+  syscallTiming?: SyscallTimingAnomaly;
+  crossChainLinking?: CrossChainForensicLinking;
+  rfSideChannel?: RFSideChannelForensics;
+  memoryForensics?: MemoryForensics;
+  quantumForensics?: QuantumAttackForensics;
+  hardwareTrojanForensics?: HardwareTrojanForensics;
+  sideChannelForensics?: SideChannelForensics;
+  supplyChainForensics?: SupplyChainForensics;
+  zkpForensics?: ZKPForensics;
+  opticalAirGapForensics?: OpticalAirGapForensics;
+  hidForensics?: HIDForensics;
+  satelliteForensics?: SatelliteForensics;
+  crossChainForensics?: CrossChainForensics;
+  mfaIntegrity?: MFAIntegrityForensics;
+  authenticatorForensics?: AuthenticatorForensics;
+  gpuSideChannel?: GPUSideChannelForensics;
+  acousticAirGap?: AcousticAirGapForensics;
+  geolocation: IPGeolocation;
+  asnReputation?: ASNReputation;
+  impossibleTravel?: ImpossibleTravelSignal;
+    interruptForensics?: InterruptForensics;
+  velocityMetrics: VelocityMetric;
+  temporalAnomaly?: TemporalAnomalySignal;
+  fingerprintEntropy: number;
+  behavioralBiometricSignature: string;
+  behavioralBiometrics?: BehavioralBiometricSignal;
+  deviceFingerprint?: DeviceFingerprint;
+  crossChainLinks?: CrossChainLink[];
+  sessionReplay?: SessionReplaySignal;
+  kernelForensics?: KernelForensics;
+  peerAnalysis?: PeerNetworkAnalysis;
+  secureEnclave?: SecureEnclaveForensics;
+  browserIntegrity?: BrowserIntegritySignal;
+  aiAgentDetection?: AIAgentDetectionSignal;
+  smartContractForensics?: SmartContractForensics;
+  darkWebExposure?: DarkWebExposure;
+  networkPacketAnalysis?: NetworkPacketAnalysis;
+  cloudInfrastructure?: CloudInfrastructureSignal;
+  dnsIntegrity?: DNSIntegritySignal;
+  steganography?: SteganographyAnalysis;
+  bgpRouting?: BGPRouteLeakSignal;
+  honeytokenForensics?: HoneytokenForensics;
+  syntheticIdentity?: SyntheticIdentityForensics;
+  microInteractions?: MicroInteractionsForensics;
+  cryptoSideChannel?: CryptoSideChannelForensics;
+  cognitiveLoad?: CognitiveLoadForensics;
+  pageTableForensics?: PageTableForensics;
+  temporalForensics?: TemporalForensics;
+  hardwareDebuggerForensics?: HardwareDebuggerForensics;
+  microArchPortForensics?: MicroArchPortForensics;
+  l3CacheForensics?: L3CacheForensics;
+  bpuForensics?: BPUForensics;
+  smmForensics?: SMMForensics;
+}
+
+export interface SupplyChainForensics {
+  dependencyHashMismatch: boolean;
+  untrustedRegistryDetected: boolean;
+  slsaComplianceLevel: number;
+  maliciousPackageSignature: boolean;
+  versionPinningViolation: boolean;
+  vulnerabilityCount: number;
+}
+
+export interface BehavioralBiometricForensics {
+  keystrokeDynamicsEntropy: number;
+  mouseTrajectoryJitter: number;
+  touchPressureVariance: number;
+  scrollSpeedConsistency: number;
+  isHumanProbability: number;
+  botSignatureDetected: boolean;
+}
+
+export interface DeviceFingerprintForensics {
+  canvasHashEntropy: number;
+  webGLRendererSignature: string;
+  audioContextFingerprint: number;
+  fontListLength: number;
+  timezoneOffsetMismatch: boolean;
+  isVirtualMachine: boolean;
+  osKernelVersionMismatch: boolean;
+}
+
+export interface SideChannelForensics {
+  cpuPowerAnalysisDetected: boolean;
+  electromagneticLeakageDetected: boolean;
+  cacheTimingAttackLikely: boolean;
+  speculativeExecutionRisk: number;
+  acousticExfiltrationDetected: boolean;
+}
+
+export interface BGPRouteLeakSignal {
+  detected: boolean;
+  asPathLength: number;
+  suspiciousASNs: number[];
+  routeHijackLikelihood: number;
+  originMismatch: boolean;
+}
+
+export interface SyntheticIdentityForensics {
+  isSyntheticLikely: boolean;
+  identityAgeDays: number;
+  activityConsistencyScore: number;
+  linkedAccountEntropy: number;
+  socialValidationScore: number;
+  isHighRiskClusterMember: boolean;
+}
+
+export interface HoneytokenForensics {
+  decoyFieldAccessed: boolean;
+  hiddenResourceRequested: boolean;
+  honeytokenTriggered: boolean;
+  interactionType: 'TRAP_FIELD' | 'GHOST_ENDPOINT' | 'CANARY_TOKEN' | 'NONE';
+  attackerProfilingScore: number;
+}
+
+export interface MicroInteractionsForensics {
+  averageDwellTimeMs: number;
+  clickPrecisionScore: number;
+  rapidScrollDetected: boolean;
+  hesitationFrequency: number;
+  isBotLikeMicroBehavior: boolean;
+}
+
+export interface CryptoSideChannelForensics {
+  timingJitterDetected: boolean;
+  powerAnalysisRisk: number;
+  electromagneticLeakageDetected: boolean;
+  isConstantTimeExecutionVerified: boolean;
+  cacheSideChannelDetected: boolean;
+  signatureMalleabilityRisk: number;
+}
+export interface RFSideChannelForensics {
+  isRadioFrequencyLeakageDetected: boolean;
+  spectrumAnomalyScore: number;
+  isSDRInterceptionLikely: boolean;
+  frequencyHoppingIntegrity: boolean;
+  nearFieldCommunicationRisk: number;
+}
+
+export interface CrossChainForensicLinking {
+  isBridgeActivityDetected: boolean;
+  linkedNetworks: string[];
+  totalCrossChainVolume: number;
+  suspiciousBridgeUsage: boolean;
+  bridgeRiskScore: number;
+}
+
+export interface JA3Fingerprint {
+  hash: string;
+  isKnownBot: boolean;
+  commonUsage: string;
+  reliabilityScore: number;
+}
+
+export interface TLSForensics {
+  ja3: JA3Fingerprint;
+  ja3s: string;
+  cipherSuite: string;
+  tlsVersion: string;
+  extensions: string[];
+}
+
+export interface CognitiveLoadForensics {
+  isHighStressDetected: boolean;
+  interactionLatencyAnomaly: boolean;
+  correctionRate: number;
+  hesitationScore: number;
+  isCoachingLikely: boolean;
+  cognitiveDissonanceIndex: number;
+}
+
+export interface PageTableForensics {
+  isPteManipulationDetected: boolean;
+  tlbFlushAnomalyDetected: boolean;
+  shadowPageTableInconsistency: boolean;
+  largePageExploitDetected: boolean;
+  nxBitViolationDetected: boolean;
+  pageFaultRateAnomaly: number;
+  translationLookasideBufferEntropy: number;
+}
+
+export interface BehavioralBiometricEntropy {
+  keystrokeJitterEntropy: number;
+  mousePathCurvatureVariance: number;
+  touchInteractionForceAnomaly: boolean;
+  isNeurologicalSignatureConsistent: boolean;
+  coachingArtifactProbability: number;
+  syntheticEventInjectionLikely: boolean;
+}
+
+export interface TemporalForensics {
+  isClockSkewDetected: boolean;
+  driftRatePpm: number;
+  ntpDiscrepancyMs: number;
+  isMonotonicityViolationDetected: boolean;
+  tscClockConsistencyScore: number;
+  isTimeManipulationLikely: boolean;
+}
+
+export interface HardwareDebuggerForensics {
+  dr0toDr7RegisterConsistency: boolean;
+  hardwareBreakpointDetected: boolean;
+  watchpointAnomalyLikely: boolean;
+  isInstructionTracingActive: boolean;
+  debugRegisterObfuscationDetected: boolean;
+  trapFlagMonitored: boolean;
+}
+
+
+export interface L3CacheForensics {
+  isCacheOccupancyAnomalyDetected: boolean;
+  primeProbeSignatureFound: boolean;
+  flushReloadArtifactsDetected: boolean;
+  evictionSetEntropy: number;
+  missRateJitterNs: number;
+  isCachePartitioningActive: boolean;
+  l3CacheWayLockingDetected: boolean;
+}
+
+export interface MicroArchPortForensics {
+  isPortContentionDetected: boolean;
+  executionUnitStallRate: number;
+  pipelinePortSaturation: boolean;
+  hyperthreadingLeakageLikely: boolean;
+  smtInterferenceScore: number;
+  portTimingVarianceNs: number;
+}
+
+export interface BPUForensics {
+  isBranchTargetBufferPoisoningDetected: boolean;
+  speculativeExecutionWindowJitterNs: number;
+  indirectBranchPredictionAnomaly: boolean;
+  isBpuTrainingObserved: boolean;
+  branchMispredictionRateJitter: number;
+  isSpectreVariantLikely: 'V1_BOUNDS_CHECK' | 'V2_BRANCH_TARGET_INJECTION' | 'V4_SPECULATIVE_STORE_BYPASS' | 'NONE';
+}
+
+export interface TLBForensics {
+  isTlbShootdownAnomalyDetected: boolean;
+  tlbFlushLatencyJitterNs: number;
+  translationLookasideBufferEntropy: number;
+  isTlbDesynchronizationLikely: boolean;
+  pcidContextSwitchRateJitter: number;
+  isSharedTlbContentionObserved: boolean;
+}
+
+export interface SMMForensics {
+  isSmiHijackLikely: boolean;
+  smiLatencyJitterNs: number;
+  smmMemoryLockViolation: boolean;
+  smiTriggerCount: number;
+  isSmmRootkitDetected: boolean;
+  smmHandlerIntegrityScore: number;
+}
