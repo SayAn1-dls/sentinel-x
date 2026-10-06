@@ -37,3 +37,4 @@ class BatchProcessor:
         self._queue = []
         self._last_flush = time.time()
         return batches
+
