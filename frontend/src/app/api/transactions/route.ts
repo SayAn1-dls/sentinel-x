@@ -71,4 +71,3 @@ export async function POST(req: NextRequest) {
   });
   return NextResponse.json({ data: tx, created: true }, { status: 201 });
 }
-
