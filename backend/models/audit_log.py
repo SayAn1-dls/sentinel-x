@@ -13,3 +13,4 @@ class AuditLog:
     severity: str = 'INFO'
     success: bool = True
     details: Optional[dict] = None
+
