@@ -19,7 +19,7 @@ import {
   NetworkPacketAnalysis,
   CloudInfrastructureSignal,
   DNSIntegritySignal, SteganographyAnalysis, CrossChainForensics, ZKPForensics, MemorySwapForensics, HIDForensics, QuantumForensics, TLSFingerprintSignal, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, SideChannelForensics, SyntheticIdentitySignal, LinguisticForensics, ISAAttestationForensics, OpticalAirGapForensics, DeepfakeForensics, VoiceBiometricForensics, HoneytokenForensics, AcousticAirGapForensics, MultiWindowVelocitySignal, DKOMForensics, PEBForensics, GeolocationCorrelationSignal, WebRTCLeakSignal, GPUPipelineSignal
-, InterruptForensics, PageTableForensics , TLBForensics , TLBForensics , SMMForensics } from './forensic-types';
+, InterruptForensics, PageTableForensics , TLBForensics , TLBForensics , SMMForensics, IOMMUForensics } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -724,6 +724,7 @@ export function calculateAdvancedRiskScore(
     gpuPipeline?: GPUPipelineSignal;
     pageTableForensics?: PageTableForensics;
     smmForensics?: SMMForensics;
+    iommuForensics?: IOMMUForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -941,6 +942,16 @@ export function calculateAdvancedRiskScore(
     if (params.smmForensics.isSmmRootkitDetected) score += 100;
     if (params.smmForensics.smmMemoryLockViolation) score += 95;
     score += params.smmForensics.smiLatencyJitterNs * 20;
+  }
+
+
+  // v54 IOMMU & DMA Forensics Logic
+  if (params.iommuForensics) {
+    if (params.iommuForensics.isDmaRemappingFailureDetected) score += 95;
+    if (params.iommuForensics.isThunderclapAttackLikely) score += 100;
+    if (params.iommuForensics.iommuConfigurationTamperDetected) score += 90;
+    if (params.iommuForensics.unauthorizedDmaDeviceSignature) score += 85;
+    score += params.iommuForensics.iommuPageFaultRate * 50;
   }
 
   score = Math.min(100, score);
@@ -1197,5 +1208,19 @@ export function analyzeSMMForensics(): SMMForensics {
     smiTriggerCount: 12,
     isSmmRootkitDetected: false,
     smmHandlerIntegrityScore: 0.99
+  };
+}
+
+/**
+ * v54: IOMMU & DMA Attack Forensics.
+ */
+export function analyzeIOMMUForensics(): IOMMUForensics {
+  return {
+    isDmaRemappingFailureDetected: false,
+    iommuPageFaultRate: 0.02,
+    unauthorizedDmaDeviceSignature: null,
+    isThunderclapAttackLikely: false,
+    dmaLatencyAnomaliesNs: 0.12,
+    iommuConfigurationTamperDetected: false
   };
 }

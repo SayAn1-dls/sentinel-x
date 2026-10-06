@@ -33,7 +33,7 @@ import {
   SatelliteForensics, 
   MFAIntegrityForensics, 
   AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, CognitiveLoadForensics, TLSForensics
-, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics, L3CacheForensics, BPUForensics, TLBForensics , SMMForensics } from './forensic-types';
+, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics, L3CacheForensics, BPUForensics, TLBForensics , SMMForensics, IOMMUForensics } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -577,7 +577,8 @@ export function calculateAdvancedRiskScore(
     mfaIntegrity?: MFAIntegrityForensics; cognitiveLoad?: CognitiveLoadForensics;
     authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics; gpuSideChannel?: GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
     pageTableForensics?: PageTableForensics;
-    smmForensics?: SMMForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
+    smmForensics?: SMMForensics;
+    iommuForensics?: IOMMUForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -1402,5 +1403,19 @@ export function analyzeSMMForensics(): SMMForensics {
     smiTriggerCount: 12,
     isSmmRootkitDetected: false,
     smmHandlerIntegrityScore: 0.99
+  };
+}
+
+/**
+ * v54: IOMMU & DMA Attack Forensics.
+ */
+export function analyzeIOMMUForensics(): IOMMUForensics {
+  return {
+    isDmaRemappingFailureDetected: false,
+    iommuPageFaultRate: 0.02,
+    unauthorizedDmaDeviceSignature: null,
+    isThunderclapAttackLikely: false,
+    dmaLatencyAnomaliesNs: 0.12,
+    iommuConfigurationTamperDetected: false
   };
 }

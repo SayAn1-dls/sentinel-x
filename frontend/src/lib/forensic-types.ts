@@ -344,6 +344,7 @@ export interface ForensicIntelligence {
   l3CacheForensics?: L3CacheForensics;
   bpuForensics?: BPUForensics;
   smmForensics?: SMMForensics;
+  iommuForensics?: IOMMUForensics;
 }
 
 export interface SupplyChainForensics {
@@ -545,4 +546,13 @@ export interface SMMForensics {
   smiTriggerCount: number;
   isSmmRootkitDetected: boolean;
   smmHandlerIntegrityScore: number;
+}
+
+export interface IOMMUForensics {
+  isDmaRemappingFailureDetected: boolean;
+  iommuPageFaultRate: number;
+  unauthorizedDmaDeviceSignature: string | null;
+  isThunderclapAttackLikely: boolean;
+  dmaLatencyAnomaliesNs: number;
+  iommuConfigurationTamperDetected: boolean;
 }

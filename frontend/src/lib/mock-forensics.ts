@@ -36,7 +36,7 @@ import {
 , analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics, analyzeBPUForensics,
   analyzeTLBForensics,
   analyzeTLBForensics,
-  analyzeTLBForensics , analyzeSMMForensics } from './forensic-engine';
+  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {

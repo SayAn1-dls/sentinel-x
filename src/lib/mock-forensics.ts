@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-, analyzeInterruptForensics , analyzeSMMForensics } from './forensic-engine';
+, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -175,6 +175,7 @@ export function enrichWithForensics(transaction: any): any {
   const dkomForensics = analyzeDKOMForensics();
   const multiWindowVelocity = analyzeMultiWindowVelocity(transaction.history || []);
   const webRTCLeak = analyzeWebRTCLeak(Math.random() > 0.95 ? [geolocation.ip, "10.0.0.5", "192.168.1.12"] : [geolocation.ip], geolocation.ip);
+  const iommuForensics = { ...analyzeIOMMUForensics(), isThunderclapAttackLikely: Math.random() > 0.9995, isDmaRemappingFailureDetected: Math.random() > 0.999 };
   const smmForensics = { ...analyzeSMMForensics(), isSmiHijackLikely: Math.random() > 0.999, isSmmRootkitDetected: Math.random() > 0.9995 };
   const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
 
@@ -191,6 +192,7 @@ export function enrichWithForensics(transaction: any): any {
       acousticAirGap,
       multiWindowVelocity,
       webRTCLeak,
+      iommuForensics,
       smmForensics,
       gpuPipeline,
       deepfakeForensics,

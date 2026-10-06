@@ -383,6 +383,7 @@ export interface ForensicIntelligence {
   gpuPipeline?: GPUPipelineSignal;
   bpuForensics?: BPUForensics;
   smmForensics?: SMMForensics;
+  iommuForensics?: IOMMUForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -526,4 +527,13 @@ export interface SMMForensics {
   smiTriggerCount: number;
   isSmmRootkitDetected: boolean;
   smmHandlerIntegrityScore: number;
+}
+
+export interface IOMMUForensics {
+  isDmaRemappingFailureDetected: boolean;
+  iommuPageFaultRate: number;
+  unauthorizedDmaDeviceSignature: string | null;
+  isThunderclapAttackLikely: boolean;
+  dmaLatencyAnomaliesNs: number;
+  iommuConfigurationTamperDetected: boolean;
 }

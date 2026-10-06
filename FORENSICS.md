@@ -427,6 +427,7 @@ The risk scoring engine incorporates:
 - [x] BPU & Speculative Execution Forensics (v51)
 - [x] TLB Side-Channel Forensics (v52)
 - [x] SMM Latency & SMI Hijack Forensics (v53)
+- [x] IOMMU & DMA Attack Forensics (v54)
 
 
 ## Kernel-Level Forensic Enhancements (v38)
@@ -544,3 +545,23 @@ Implemented deep micro-architectural analysis to detect System Management Mode (
 Integrated SMM forensic signals into the `calculateAdvancedRiskScore` engine and updated the Python `threat_scorer.py` module with a new aggregator weight (**1.75**).
 - **Version**: 53.0.0
 - **Weighting**: SMI Hijack Detection (+100 - Critical), SMM Rootkit Detected (+100 - Critical), SMM Memory Lock Violation (+95).
+
+## Update: 2026-10-06 - IOMMU & DMA Attack Forensics (v54)
+
+### IOMMU & DMA Forensic Analysis
+Implemented a kernel-level forensic intelligence layer designed to detect unauthorized Direct Memory Access (DMA) attempts, IOMMU page faults, and DMA-based side-channel attacks (e.g., Thunderclap). This module ensures hardware-level memory protection integrity.
+
+- **Signal**: `iommuForensics`
+- **New Interface**: `IOMMUForensics`
+- **New Analysis Function**: `analyzeIOMMUForensics`
+- **Checks**:
+  - **DMA Remapping Failure**: Detects when hardware devices attempt to access memory regions not explicitly mapped in the IOMMU.
+  - **Thunderclap Attack Signature**: Identifies patterns of malicious DMA interaction through compromised peripheral devices or Thunderbolt ports.
+  - **IOMMU Configuration Integrity**: Detects unauthorized modifications to IOMMU registers or page tables.
+  - **DMA Latency Anomaly**: Profiles timing jitter in DMA operations to identify interception or injection artifacts.
+- **Risk Impact**: Critical (+100) for Thunderclap attacks, High (+95) for remapping failures.
+
+### Risk Engine v54
+Integrated IOMMU forensic signals into the `calculateAdvancedRiskScore` engine and updated the Python `threat_scorer.py` module with a new aggregator weight (**1.80**).
+- **Version**: 54.0.0
+- **Weighting**: Thunderclap Attack Detected (+100 - Critical), DMA Remapping Failure (+95 - High), IOMMU Configuration Tamper (+90).

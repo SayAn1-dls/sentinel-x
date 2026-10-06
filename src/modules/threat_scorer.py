@@ -38,6 +38,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "bpu_forensics": 1.65,
     "tlb_forensics": 1.7,
     "smm_forensics": 1.75,
+    "iommu_forensics": 1.80,
 }
 
 
