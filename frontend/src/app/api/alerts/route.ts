@@ -29,4 +29,3 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ data, summary: { total, active, critical, high }, timestamp: Date.now() });
 }
-
