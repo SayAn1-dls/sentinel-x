@@ -22,3 +22,4 @@ class NodeRiskAggregator:
     def top_k(self, k: int = 10) -> list[tuple[str, float]]:
         avgs = [(n, self.average(n)) for n in self._scores if self.average(n) is not None]
         return sorted(avgs, key=lambda x: x[1], reverse=True)[:k]
+
