@@ -35,4 +35,3 @@ async def release_node(req: IsolationRequest):
 @router.get('/isolated')
 async def list_isolated():
     return {'isolated_nodes': list(ISOLATED_NODES), 'count': len(ISOLATED_NODES)}
-

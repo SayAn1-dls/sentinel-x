@@ -134,3 +134,4 @@ async def session():
         "user": {"id": "USR-001", "name": "Sayan Bhattacharya", "email": "sayan@sentinel-x.io", "role": "ADMIN"},
         "authenticated": True,
     }
+
