@@ -54,4 +54,3 @@ def compute_risk(
         confidence=round(confidence, 4),
         flags=flags,
     )
-
