@@ -11,3 +11,4 @@ def density(num_nodes, num_edges):
 
 def find_high_risk_nodes(risk_scores, threshold=0.75):
     return [n for n, s in risk_scores.items() if s >= threshold]
+
