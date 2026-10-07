@@ -36,7 +36,7 @@ import {
 , analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics, analyzeBPUForensics,
   analyzeTLBForensics,
   analyzeTLBForensics,
-  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics } from './forensic-engine';
+  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -317,6 +317,15 @@ export function enrichWithForensics(transaction: any): any {
     isSpectreVariantLikely: Math.random() > 0.9995 ? 'V2_BRANCH_TARGET_INJECTION' : 'NONE'
   };
 
+
+  const cfiForensics = {
+    ...analyzeCFIForensics(),
+    isShadowStackViolationDetected: Math.random() > 0.999,
+    isControlFlowHijackLikely: Math.random() > 0.9995,
+    indirectBranchTargetAnomaly: Math.random() > 0.99,
+    ropGadgetCount: Math.random() > 0.98 ? Math.floor(Math.random() * 10) : 0
+  };
+
   return {
 
     ...transaction,
@@ -370,8 +379,11 @@ export function enrichWithForensics(transaction: any): any {
       l3CacheForensics,
       bpuForensics,
       tlbForensics: analyzeTLBForensics(),
+      cfiForensics,
       tlbForensics: analyzeTLBForensics(),
+      cfiForensics,
       tlbForensics: analyzeTLBForensics(),
+      cfiForensics,
     }
   };
 }

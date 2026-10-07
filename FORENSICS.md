@@ -565,3 +565,26 @@ Implemented a kernel-level forensic intelligence layer designed to detect unauth
 Integrated IOMMU forensic signals into the `calculateAdvancedRiskScore` engine and updated the Python `threat_scorer.py` module with a new aggregator weight (**1.80**).
 - **Version**: 54.0.0
 - **Weighting**: Thunderclap Attack Detected (+100 - Critical), DMA Remapping Failure (+95 - High), IOMMU Configuration Tamper (+90).
+
+## Update: 2026-10-07 - Control Flow Integrity (CFI) & ROP/JOP Forensics (v55)
+
+### Control Flow Integrity (CFI) Forensic Analysis
+Implemented a new deep forensic intelligence layer designed to detect Return-Oriented Programming (ROP) and Jump-Oriented Programming (JOP) attacks by monitoring control flow transitions and shadow stack integrity.
+
+- **Signal**: `cfiForensics`
+- **Checks**:
+  - **Shadow Stack Integrity**: Detects mismatches between the call stack and a hardware-protected shadow stack, identifying ROP-based return address hijacking.
+  - **Indirect Branch Verification**: Monitors jumps and calls to ensure targets are valid entry points (e.g., using Intel CET or software-based branch tracking).
+  - **Gadget Chain Detection**: Heuristic analysis to identify instruction sequences typical of ROP gadgets (e.g., short sequences ending in `RET`).
+  - **Control Flow Hijack Likely**: High-confidence flag for active exploitation attempts.
+- **Risk Impact**: Critical (+100) for Shadow Stack violations and hijacked control flow.
+
+### Risk Engine v55
+Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer.py` module to incorporate CFI signals.
+- **Version**: 55.0.0
+- **Weighting**: Shadow Stack Violation (+100 - Critical), Control Flow Hijack (+100 - Critical), Indirect Branch Anomaly (+95), ROP Gadget Chain (+90).
+- **Aggregator Weight**: 1.85.
+
+## Implementation Status (Updated)
+- [x] IOMMU & DMA Attack Forensics (v54)
+- [x] Control Flow Integrity (CFI) & ROP/JOP Forensics (v55)

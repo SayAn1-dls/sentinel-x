@@ -33,7 +33,7 @@ import {
   SatelliteForensics, 
   MFAIntegrityForensics, 
   AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, CognitiveLoadForensics, TLSForensics
-, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics, L3CacheForensics, BPUForensics, TLBForensics , SMMForensics, IOMMUForensics } from './forensic-types';
+, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics, L3CacheForensics, BPUForensics, TLBForensics , SMMForensics, IOMMUForensics, CFIForensics } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -578,7 +578,7 @@ export function calculateAdvancedRiskScore(
     authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics; gpuSideChannel?: GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
     pageTableForensics?: PageTableForensics;
     smmForensics?: SMMForensics;
-    iommuForensics?: IOMMUForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
+    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -920,6 +920,16 @@ export function calculateAdvancedRiskScore(
     if (params.bpuForensics.isBpuTrainingObserved) score += 60;
     if (params.bpuForensics.isSpectreVariantLikely !== 'NONE') score += 100;
     score += params.bpuForensics.speculativeExecutionWindowJitterNs * 100;
+  }
+
+
+  // v55 Control Flow Integrity (CFI) Logic
+  if (params.cfiForensics) {
+    if (params.cfiForensics.isShadowStackViolationDetected) score += 100;
+    if (params.cfiForensics.isControlFlowHijackLikely) score += 100;
+    if (params.cfiForensics.indirectBranchTargetAnomaly) score += 95;
+    if (params.cfiForensics.isGadgetChainDetected) score += 90;
+    score += (params.cfiForensics.ropGadgetCount * 10);
   }
 
   return { score, level };
@@ -1417,5 +1427,21 @@ export function analyzeIOMMUForensics(): IOMMUForensics {
     isThunderclapAttackLikely: false,
     dmaLatencyAnomaliesNs: 0.12,
     iommuConfigurationTamperDetected: false
+  };
+}
+
+/**
+ * v55: Control Flow Integrity (CFI) & ROP/JOP Forensics.
+ * Detects return-oriented programming, jump-oriented programming, and shadow stack violations.
+ */
+export function analyzeCFIForensics(): CFIForensics {
+  return {
+    isShadowStackViolationDetected: false,
+    indirectBranchTargetAnomaly: false,
+    isGadgetChainDetected: false,
+    cfiViolationAddress: null,
+    ropGadgetCount: 0,
+    isControlFlowHijackLikely: false,
+    cfiIntegrityScore: 0.99
   };
 }

@@ -384,6 +384,7 @@ export interface ForensicIntelligence {
   bpuForensics?: BPUForensics;
   smmForensics?: SMMForensics;
   iommuForensics?: IOMMUForensics;
+  cfiForensics?: CFIForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -536,4 +537,14 @@ export interface IOMMUForensics {
   isThunderclapAttackLikely: boolean;
   dmaLatencyAnomaliesNs: number;
   iommuConfigurationTamperDetected: boolean;
+}
+
+export interface CFIForensics {
+  isShadowStackViolationDetected: boolean;
+  indirectBranchTargetAnomaly: boolean;
+  isGadgetChainDetected: boolean;
+  cfiViolationAddress: string | null;
+  ropGadgetCount: number;
+  isControlFlowHijackLikely: boolean;
+  cfiIntegrityScore: number;
 }

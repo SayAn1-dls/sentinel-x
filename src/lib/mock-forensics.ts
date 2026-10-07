@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics } from './forensic-engine';
+, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -182,9 +182,19 @@ export function enrichWithForensics(transaction: any): any {
 
   const geolocationCorrelation = analyzeGeolocationCorrelation(geolocation, { lat: 40.7128, lon: -74.0060 }); // NYC is home
 
+
+  const cfiForensics = {
+    ...analyzeCFIForensics(),
+    isShadowStackViolationDetected: Math.random() > 0.999,
+    isControlFlowHijackLikely: Math.random() > 0.9995,
+    indirectBranchTargetAnomaly: Math.random() > 0.99,
+    ropGadgetCount: Math.random() > 0.98 ? Math.floor(Math.random() * 10) : 0
+  };
+
   return {
     ...transaction,
     forensics: {
+      cfiForensics,
       crossProtocol,
       dkomForensics,
       pebForensics,
