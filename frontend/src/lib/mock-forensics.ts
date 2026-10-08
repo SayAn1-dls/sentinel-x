@@ -36,7 +36,7 @@ import {
 , analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics, analyzeBPUForensics,
   analyzeTLBForensics,
   analyzeTLBForensics,
-  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics } from './forensic-engine';
+  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -98,6 +98,12 @@ export function enrichWithForensics(transaction: any): any {
     deviceMemory: 16,
     canvasHash: 'cf83e1357eefb8bd',
     webGLRenderer: 'Apple M1'
+  };
+  const aslrForensics = {
+    ...analyzeASLRForensics(),
+    isAslrBruteForceDetected: Math.random() > 0.999,
+    memoryLeakSignaturesFound: Math.random() > 0.998,
+    aslrIntegrityScore: 0.95 + (Math.random() * 0.05)
   };
 
   const fingerprintEntropy = calculateFingerprintEntropy(mockFingerprint);
@@ -325,6 +331,7 @@ export function enrichWithForensics(transaction: any): any {
     indirectBranchTargetAnomaly: Math.random() > 0.99,
     ropGadgetCount: Math.random() > 0.98 ? Math.floor(Math.random() * 10) : 0
   };
+  };
 
   return {
 
@@ -380,10 +387,13 @@ export function enrichWithForensics(transaction: any): any {
       bpuForensics,
       tlbForensics: analyzeTLBForensics(),
       cfiForensics,
+      aslrForensics,
       tlbForensics: analyzeTLBForensics(),
       cfiForensics,
+      aslrForensics,
       tlbForensics: analyzeTLBForensics(),
       cfiForensics,
+      aslrForensics,
     }
   };
 }

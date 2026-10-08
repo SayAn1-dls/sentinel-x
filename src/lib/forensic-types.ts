@@ -385,6 +385,7 @@ export interface ForensicIntelligence {
   smmForensics?: SMMForensics;
   iommuForensics?: IOMMUForensics;
   cfiForensics?: CFIForensics;
+  aslrForensics?: ASLRForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -547,4 +548,12 @@ export interface CFIForensics {
   ropGadgetCount: number;
   isControlFlowHijackLikely: boolean;
   cfiIntegrityScore: number;
+}
+
+export interface ASLRForensics {
+  isAslrBruteForceDetected: boolean;
+  entropyLevelBitmask: number;
+  memoryLeakSignaturesFound: boolean;
+  isPageTableSideChannelObserved: boolean;
+  aslrIntegrityScore: number;
 }

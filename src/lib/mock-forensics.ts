@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics } from './forensic-engine';
+, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -79,6 +79,12 @@ export function enrichWithForensics(transaction: any): any {
     deviceMemory: 16,
     canvasHash: 'cf83e1357eefb8bd',
     webGLRenderer: 'Apple M1'
+  };
+  const aslrForensics = {
+    ...analyzeASLRForensics(),
+    isAslrBruteForceDetected: Math.random() > 0.999,
+    memoryLeakSignaturesFound: Math.random() > 0.998,
+    aslrIntegrityScore: 0.95 + (Math.random() * 0.05)
   };
   const crossProtocol = analyzeCrossProtocolLinking([
     { protocol: 'HTTPS', sessionId: 'sess-123', fingerprint: mockFingerprint.canvasHash },
@@ -180,6 +186,7 @@ export function enrichWithForensics(transaction: any): any {
   const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
 
 
+
   const geolocationCorrelation = analyzeGeolocationCorrelation(geolocation, { lat: 40.7128, lon: -74.0060 }); // NYC is home
 
 
@@ -190,11 +197,13 @@ export function enrichWithForensics(transaction: any): any {
     indirectBranchTargetAnomaly: Math.random() > 0.99,
     ropGadgetCount: Math.random() > 0.98 ? Math.floor(Math.random() * 10) : 0
   };
+  };
 
   return {
     ...transaction,
     forensics: {
       cfiForensics,
+      aslrForensics,
       crossProtocol,
       dkomForensics,
       pebForensics,

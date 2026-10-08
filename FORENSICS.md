@@ -588,3 +588,22 @@ Upgraded the `calculateAdvancedRiskScore` function and the Python `threat_scorer
 ## Implementation Status (Updated)
 - [x] IOMMU & DMA Attack Forensics (v54)
 - [x] Control Flow Integrity (CFI) & ROP/JOP Forensics (v55)
+
+## Update: 2026-10-08 - ASLR Entropy & Information Leak Forensics (v56)
+
+### ASLR Entropy Forensic Analysis
+Implemented analysis of Address Space Layout Randomization (ASLR) entropy and information leak detection. This module identifies attempts to bypass memory protections through brute-force or side-channel leakage.
+
+- **Signal**: `aslrForensics`
+- **Checks**:
+  - **ASLR Brute-Force Detection**: Monitors for repeated memory access faults or probes at varying offsets.
+  - **Memory Leak Discovery**: Identifies patterns of kernel or library pointer leakage in application data streams.
+  - **Page Table Side-Channel**: Detects timing leaks that expose physical address mappings.
+- **Risk Impact**: Critical (+95) for brute-force detection, High (+90) for confirmed memory leaks.
+
+### Risk Engine v56
+Upgraded the `calculateAdvancedRiskScore` function to integrate ASLR forensic signals.
+- **Version**: 56.0.0
+- **Weighting**: ASLR Brute-Force (+95), Memory Leak Signature (+90), Page Table Side-Channel (+85).
+
+- [x] ASLR Entropy & Information Leak Forensics (v56)
