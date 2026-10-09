@@ -557,3 +557,11 @@ export interface ASLRForensics {
   isPageTableSideChannelObserved: boolean;
   aslrIntegrityScore: number;
 }
+
+export interface InstructionPrefetchForensics {
+  isPrefetchSideChannelDetected: boolean;
+  prefetchBufferStallRate: number;
+  isSpeculativeCodeExecutionObserved: boolean;
+  instructionCachePressureScore: number;
+  prefetchInstructionAnomalyDetected: boolean;
+}

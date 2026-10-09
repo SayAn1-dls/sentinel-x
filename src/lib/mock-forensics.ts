@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics } from './forensic-engine';
+, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -190,6 +190,14 @@ export function enrichWithForensics(transaction: any): any {
   const geolocationCorrelation = analyzeGeolocationCorrelation(geolocation, { lat: 40.7128, lon: -74.0060 }); // NYC is home
 
 
+  
+  const instructionPrefetchForensics = {
+    ...analyzeInstructionPrefetchForensics(),
+    isPrefetchSideChannelDetected: Math.random() > 0.99,
+    isSpeculativeCodeExecutionObserved: Math.random() > 0.995,
+    instructionCachePressureScore: Math.random() * 0.2
+  };
+
   const cfiForensics = {
     ...analyzeCFIForensics(),
     isShadowStackViolationDetected: Math.random() > 0.999,
@@ -202,6 +210,7 @@ export function enrichWithForensics(transaction: any): any {
   return {
     ...transaction,
     forensics: {
+      instructionPrefetchForensics,
       cfiForensics,
       aslrForensics,
       crossProtocol,

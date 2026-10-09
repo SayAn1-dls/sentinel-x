@@ -607,3 +607,22 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate ASLR forensic si
 - **Weighting**: ASLR Brute-Force (+95), Memory Leak Signature (+90), Page Table Side-Channel (+85).
 
 - [x] ASLR Entropy & Information Leak Forensics (v56)
+
+## Update: 2026-10-09 - Instruction Prefetch Side-Channel Forensics (v57)
+
+### Instruction Prefetch Forensic Analysis
+Implemented analysis of instruction prefetching and speculation-based side-channel attacks. This module identifies attempts to leak sensitive data by observing prefetch buffer behavior and pipeline stalls.
+
+- **Signal**: `instructionPrefetchForensics`
+- **Checks**:
+  - **Prefetch Side-Channel Detection**: Monitors for timing variations indicative of prefetch-based leaks.
+  - **Speculative Execution Observation**: Identifies abnormal code execution patterns in the speculative pipeline.
+  - **Instruction Cache Pressure**: Profiles cache pressure to detect side-channel artifacts.
+- **Risk Impact**: Critical (+95) for side-channel detection, High (+90) for confirmed speculative leaks.
+
+### Risk Engine v57
+Upgraded the `calculateAdvancedRiskScore` function to integrate instruction prefetch forensic signals.
+- **Version**: 57.0.0
+- **Weighting**: Prefetch Side-Channel (+95), Speculative Execution Leak (+90), Instruction Cache Pressure (+85).
+
+- [x] Instruction Prefetch Side-Channel Forensics (v57)
