@@ -347,6 +347,7 @@ export interface ForensicIntelligence {
   iommuForensics?: IOMMUForensics;
   cfiForensics?: CFIForensics;
   aslrForensics?: ASLRForensics;
+  dramRowhammerForensics?: DRAMRowhammerForensics;
 }
 
 export interface SupplyChainForensics {
@@ -583,4 +584,13 @@ export interface InstructionPrefetchForensics {
   isSpeculativeCodeExecutionObserved: boolean;
   instructionCachePressureScore: number;
   prefetchInstructionAnomalyDetected: boolean;
+}
+
+export interface DRAMRowhammerForensics {
+  isRowhammerBitFlipDetected: boolean;
+  dramRefreshRateJitterNs: number;
+  memoryControllerPressureScore: number;
+  isTargetRowRefreshActive: boolean;
+  adjacentRowActivationCount: number;
+  isHammeringPatternObserved: boolean;
 }

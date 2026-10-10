@@ -724,7 +724,7 @@ export function calculateAdvancedRiskScore(
     gpuPipeline?: GPUPipelineSignal;
     pageTableForensics?: PageTableForensics;
     smmForensics?: SMMForensics;
-    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics;
+    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics; dramRowhammerForensics?: DRAMRowhammerForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -1007,6 +1007,15 @@ export function calculateAdvancedRiskScore(
     if (params.instructionPrefetchForensics.isSpeculativeCodeExecutionObserved) score += 90;
     if (params.instructionPrefetchForensics.prefetchInstructionAnomalyDetected) score += 85;
     score += params.instructionPrefetchForensics.instructionCachePressureScore * 50;
+  }
+
+  
+  // v58 DRAM Rowhammer Logic
+  if (params.dramRowhammerForensics) {
+    if (params.dramRowhammerForensics.isRowhammerBitFlipDetected) score += 100;
+    if (params.dramRowhammerForensics.isHammeringPatternObserved) score += 85;
+    score += (params.dramRowhammerForensics.dramRefreshRateJitterNs / 10);
+    score += params.dramRowhammerForensics.memoryControllerPressureScore * 30;
   }
 
   return { score, level };
@@ -1296,5 +1305,19 @@ export function analyzeASLRForensics(): ASLRForensics {
     memoryLeakSignaturesFound: false,
     isPageTableSideChannelObserved: false,
     aslrIntegrityScore: 0.99
+  };
+}
+
+export function analyzeDRAMRowhammerForensics(data: any): DRAMRowhammerForensics {
+  const adjacentActivations = data.adjacentRowActivations || 0;
+  const jitter = data.refreshRateJitter || 0;
+  
+  return {
+    isRowhammerBitFlipDetected: data.bitFlipsDetected || false,
+    dramRefreshRateJitterNs: jitter,
+    memoryControllerPressureScore: Math.min(1, adjacentActivations / 1000000),
+    isTargetRowRefreshActive: data.trrActive !== undefined ? data.trrActive : true,
+    adjacentRowActivationCount: adjacentActivations,
+    isHammeringPatternObserved: adjacentActivations > 500000 || jitter > 100,
   };
 }

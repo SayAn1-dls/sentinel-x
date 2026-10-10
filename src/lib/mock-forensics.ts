@@ -86,6 +86,14 @@ export function enrichWithForensics(transaction: any): any {
     memoryLeakSignaturesFound: Math.random() > 0.998,
     aslrIntegrityScore: 0.95 + (Math.random() * 0.05)
   };
+  const dramRowhammerForensics = {
+    isRowhammerBitFlipDetected: Math.random() > 0.998,
+    dramRefreshRateJitterNs: Math.random() * 50,
+    memoryControllerPressureScore: Math.random() * 0.4,
+    isTargetRowRefreshActive: true,
+    adjacentRowActivationCount: Math.floor(Math.random() * 200000),
+    isHammeringPatternObserved: false,
+  };
   const crossProtocol = analyzeCrossProtocolLinking([
     { protocol: 'HTTPS', sessionId: 'sess-123', fingerprint: mockFingerprint.canvasHash },
     { protocol: 'WSS', sessionId: 'ws-456', fingerprint: mockFingerprint.canvasHash }
@@ -205,7 +213,6 @@ export function enrichWithForensics(transaction: any): any {
     indirectBranchTargetAnomaly: Math.random() > 0.99,
     ropGadgetCount: Math.random() > 0.98 ? Math.floor(Math.random() * 10) : 0
   };
-  };
 
   return {
     ...transaction,
@@ -213,6 +220,7 @@ export function enrichWithForensics(transaction: any): any {
       instructionPrefetchForensics,
       cfiForensics,
       aslrForensics,
+      dramRowhammerForensics,
       crossProtocol,
       dkomForensics,
       pebForensics,

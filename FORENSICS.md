@@ -626,3 +626,21 @@ Upgraded the `calculateAdvancedRiskScore` function to integrate instruction pref
 - **Weighting**: Prefetch Side-Channel (+95), Speculative Execution Leak (+90), Instruction Cache Pressure (+85).
 
 - [x] Instruction Prefetch Side-Channel Forensics (v57)
+- [x] DRAM Rowhammer & Refresh Rate Forensics (v58)
+
+## Update: 2026-10-10 - DRAM Rowhammer & Refresh Rate Forensics (v58)
+
+### DRAM Rowhammer Forensic Analysis
+Implemented detection for DRAM Rowhammer attacks and memory refresh rate anomalies. This layer monitors for high-frequency adjacent row activations and bit-flip signatures indicative of hardware-level exploitation.
+
+- **Signal**: `dramRowhammerForensics`
+- **Checks**:
+  - **Bit-Flip Detection**: Identifies unexpected memory state changes without software writes.
+  - **Hammering Pattern Analysis**: Tracks rapid activation of memory rows within a single refresh window.
+  - **TRR (Target Row Refresh) Monitoring**: Evaluates the effectiveness of hardware-level mitigations.
+- **Risk Impact**: Critical (+100) for confirmed bit-flips, High (+85) for sustained hammering patterns.
+
+### Risk Engine v58
+Upgraded the `calculateAdvancedRiskScore` function to integrate DRAM Rowhammer forensic signals.
+- **Version**: 58.0.0
+- **Weighting**: Rowhammer Bit-Flip Detected (+100 - Critical), Sustained Memory Hammering (+85), Refresh Rate Anomaly (+40).

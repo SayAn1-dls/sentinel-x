@@ -105,6 +105,14 @@ export function enrichWithForensics(transaction: any): any {
     memoryLeakSignaturesFound: Math.random() > 0.998,
     aslrIntegrityScore: 0.95 + (Math.random() * 0.05)
   };
+  const dramRowhammerForensics = {
+    isRowhammerBitFlipDetected: Math.random() > 0.998,
+    dramRefreshRateJitterNs: Math.random() * 50,
+    memoryControllerPressureScore: Math.random() * 0.4,
+    isTargetRowRefreshActive: true,
+    adjacentRowActivationCount: Math.floor(Math.random() * 200000),
+    isHammeringPatternObserved: false,
+  };
 
   const fingerprintEntropy = calculateFingerprintEntropy(mockFingerprint);
   
@@ -205,7 +213,6 @@ export function enrichWithForensics(transaction: any): any {
   };
   
   const sideChannelForensics = {
-    ...analyzeSideChannelSignals(),
     cpuPowerAnalysisDetected: Math.random() > 0.999,
     cacheTimingAttackLikely: Math.random() > 0.995,
     speculativeExecutionRisk: Math.random() * 0.4
@@ -397,12 +404,15 @@ export function enrichWithForensics(transaction: any): any {
       tlbForensics: analyzeTLBForensics(),
       cfiForensics,
       aslrForensics,
+      dramRowhammerForensics,
       tlbForensics: analyzeTLBForensics(),
       cfiForensics,
       aslrForensics,
+      dramRowhammerForensics,
       tlbForensics: analyzeTLBForensics(),
       cfiForensics,
       aslrForensics,
+      dramRowhammerForensics,
     }
   };
 }

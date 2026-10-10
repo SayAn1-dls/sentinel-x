@@ -42,6 +42,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "cfi_forensics": 1.85,
     "aslr_forensics": 1.90,
     "instruction_prefetch_forensics": 1.95,
+    "dram_rowhammer_forensics": 2.00,
 }
 
 
