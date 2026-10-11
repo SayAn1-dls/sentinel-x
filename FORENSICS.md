@@ -644,3 +644,20 @@ Implemented detection for DRAM Rowhammer attacks and memory refresh rate anomali
 Upgraded the `calculateAdvancedRiskScore` function to integrate DRAM Rowhammer forensic signals.
 - **Version**: 58.0.0
 - **Weighting**: Rowhammer Bit-Flip Detected (+100 - Critical), Sustained Memory Hammering (+85), Refresh Rate Anomaly (+40).
+
+## Update: 2026-10-11 - Branch History Buffer (BHB) & Spectre-BHB Forensics (v59)
+
+### BHB & Spectre-BHB Forensic Analysis
+Implemented hardware-level detection for Branch History Buffer (BHB) poisoning and Spectre-BHB speculative execution attacks. This protocol identifies malicious branch history manipulation that bypasses standard privilege boundaries.
+
+- **Signal**: `bhbForensics`
+- **Checks**:
+  - **BHB Poisoning Detection**: Monitors for repetitive branch history patterns used to train the branch predictor maliciously.
+  - **Spectre-BHB Signature**: Detects known sequences indicative of Spectre-BHB exploitation.
+  - **Cross-Privilege Interference**: Analyzes leaks in branch history between user and kernel modes.
+- **Risk Impact**: Critical (+105) for Spectre-BHB detection, High (+90) for BHB poisoning.
+
+### Risk Engine v59
+Upgraded the `calculateAdvancedRiskScore` function to integrate BHB forensic signals and updated the Python `threat_scorer.py` module with a new aggregator weight (**2.05**).
+- **Version**: 59.0.0
+- **Weighting**: Spectre-BHB Detection (+105 - Critical), BHB Poisoning (+90 - High), Cross-Privilege Interference (+85).

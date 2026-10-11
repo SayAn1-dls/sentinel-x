@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics } from './forensic-engine';
+, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -206,6 +206,14 @@ export function enrichWithForensics(transaction: any): any {
     instructionCachePressureScore: Math.random() * 0.2
   };
 
+
+  const bhbForensics = {
+    ...analyzeBHBForensics(),
+    isSpectreBHBVariantLikely: Math.random() > 0.9992,
+    isBranchHistoryBufferPoisoningDetected: Math.random() > 0.999,
+    bhbEntropyScore: 0.1 + (Math.random() * 0.3)
+  };
+
   const cfiForensics = {
     ...analyzeCFIForensics(),
     isShadowStackViolationDetected: Math.random() > 0.999,
@@ -220,6 +228,7 @@ export function enrichWithForensics(transaction: any): any {
       instructionPrefetchForensics,
       cfiForensics,
       aslrForensics,
+      bhbForensics,
       dramRowhammerForensics,
       crossProtocol,
       dkomForensics,

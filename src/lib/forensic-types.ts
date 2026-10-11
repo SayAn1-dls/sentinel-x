@@ -387,6 +387,7 @@ export interface ForensicIntelligence {
   cfiForensics?: CFIForensics;
   aslrForensics?: ASLRForensics;
   dramRowhammerForensics?: DRAMRowhammerForensics;
+  bhbForensics?: BHBForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -574,4 +575,12 @@ export interface DRAMRowhammerForensics {
   isTargetRowRefreshActive: boolean;
   adjacentRowActivationCount: number;
   isHammeringPatternObserved: boolean;
+}
+
+export interface BHBForensics {
+  isBranchHistoryBufferPoisoningDetected: boolean;
+  bhbEntropyScore: number;
+  isSpectreBHBVariantLikely: boolean;
+  crossPrivilegeBranchInterference: boolean;
+  branchHistoryComplexity: number;
 }
