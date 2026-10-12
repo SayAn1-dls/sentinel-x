@@ -388,6 +388,7 @@ export interface ForensicIntelligence {
   aslrForensics?: ASLRForensics;
   dramRowhammerForensics?: DRAMRowhammerForensics;
   bhbForensics?: BHBForensics;
+  mdsForensics?: MDSForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -583,4 +584,12 @@ export interface BHBForensics {
   isSpectreBHBVariantLikely: boolean;
   crossPrivilegeBranchInterference: boolean;
   branchHistoryComplexity: number;
+}
+
+export interface MDSForensics {
+  isZombieLoadDetected: boolean;
+  isRidlArtifactObserved: boolean;
+  isFalloutLeakDetected: boolean;
+  portSmashContentionFound: boolean;
+  microarchitecturalBufferPressure: number;
 }

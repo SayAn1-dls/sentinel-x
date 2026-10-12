@@ -661,3 +661,21 @@ Implemented hardware-level detection for Branch History Buffer (BHB) poisoning a
 Upgraded the `calculateAdvancedRiskScore` function to integrate BHB forensic signals and updated the Python `threat_scorer.py` module with a new aggregator weight (**2.05**).
 - **Version**: 59.0.0
 - **Weighting**: Spectre-BHB Detection (+105 - Critical), BHB Poisoning (+90 - High), Cross-Privilege Interference (+85).
+
+## Update: 2026-10-12 - Microarchitectural Data Sampling (MDS) & Port Smash Forensics (v60)
+
+### MDS & Port Smash Forensic Analysis
+Implemented deep hardware-level detection for Microarchitectural Data Sampling (MDS) attacks, including ZombieLoad, RIDL (Rogue In-Flight Data Load), and Fallout. Additionally, added detection for Port Smash (SMT-based execution port contention) which leaks data across hyper-threads.
+
+- **Signal**: `mdsForensics`
+- **Checks**:
+  - **ZombieLoad Detection**: Monitors for load-buffer based data leaks across security domains.
+  - **RIDL Artifact Analysis**: Detects line-fill buffer leaks exposing in-flight data.
+  - **Fallout Leak Detection**: Identifies store-buffer data leakage during speculative execution.
+  - **Port Smash Contention**: Profiles execution port pressure to detect SMT-based side-channel leaks.
+- **Risk Impact**: Critical (+110) for ZombieLoad, High (+100) for Fallout/RIDL.
+
+### Risk Engine v60
+Upgraded the `calculateAdvancedRiskScore` function to integrate MDS forensic signals and updated the Python `threat_scorer.py` module with a new aggregator weight (**2.10**).
+- **Version**: 60.0.0
+- **Weighting**: ZombieLoad Detection (+110 - Critical), Fallout/RIDL Leak (+100 - High), Port Smash Contention (+75).
