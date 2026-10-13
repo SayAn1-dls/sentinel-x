@@ -36,7 +36,7 @@ import {
 , analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics, analyzeBPUForensics,
   analyzeTLBForensics,
   analyzeTLBForensics,
-  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics } from './forensic-engine';
+  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -361,6 +361,8 @@ export function enrichWithForensics(transaction: any): any {
     ...transaction,
     forensics: {
       instructionPrefetchForensics,
+      mdsForensics,
+      l1dCacheForensics,
       geolocation,
       asnReputation,
       interruptForensics, velocityMetrics,

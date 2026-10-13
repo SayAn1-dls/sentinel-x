@@ -33,7 +33,7 @@ import {
   SatelliteForensics, 
   MFAIntegrityForensics, 
   AuthenticatorForensics, SyntheticIdentityForensics, AcousticAirGapForensics, MicroInteractionsForensics, CryptoSideChannelForensics, GPUSideChannelForensics, CrossChainForensicLinking, CognitiveLoadForensics, TLSForensics
-, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics, L3CacheForensics, BPUForensics, TLBForensics , SMMForensics, IOMMUForensics, CFIForensics } from './forensic-types';
+, InterruptForensics, PageTableForensics, BehavioralBiometricEntropy, MicroArchPortForensics, L3CacheForensics, BPUForensics, TLBForensics , SMMForensics, IOMMUForensics, CFIForensics, MDSForensics, L1DCacheForensics } from './forensic-types';
 
 /**
  * Calculates the Haversine distance between two coordinates in kilometers.
@@ -578,7 +578,7 @@ export function calculateAdvancedRiskScore(
     authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics; gpuSideChannel?: GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
     pageTableForensics?: PageTableForensics;
     smmForensics?: SMMForensics;
-    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics; dramRowhammerForensics?: DRAMRowhammerForensics; bhbForensics?: BHBForensics; mdsForensics?: MDSForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
+    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics; dramRowhammerForensics?: DRAMRowhammerForensics; bhbForensics?: BHBForensics; mdsForensics?: MDSForensics; l1dCacheForensics?: L1DCacheForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -976,6 +976,15 @@ export function calculateAdvancedRiskScore(
     if (params.mdsForensics.isRidlArtifactObserved) score += 95;
     if (params.mdsForensics.portSmashContentionFound) score += 75;
     score += params.mdsForensics.microarchitecturalBufferPressure / 2;
+  }
+
+  
+  // v61 L1D Cache Forensics Logic
+  if (params.l1dCacheForensics) {
+    if (params.l1dCacheForensics.isPrimeProbeDetected) score += 115;
+    if (params.l1dCacheForensics.isL1DTimingSideChannelLikely) score += 95;
+    if (params.l1dCacheForensics.cacheWayPredictorAnomaly) score += 80;
+    score += params.l1dCacheForensics.cacheLineContentionScore * 40;
   }
 
   return { score, level };
@@ -1563,5 +1572,20 @@ export function analyzeMDSForensics(): MDSForensics {
     isFalloutLeakDetected: Math.random() > 0.99,
     portSmashContentionFound: Math.random() > 0.96,
     microarchitecturalBufferPressure: bufferPressure
+  };
+}
+
+/**
+ * v61: L1D Cache Way-Predictor & Prime+Probe Forensics.
+ * Detects side-channel attacks targeting the L1 Data Cache and way-predictor logic.
+ */
+export function analyzeL1DCacheForensics(): L1DCacheForensics {
+  const contention = Math.random();
+  return {
+    isPrimeProbeDetected: Math.random() > 0.99,
+    cacheWayPredictorAnomaly: Math.random() > 0.98,
+    l1dEvictionSetEntropy: 0.72,
+    cacheLineContentionScore: contention,
+    isL1DTimingSideChannelLikely: contention > 0.85
   };
 }

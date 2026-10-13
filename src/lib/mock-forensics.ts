@@ -1,4 +1,4 @@
-import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics, QuantumForensics, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, DKOMForensics, PEBForensics } from './forensic-types';
+import { IPGeolocation, ForensicIntelligence, DeviceFingerprint, KernelForensics, QuantumForensics, BGPRouteLeakSignal, HardwareSupplyChainSignal, PeripheralBusForensics, DKOMForensics, PEBForensics, MDSForensics, L1DCacheForensics } from './forensic-types';
 import { 
   detectTemporalAnomaly, 
   detectCrossChainLinks, 
@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics } from './forensic-engine';
+, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -189,6 +189,8 @@ export function enrichWithForensics(transaction: any): any {
   const dkomForensics = analyzeDKOMForensics();
   const multiWindowVelocity = analyzeMultiWindowVelocity(transaction.history || []);
   const webRTCLeak = analyzeWebRTCLeak(Math.random() > 0.95 ? [geolocation.ip, "10.0.0.5", "192.168.1.12"] : [geolocation.ip], geolocation.ip);
+  const mdsForensics = analyzeMDSForensics();
+  const l1dCacheForensics = analyzeL1DCacheForensics();
   const iommuForensics = { ...analyzeIOMMUForensics(), isThunderclapAttackLikely: Math.random() > 0.9995, isDmaRemappingFailureDetected: Math.random() > 0.999 };
   const smmForensics = { ...analyzeSMMForensics(), isSmiHijackLikely: Math.random() > 0.999, isSmmRootkitDetected: Math.random() > 0.9995 };
   const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
@@ -226,6 +228,8 @@ export function enrichWithForensics(transaction: any): any {
     ...transaction,
     forensics: {
       instructionPrefetchForensics,
+      mdsForensics,
+      l1dCacheForensics,
       cfiForensics,
       aslrForensics,
       bhbForensics,

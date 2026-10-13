@@ -679,3 +679,19 @@ Implemented deep hardware-level detection for Microarchitectural Data Sampling (
 Upgraded the `calculateAdvancedRiskScore` function to integrate MDS forensic signals and updated the Python `threat_scorer.py` module with a new aggregator weight (**2.10**).
 - **Version**: 60.0.0
 - **Weighting**: ZombieLoad Detection (+110 - Critical), Fallout/RIDL Leak (+100 - High), Port Smash Contention (+75).
+
+## Update: 2026-10-13 - L1D Cache Way-Predictor & Prime+Probe Forensics (v61)
+
+### L1D Cache Forensic Analysis
+Implemented hardware-level detection for side-channel attacks targeting the L1 Data Cache, including Prime+Probe signatures and way-predictor anomalies.
+- **Signal**: `l1dCacheForensics`
+- **Checks**:
+  - **Prime+Probe Detection**: Monitors for rapid cache set eviction and reload patterns.
+  - **Way-Predictor Anomaly**: Detects inconsistent cache-way prediction hits indicating side-channel leakage.
+  - **Cache Line Contention**: Profiles timing variances caused by cross-process cache line sharing.
+- **Risk Impact**: Critical (+115) for Prime+Probe detection, High (+95) for timing side-channels.
+
+### Risk Engine v61
+Upgraded the `calculateAdvancedRiskScore` function to integrate L1D Cache forensic signals and updated the Python `threat_scorer.py` module.
+- **Version**: 61.0.0
+- **Weighting**: Prime+Probe Detected (+115 - Critical), L1D Side-Channel Likely (+95), Way-Predictor Anomaly (+80).

@@ -389,6 +389,7 @@ export interface ForensicIntelligence {
   dramRowhammerForensics?: DRAMRowhammerForensics;
   bhbForensics?: BHBForensics;
   mdsForensics?: MDSForensics;
+  l1dCacheForensics?: L1DCacheForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -584,6 +585,14 @@ export interface BHBForensics {
   isSpectreBHBVariantLikely: boolean;
   crossPrivilegeBranchInterference: boolean;
   branchHistoryComplexity: number;
+}
+
+export interface L1DCacheForensics {
+  isPrimeProbeDetected: boolean;
+  cacheWayPredictorAnomaly: boolean;
+  l1dEvictionSetEntropy: number;
+  cacheLineContentionScore: number;
+  isL1DTimingSideChannelLikely: boolean;
 }
 
 export interface MDSForensics {
