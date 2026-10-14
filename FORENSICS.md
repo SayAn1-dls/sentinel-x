@@ -695,3 +695,20 @@ Implemented hardware-level detection for side-channel attacks targeting the L1 D
 Upgraded the `calculateAdvancedRiskScore` function to integrate L1D Cache forensic signals and updated the Python `threat_scorer.py` module.
 - **Version**: 61.0.0
 - **Weighting**: Prime+Probe Detected (+115 - Critical), L1D Side-Channel Likely (+95), Way-Predictor Anomaly (+80).
+
+## Update: 2026-10-14 - TSX Asynchronous Abort (TAA) & Transactional Execution Forensics (v62)
+
+### TAA & TSX Side-Channel Forensics
+Implemented hardware-level detection for side-channel attacks targeting Intel TSX (Transactional Synchronization Extensions), such as TSX Asynchronous Abort (TAA).
+
+- **Signal**: `taaForensics`
+- **Checks**:
+  - **Asynchronous Abort Detection**: Identifies sampling of internal buffers during TSX transaction aborts.
+  - **Abort Rate Jitter**: Monitors for high-frequency or anomalous transaction failures.
+  - **Force Abort Analysis**: Detects malicious attempts to force aborts to leak microarchitectural state.
+- **Risk Impact**: Critical (+120) for TAA detection, High (+95) for TSX side-channel likelihood.
+
+### Risk Engine v62
+Upgraded the `calculateAdvancedRiskScore` function to integrate TAA forensic signals.
+- **Version**: 62.0.0
+- **Weighting**: TAA Detection (+120), TSX Side-Channel Likelihood (+95).

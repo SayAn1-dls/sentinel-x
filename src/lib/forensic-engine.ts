@@ -724,7 +724,7 @@ export function calculateAdvancedRiskScore(
     gpuPipeline?: GPUPipelineSignal;
     pageTableForensics?: PageTableForensics;
     smmForensics?: SMMForensics;
-    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics; dramRowhammerForensics?: DRAMRowhammerForensics; bhbForensics?: BHBForensics; mdsForensics?: MDSForensics; l1dCacheForensics?: L1DCacheForensics;
+    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics; dramRowhammerForensics?: DRAMRowhammerForensics; bhbForensics?: BHBForensics; mdsForensics?: MDSForensics; l1dCacheForensics?: L1DCacheForensics; taaForensics?: TAAForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -1039,6 +1039,12 @@ export function calculateAdvancedRiskScore(
 
   
   // v61 L1D Cache Forensics Logic
+
+  if (params.taaForensics) {
+    if (params.taaForensics.isTsxAsynchronousAbortDetected) score += 120;
+    if (params.taaForensics.isTransactionalExecutionSideChannelLikely) score += 95;
+    if (params.taaForensics.isTsxForceAbortObserved) score += 80;
+  }
   if (params.l1dCacheForensics) {
     if (params.l1dCacheForensics.isPrimeProbeDetected) score += 115;
     if (params.l1dCacheForensics.isL1DTimingSideChannelLikely) score += 95;
@@ -1384,6 +1390,17 @@ export function analyzeMDSForensics(): MDSForensics {
  * v61: L1D Cache Way-Predictor & Prime+Probe Forensics.
  * Detects side-channel attacks targeting the L1 Data Cache and way-predictor logic.
  */
+export function analyzeTAAForensics(): TAAForensics {
+  const jitter = Math.random();
+  return {
+    isTsxAsynchronousAbortDetected: Math.random() > 0.99,
+    transactionAbortRateJitter: jitter,
+    isTsxForceAbortObserved: Math.random() > 0.98,
+    tsxLeakedDataEntropy: 0.65,
+    isTransactionalExecutionSideChannelLikely: jitter > 0.8
+  };
+}
+
 export function analyzeL1DCacheForensics(): L1DCacheForensics {
   const contention = Math.random();
   return {

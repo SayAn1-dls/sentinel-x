@@ -289,6 +289,14 @@ export interface InterruptForensics {
   isSideChannelExfiltrationLikely: boolean;
 }
 
+
+export interface TAAForensics {
+  isTsxAsynchronousAbortDetected: boolean;
+  transactionAbortRateJitter: number;
+  isTsxForceAbortObserved: boolean;
+  tsxLeakedDataEntropy: number;
+  isTransactionalExecutionSideChannelLikely: boolean;
+}
 export interface ForensicIntelligence {
   behavioralBiometricEntropy?: BehavioralBiometricEntropy;
   syscallTiming?: SyscallTimingAnomaly;
@@ -351,6 +359,7 @@ export interface ForensicIntelligence {
   bhbForensics?: BHBForensics;
   mdsForensics?: MDSForensics;
   l1dCacheForensics?: L1DCacheForensics;
+  taaForensics?: TAAForensics;
 }
 
 export interface SupplyChainForensics {

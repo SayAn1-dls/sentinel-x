@@ -36,7 +36,7 @@ import {
 , analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics, analyzeBPUForensics,
   analyzeTLBForensics,
   analyzeTLBForensics,
-  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics } from './forensic-engine';
+  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics, analyzeTAAForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -212,7 +212,8 @@ export function enrichWithForensics(transaction: any): any {
     pagingIntegrityVerified: Math.random() > 0.01
   };
   
-  const sideChannelForensics = {
+  const sideChannelForensics,
+      taaForensics = {
     cpuPowerAnalysisDetected: Math.random() > 0.999,
     cacheTimingAttackLikely: Math.random() > 0.995,
     speculativeExecutionRisk: Math.random() * 0.4
@@ -345,6 +346,9 @@ export function enrichWithForensics(transaction: any): any {
     isSpectreBHBVariantLikely: Math.random() > 0.9992,
     isBranchHistoryBufferPoisoningDetected: Math.random() > 0.999,
     bhbEntropyScore: 0.1 + (Math.random() * 0.3)
+  const mdsForensics = analyzeMDSForensics();
+  const l1dCacheForensics = analyzeL1DCacheForensics();
+  const taaForensics = analyzeTAAForensics();
   };
 
   const cfiForensics = {
@@ -353,7 +357,6 @@ export function enrichWithForensics(transaction: any): any {
     isControlFlowHijackLikely: Math.random() > 0.9995,
     indirectBranchTargetAnomaly: Math.random() > 0.99,
     ropGadgetCount: Math.random() > 0.98 ? Math.floor(Math.random() * 10) : 0
-  };
   };
 
   return {
@@ -392,6 +395,7 @@ export function enrichWithForensics(transaction: any): any {
       opticalAirGapForensics,
       supplyChainForensics,
       sideChannelForensics,
+      taaForensics,
       memoryForensics,
       hardwareTrojanForensics,
       syntheticIdentity,
