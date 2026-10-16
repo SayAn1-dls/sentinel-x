@@ -334,6 +334,14 @@ export interface TAAForensics {
   tsxLeakedDataEntropy: number;
   isTransactionalExecutionSideChannelLikely: boolean;
 }
+export interface SSBForensics {
+  isSpeculativeStoreBypassDetected: boolean;
+  storeToLoadForwardingJitterPs: number;
+  isStaleDataMemoryLeakObserved: boolean;
+  ssbVulnerabilityScore: number;
+  isMemoryDisambiguationTamperDetected: boolean;
+}
+
 export interface ForensicIntelligence {
   behavioralBiometricEntropy?: BehavioralBiometricEntropy;
   crossProtocol?: CrossProtocolSignal;
@@ -399,6 +407,7 @@ export interface ForensicIntelligence {
   mdsForensics?: MDSForensics;
   l1dCacheForensics?: L1DCacheForensics;
   taaForensics?: TAAForensics;
+  ssbForensics?: SSBForensics;
 }
 
 export interface SteganographyAnalysis {

@@ -36,7 +36,7 @@ import {
 , analyzeInterruptForensics, analyzeBehavioralBiometricEntropy, analyzeMicroArchPortForensics, analyzeL3CacheForensics, analyzeBPUForensics,
   analyzeTLBForensics,
   analyzeTLBForensics,
-  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics, analyzeTAAForensics } from './forensic-engine';
+  analyzeTLBForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics, analyzeTAAForensics, analyzeSSBForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -346,10 +346,11 @@ export function enrichWithForensics(transaction: any): any {
     isSpectreBHBVariantLikely: Math.random() > 0.9992,
     isBranchHistoryBufferPoisoningDetected: Math.random() > 0.999,
     bhbEntropyScore: 0.1 + (Math.random() * 0.3)
+  };
   const mdsForensics = analyzeMDSForensics();
   const l1dCacheForensics = analyzeL1DCacheForensics();
   const taaForensics = analyzeTAAForensics();
-  };
+  const ssbForensics = analyzeSSBForensics();
 
   const cfiForensics = {
     ...analyzeCFIForensics(),
@@ -396,6 +397,7 @@ export function enrichWithForensics(transaction: any): any {
       supplyChainForensics,
       sideChannelForensics,
       taaForensics,
+      ssbForensics,
       memoryForensics,
       hardwareTrojanForensics,
       syntheticIdentity,

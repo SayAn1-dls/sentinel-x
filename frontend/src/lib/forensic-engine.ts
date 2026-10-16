@@ -578,7 +578,7 @@ export function calculateAdvancedRiskScore(
     authenticatorForensics?: AuthenticatorForensics; syntheticIdentity?: SyntheticIdentityForensics; microInteractions?: MicroInteractionsForensics; cryptoSideChannel?: CryptoSideChannelForensics; gpuSideChannel?: GPUSideChannelForensics; rfSideChannel?: RFSideChannelForensics; crossChainLinking?: CrossChainForensicLinking;
     pageTableForensics?: PageTableForensics;
     smmForensics?: SMMForensics;
-    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics; dramRowhammerForensics?: DRAMRowhammerForensics; bhbForensics?: BHBForensics; mdsForensics?: MDSForensics; l1dCacheForensics?: L1DCacheForensics; taaForensics?: TAAForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
+    iommuForensics?: IOMMUForensics; cfiForensics?: CFIForensics; aslrForensics?: ASLRForensics; instructionPrefetchForensics?: InstructionPrefetchForensics; dramRowhammerForensics?: DRAMRowhammerForensics; bhbForensics?: BHBForensics; mdsForensics?: MDSForensics; l1dCacheForensics?: L1DCacheForensics; taaForensics?: TAAForensics; ssbForensics?: SSBForensics; temporalForensics?: TemporalForensics; hardwareDebuggerForensics?: HardwareDebuggerForensics; behavioralBiometricEntropy?: BehavioralBiometricEntropy; microArchPortForensics?: MicroArchPortForensics; l3CacheForensics?: L3CacheForensics; syscallTiming?: SyscallTimingAnomaly; cognitiveLoad?: CognitiveLoadForensics; bpuForensics?: BPUForensics;
   }
 ): { score: number; level: RiskLevel } {
   let score = baseScore;
@@ -985,6 +985,11 @@ export function calculateAdvancedRiskScore(
     if (params.taaForensics.isTsxAsynchronousAbortDetected) score += 120;
     if (params.taaForensics.isTransactionalExecutionSideChannelLikely) score += 95;
     if (params.taaForensics.isTsxForceAbortObserved) score += 80;
+  }
+  if (params.ssbForensics) {
+    if (params.ssbForensics.isSpeculativeStoreBypassDetected) score += 125;
+    if (params.ssbForensics.isStaleDataMemoryLeakObserved) score += 100;
+    if (params.ssbForensics.isMemoryDisambiguationTamperDetected) score += 90;
   }
   if (params.l1dCacheForensics) {
     if (params.l1dCacheForensics.isPrimeProbeDetected) score += 115;
@@ -1604,5 +1609,16 @@ export function analyzeL1DCacheForensics(): L1DCacheForensics {
     l1dEvictionSetEntropy: 0.72,
     cacheLineContentionScore: contention,
     isL1DTimingSideChannelLikely: contention > 0.85
+  };
+}
+
+export function analyzeSSBForensics(): SSBForensics {
+  const jitter = Math.floor(Math.random() * 500);
+  return {
+    isSpeculativeStoreBypassDetected: jitter > 420,
+    storeToLoadForwardingJitterPs: jitter,
+    isStaleDataMemoryLeakObserved: jitter > 450,
+    ssbVulnerabilityScore: jitter / 500,
+    isMemoryDisambiguationTamperDetected: jitter > 480
   };
 }

@@ -17,7 +17,7 @@ import {
   analyzeNetworkPackets,
   analyzeCloudInfrastructure,
   analyzeDNSIntegrity, analyzeSteganography, analyzeZKPForensics, analyzeMemorySwap, analyzeHIDForensics, analyzeQuantumForensics, analyzeTLSFingerprint, analyzeBGPRouteLeak, analyzeHardwareSupplyChain, analyzePeripheralBus, analyzeSideChannelTiming, analyzeSyntheticIdentity, analyzeLinguisticForensics, analyzeISAAttestation, analyzeOpticalAirGap, analyzeDeepfakeForensics, analyzeVoiceBiometrics, analyzeHoneytokenInteraction, analyzeAcousticAirGap, analyzeMultiWindowVelocity, analyzeDKOMForensics, analyzePEBForensics, analyzeGeolocationCorrelation, analyzeWebRTCLeak, analyzeGPUPipeline
-, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics, analyzeTAAForensics } from './forensic-engine';
+, analyzeInterruptForensics , analyzeSMMForensics, analyzeIOMMUForensics, analyzeCFIForensics, analyzeASLRForensics, analyzeInstructionPrefetchForensics, analyzeBHBForensics, analyzeMDSForensics, analyzeL1DCacheForensics, analyzeTAAForensics, analyzeSSBForensics } from './forensic-engine';
 
 export const MOCK_IP_GEOLOCATIONS: IPGeolocation[] = [
   {
@@ -193,6 +193,7 @@ export function enrichWithForensics(transaction: any): any {
   const mdsForensics = analyzeMDSForensics();
   const l1dCacheForensics = analyzeL1DCacheForensics();
   const taaForensics = analyzeTAAForensics();
+  const ssbForensics = analyzeSSBForensics();
   const iommuForensics = { ...analyzeIOMMUForensics(), isThunderclapAttackLikely: Math.random() > 0.9995, isDmaRemappingFailureDetected: Math.random() > 0.999 };
   const smmForensics = { ...analyzeSMMForensics(), isSmiHijackLikely: Math.random() > 0.999, isSmmRootkitDetected: Math.random() > 0.9995 };
   const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
@@ -283,7 +284,8 @@ export function enrichWithForensics(transaction: any): any {
       hardwareSupplyChain,
       peripheralBus,
       sideChannelForensics,
-      taaForensics
+      taaForensics,
+      ssbForensics
     }
   };
 }

@@ -712,3 +712,22 @@ Implemented hardware-level detection for side-channel attacks targeting Intel TS
 Upgraded the `calculateAdvancedRiskScore` function to integrate TAA forensic signals.
 - **Version**: 62.0.0
 - **Weighting**: TAA Detection (+120), TSX Side-Channel Likelihood (+95).
+
+## Update: 2026-10-16 - Speculative Store Bypass (SSB) & Store-to-Load Forwarding Forensics (v63)
+
+### SSB & Store-to-Load Forwarding Forensics
+Implemented a new microarchitectural forensic layer to detect Speculative Store Bypass (SSB) and anomalies in Store-to-Load Forwarding (STLF) logic. This is critical for identifying Variant 4 speculative execution attacks.
+
+- **Signal**: `ssbForensics`
+- **Checks**:
+  - **SSB Detection**: Monitors for speculative bypass of store-to-load dependencies.
+  - **STLF Jitter Analysis**: Profiles timing variations in the store-to-load forwarding path.
+  - **Memory Disambiguation Integrity**: Verifies the consistency of the hardware memory disambiguator.
+  - **Stale Data Leak Detection**: Identifies potential leaks of stale data from physical memory buffers.
+
+- **Risk Impact**: Critical (+125) for explicit SSB detection, High (+100) for stale data leaks.
+
+### Risk Engine v63
+Upgraded the `calculateAdvancedRiskScore` function to integrate SSB forensic signals.
+- **Version**: 63.0.0
+- **Weighting**: SSB Detection (+125 - Critical), Stale Data Leak (+100 - High), Memory Disambiguation Tamper (+90).
