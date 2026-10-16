@@ -48,6 +48,7 @@ DEFAULT_WEIGHTS: Dict[str, float] = {
     "l1d_cache_forensics": 2.15,
     "taa_forensics": 2.20,
     "ssb_forensics": 2.25,
+    "retbleed_forensics": 2.30,
 }
 
 

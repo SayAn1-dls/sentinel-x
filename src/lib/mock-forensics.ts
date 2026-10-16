@@ -194,6 +194,7 @@ export function enrichWithForensics(transaction: any): any {
   const l1dCacheForensics = analyzeL1DCacheForensics();
   const taaForensics = analyzeTAAForensics();
   const ssbForensics = analyzeSSBForensics();
+  const retbleedForensics = analyzeRetbleedForensics();
   const iommuForensics = { ...analyzeIOMMUForensics(), isThunderclapAttackLikely: Math.random() > 0.9995, isDmaRemappingFailureDetected: Math.random() > 0.999 };
   const smmForensics = { ...analyzeSMMForensics(), isSmiHijackLikely: Math.random() > 0.999, isSmmRootkitDetected: Math.random() > 0.9995 };
   const gpuPipeline = analyzeGPUPipeline(mockFingerprint.webGLRenderer);
@@ -285,7 +286,8 @@ export function enrichWithForensics(transaction: any): any {
       peripheralBus,
       sideChannelForensics,
       taaForensics,
-      ssbForensics
+      ssbForensics,
+      retbleedForensics
     }
   };
 }

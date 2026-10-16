@@ -351,6 +351,7 @@ export function enrichWithForensics(transaction: any): any {
   const l1dCacheForensics = analyzeL1DCacheForensics();
   const taaForensics = analyzeTAAForensics();
   const ssbForensics = analyzeSSBForensics();
+  const retbleedForensics = analyzeRetbleedForensics();
 
   const cfiForensics = {
     ...analyzeCFIForensics(),

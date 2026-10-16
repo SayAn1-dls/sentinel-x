@@ -408,6 +408,7 @@ export interface ForensicIntelligence {
   l1dCacheForensics?: L1DCacheForensics;
   taaForensics?: TAAForensics;
   ssbForensics?: SSBForensics;
+  retbleedForensics?: RetbleedForensics;
 }
 
 export interface SteganographyAnalysis {
@@ -619,4 +620,11 @@ export interface MDSForensics {
   isFalloutLeakDetected: boolean;
   portSmashContentionFound: boolean;
   microarchitecturalBufferPressure: number;
+}
+
+export interface RetbleedForensics {
+  isRetbleedExploited: boolean;
+  rsbOverflowCount: number;
+  isReturnStackBufferPoisoned: boolean;
+  speculativeReturnEntropy: number;
 }

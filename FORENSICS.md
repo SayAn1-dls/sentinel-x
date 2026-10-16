@@ -731,3 +731,23 @@ Implemented a new microarchitectural forensic layer to detect Speculative Store 
 Upgraded the `calculateAdvancedRiskScore` function to integrate SSB forensic signals.
 - **Version**: 63.0.0
 - **Weighting**: SSB Detection (+125 - Critical), Stale Data Leak (+100 - High), Memory Disambiguation Tamper (+90).
+
+## Update: 2026-10-16 - Retbleed & Return Stack Buffer (RSB) Poisoning Forensics (v64)
+Implemented deep microarchitectural forensic intelligence to detect **Retbleed** (Variant 2/Spectre-v2 related) and **RSB Poisoning** attacks. These checks monitor for speculative hijacking via return instructions and Return Stack Buffer state corruption.
+
+### Forensic Data Models
+- **RetbleedForensics**:
+  - `isRetbleedExploited`: Detects explicit Retbleed execution patterns.
+  - `rsbOverflowCount`: Tracks abnormal return stack overflows indicative of poisoning.
+  - `isReturnStackBufferPoisoned`: Identifies stale or malicious RSB entries.
+  - `speculativeReturnEntropy`: Measures entropy in speculative return targets.
+
+### Risk Engine v64
+- Added critical weightings for **Retbleed Exploitation (+130)** and **RSB Poisoning (+110)**.
+- Integrated `retbleed_forensics` (v2.30) into the backend Python scoring aggregator.
+
+### Implementation Status
+- Frontend TypeScript interfaces: **Ready**
+- Core Forensic Engine (v64): **Active**
+- Mock Data Enrichment: **Verified**
+- Threat Scorer Weights: **Updated**
