@@ -641,6 +641,13 @@ export interface MDSForensics {
   microarchitecturalBufferPressure: number;
 }
 
+export interface LVIForensics {
+  isLoadValueInjectionDetected: boolean;
+  lviInjectionEntropy: number;
+  isSpeculativeFaultObserved: boolean;
+  dataForwardingAnomalyScore: number;
+}
+
 export interface RetbleedForensics {
   isRetbleedExploited: boolean;
   rsbOverflowCount: number;
