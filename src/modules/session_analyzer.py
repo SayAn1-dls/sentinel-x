@@ -101,7 +101,7 @@ class SessionAnalyzer:
         anomalies += self._check_fingerprint_change(event)
         anomalies += self._check_rapid_burst(event)
         anomalies += self._check_off_hours(event)
-        anomalies += self._check_hijack_pattern(event)
+        anomalies += self._check_hijack_pattern(event, anomalies)
 
         self._anomalies.extend(anomalies)
         return anomalies
@@ -230,12 +230,19 @@ class SessionAnalyzer:
             )]
         return []
 
-    def _check_hijack_pattern(self, event: SessionEvent) -> List[SessionAnomaly]:
+    def _check_hijack_pattern(self, event: SessionEvent,
+                              current: Optional[List[SessionAnomaly]] = None) -> List[SessionAnomaly]:
         """
         Composite rule: UA shift + IP change together = high hijack confidence.
         Only fires if both signals appear within the same session.
+
+        ``current`` carries the anomalies raised by the event being ingested:
+        they are not in ``self._anomalies`` yet, and both signals can arrive
+        on the same event.
         """
         existing = self.anomalies_for_session(event.session_id)
+        if current:
+            existing = existing + list(current)
         types = {a.anomaly_type for a in existing}
         if "UA_SHIFT" in types and "IP_COUNTRY_SHIFT" in types:
             # Avoid duplicate HIJACK anomalies
