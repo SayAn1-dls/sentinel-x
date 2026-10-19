@@ -13,7 +13,7 @@ def make_event(session_id="s1", user_id="u1", action="view",
     return SessionEvent(
         session_id=session_id,
         user_id=user_id,
-        timestamp=ts or time.time(),
+        timestamp=ts if ts is not None else time.time(),
         ip=ip,
         user_agent=user_agent,
         action=action,
@@ -149,7 +149,7 @@ def test_all_scores_in_range():
     now = time.time()
     a.ingest(make_event(session_id="s1", user_id="u1", ip="1.1.1.1", ts=now))
     a.ingest(make_event(session_id="s2", user_id="u1", ip="2.2.2.2", ts=now+1))
-    a.ingest(make_event(session_id="s1", user_id="u1", ua="Firefox", ts=now+2))
+    a.ingest(make_event(session_id="s1", user_id="u1", user_agent="Firefox", ts=now+2))
     for anomaly in a._anomalies:
         assert 0.0 <= anomaly.score <= 1.0
 
