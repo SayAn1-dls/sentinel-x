@@ -876,7 +876,6 @@ export function calculateAdvancedRiskScore(
     if (params.cognitiveLoad.interactionLatencyAnomaly) score += 20;
     score += params.cognitiveLoad.cognitiveDissonanceIndex * 50;
   }
-  }
 
   
   // v44 Interrupt Logic
@@ -1659,3 +1658,62 @@ export function analyzeSSBForensics(): SSBForensics {
     isMemoryDisambiguationTamperDetected: jitter > 480
   };
 }
+
+/**
+ * ForensicEngine: high-level facade over the forensic primitives above.
+ * Scores single transactions, runs the flag rule set, and detects layering
+ * patterns across transaction sets.
+ */
+
+import { Transaction, ScanFinding } from './types';
+
+const LARGE_AMOUNT_THRESHOLD = 1_000_000;
+const CRYPTO_CURRENCIES = new Set(['BTC', 'ETH', 'XRP', 'USDT', 'SOL']);
+const SUSPICIOUS_ENTITY_PATTERN = /ghost|dark|shadow|phantom/i;
+const LAYERING_MIN_CHAIN_LENGTH = 3;
+
+function analyzeTransaction(tx: Transaction): RiskLevel {
+  if (tx.riskScore > 85) return 'CRITICAL';
+  if (tx.riskScore > 70) return 'HIGH';
+  if (tx.riskScore > 45) return 'MEDIUM';
+  if (tx.riskScore > 20) return 'LOW';
+  return 'CLEAR';
+}
+
+function runRuleSet(tx: Transaction): string[] {
+  const flags = new Set(tx.flags);
+  if (SUSPICIOUS_ENTITY_PATTERN.test(tx.sender) || SUSPICIOUS_ENTITY_PATTERN.test(tx.receiver)) {
+    flags.add('SUSPICIOUS_ENTITY');
+  }
+  if (CRYPTO_CURRENCIES.has(tx.currency.toUpperCase())) {
+    flags.add('CRYPTO_TRANSFER');
+  }
+  if (tx.amount > LARGE_AMOUNT_THRESHOLD) {
+    flags.add('LARGE_AMOUNT');
+  }
+  return [...flags];
+}
+
+function detectLayering(txs: Transaction[]): ScanFinding[] {
+  const bySender = new Map<string, Transaction[]>();
+  for (const tx of txs) {
+    const group = bySender.get(tx.sender) ?? [];
+    group.push(tx);
+    bySender.set(tx.sender, group);
+  }
+  const findings: ScanFinding[] = [];
+  for (const [sender, group] of bySender) {
+    if (group.length >= LAYERING_MIN_CHAIN_LENGTH) {
+      findings.push({
+        id: `LAYERING-${sender}`,
+        type: 'LAYERING',
+        description: `${group.length} transactions from ${sender} in the analysis window suggest a layering chain`,
+        severity: group.length >= 5 ? 'HIGH' : 'MEDIUM',
+        evidence: group.map((tx) => tx.id),
+      });
+    }
+  }
+  return findings;
+}
+
+export const ForensicEngine = { analyzeTransaction, runRuleSet, detectLayering };
