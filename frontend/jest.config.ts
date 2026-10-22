@@ -9,7 +9,6 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  setupFilesAfterFramework: ['<rootDir>/src/__tests__/setup.ts'],
   collectCoverageFrom: [
     'src/lib/**/*.ts',
     'src/components/**/*.tsx',
