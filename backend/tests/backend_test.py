@@ -1,14 +1,34 @@
-"""SENTINEL-X backend test suite (Next.js API via FastAPI proxy)."""
+"""SENTINEL-X backend test suite (Next.js API via FastAPI proxy).
+
+These are live-API integration tests: they need a reachable backend and,
+for some fixtures, mongosh. Set REACT_APP_BACKEND_URL (env or frontend/.env)
+to run them; without it the module skips cleanly instead of crashing at import.
+"""
 import os
 import time
 import uuid
 import subprocess
+from pathlib import Path
+
 import pytest
 import requests
 from dotenv import dotenv_values
 
-frontend_env = dotenv_values("/app/frontend/.env")
-BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _resolve_base_url():
+    """Backend URL from the environment or the repo's frontend/.env; None if unconfigured."""
+    url = os.environ.get("REACT_APP_BACKEND_URL") or dotenv_values(REPO_ROOT / "frontend" / ".env").get("REACT_APP_BACKEND_URL")
+    return url.rstrip("/") if url else None
+
+
+BASE_URL = _resolve_base_url()
+if BASE_URL is None:
+    pytest.skip(
+        "REACT_APP_BACKEND_URL not set and frontend/.env missing - skipping live API integration tests",
+        allow_module_level=True,
+    )
 ADMIN_TOKEN = "test_session_sentinel_001"
 
 
