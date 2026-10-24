@@ -21,11 +21,13 @@ entire application: UI pages AND all `/api/*` routes (auth, passkeys, transactio
 5. **Start Command**: `yarn start`   (launcher auto-runs `next start` because NODE_ENV=production)
 
 ## Node.js version (eMudhra CA advisory, Oct 2026)
-`frontend/package.json` pins `engines.node` to `>=24.22.1 <25`. Render reads this and
-provisions Node 24.22.1, which carries the CA-store fix for the eMudhra certificate
-compromise (services created before 2026-10-21 otherwise default to an unpatched Node).
-After merging a change to this pin, redeploy: Render Dashboard -> service -> Manual Deploy
--> Deploy latest commit. A Git push alone does not restart the service on the new runtime.
+`frontend/package.json` pins `engines.node` to `>=24.22.1 <25`. When you deploy this
+service on Render, Render reads the pin and provisions a Node version carrying the
+CA-store fix for the eMudhra certificate compromise (per Render's docs, services created
+before 2026-10-21 otherwise default to an unpatched Node version).
+If you already have a Render service running from this repo, the pin takes effect only on
+the next deploy: Render Dashboard -> service -> Manual Deploy -> Deploy latest commit.
+A Git push alone does not restart an existing Render service on the new runtime.
 
 ## Required environment variables (Render dashboard)
 | Key | Value |
