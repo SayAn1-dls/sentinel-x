@@ -39,5 +39,8 @@
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "ts-jest": "^29.4.12"
+  },
+  "engines": {
+    "node": ">=24.22.1 <25"
   }
 }
