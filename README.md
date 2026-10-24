@@ -30,7 +30,7 @@ Sensors → Ingestion Gateway → Detection Engine → Threat Classifier → Ale
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20 LTS
+- Node.js 24 LTS (24.22.1+; see RENDER_DEPLOY.md for the eMudhra CA advisory pin)
 - Python 3.11+
 - MongoDB 7.x
 - Redis 7.x
