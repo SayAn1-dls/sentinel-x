@@ -147,7 +147,7 @@ export default function AnalysisPage() {
         <div className="p-6 max-w-[1600px] mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <h1 className="text-2xl font-bold tracking-wider text-white">FORENSICS</h1>
+            <h1 className="font-display text-4xl text-white">Forensics</h1>
             <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#A3C585]/10 border border-[#A3C585]/20">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A3C585] opacity-75" />

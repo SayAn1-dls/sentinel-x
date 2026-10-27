@@ -294,7 +294,7 @@ export default function AdminPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold tracking-wider text-white">ADMIN PANEL</h1>
+              <h1 className="font-display text-4xl text-white">Admin</h1>
               <p className="text-white/40 text-sm mt-1">User management, roles, feature flags & activity log</p>
             </div>
             <div className="flex items-center gap-3">

@@ -278,7 +278,7 @@ export default function SecurityPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold tracking-wider text-white">SECURITY CENTER</h1>
+              <h1 className="font-display text-4xl text-white">Security</h1>
               <p className="text-white/40 text-sm mt-1">System health, sessions, threat timeline & compliance</p>
             </div>
             <div className="flex items-center gap-3">

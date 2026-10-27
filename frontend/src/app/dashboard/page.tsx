@@ -185,7 +185,7 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold tracking-wider text-white">SENTINEL-X DASHBOARD</h1>
+              <h1 className="font-display text-4xl text-white">Dashboard</h1>
               <p className="text-white/40 text-sm mt-1">Real-time financial threat intelligence</p>
             </div>
             <div className="flex items-center gap-4">

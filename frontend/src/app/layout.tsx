@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, Bricolage_Grotesque, JetBrains_Mono } from 'next/font/google';
+import { Instrument_Serif, Archivo, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 
-const display = Fraunces({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-display', display: 'swap' });
-const sans = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-mono', display: 'swap' });
+const display = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-display', display: 'swap' });
+const sans = Archivo({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-mono', display: 'swap' });
 
 const SITE_URL = 'https://sentinel-x-sayan1-dls-projects.vercel.app';
 const TITLE = 'Sentinel-X — follow the money, catch the lie';

@@ -154,7 +154,7 @@ export default function AuditPage() {
         <div className="p-6 max-w-[1600px] mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold tracking-wider text-white">AUDIT TRAIL</h1>
+            <h1 className="font-display text-4xl text-white">Audit trail</h1>
             <button
               onClick={exportCSV}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FF5A1F]/10 border border-[#FF5A1F]/20 text-[#FF5A1F] text-sm font-medium hover:bg-[#FF5A1F]/20 transition-all"

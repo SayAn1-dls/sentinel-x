@@ -172,7 +172,7 @@ export default function NetworkPage() {
 
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <h1 className="text-2xl font-bold tracking-wider text-white">NETWORK TOPOLOGY</h1>
+            <h1 className="font-display text-4xl text-white">Network</h1>
             <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#A3C585]/10 border border-[#A3C585]/20">
               <Broadcast size={14} color="#A3C585" />
               <span className="text-xs font-bold text-[#A3C585]">893 Active Nodes</span>
