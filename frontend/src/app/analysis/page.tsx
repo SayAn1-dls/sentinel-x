@@ -24,7 +24,7 @@ import {
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
-  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/analysis', label: 'Risk Analysis', icon: Cpu },
   { href: '/audit', label: 'Audit Log', icon: List },
   { href: '/network', label: 'Network', icon: Globe },
   { href: '/security', label: 'Security', icon: Lock },
@@ -32,19 +32,19 @@ const NAV = [
 ];
 
 const RISK_COLORS: Record<string, string> = {
-  CRITICAL: '#FF2D55',
-  HIGH: '#FF6B00',
-  MEDIUM: '#FFB800',
-  LOW: '#00FFB3',
-  CLEAR: '#00D4FF',
+  CRITICAL: '#E5484D',
+  HIGH: '#D9822B',
+  MEDIUM: '#E9A23B',
+  LOW: '#A3C585',
+  CLEAR: '#FF5A1F',
 };
 
 const RISK_DIST = [
-  { label: 'CRITICAL', pct: 2.1, color: '#FF2D55' },
-  { label: 'HIGH', pct: 8.4, color: '#FF6B00' },
-  { label: 'MEDIUM', pct: 19.2, color: '#FFB800' },
-  { label: 'LOW', pct: 31.8, color: '#00FFB3' },
-  { label: 'CLEAR', pct: 38.5, color: '#00D4FF' },
+  { label: 'CRITICAL', pct: 2.1, color: '#E5484D' },
+  { label: 'HIGH', pct: 8.4, color: '#D9822B' },
+  { label: 'MEDIUM', pct: 19.2, color: '#E9A23B' },
+  { label: 'LOW', pct: 31.8, color: '#A3C585' },
+  { label: 'CLEAR', pct: 38.5, color: '#FF5A1F' },
 ];
 
 const ANOMALY_DATA = [
@@ -59,9 +59,9 @@ const ANOMALY_DATA = [
 ];
 
 const PIPELINE_STEPS = [
-  { label: 'INGEST', status: 'LIVE', color: '#00FFB3', pulse: false },
-  { label: 'ANALYZE', status: 'PROCESSING', color: '#00D4FF', pulse: true },
-  { label: 'ALERT', status: 'READY', color: '#00FFB3', pulse: false },
+  { label: 'INGEST', status: 'LIVE', color: '#A3C585', pulse: false },
+  { label: 'ANALYZE', status: 'PROCESSING', color: '#FF5A1F', pulse: true },
+  { label: 'ALERT', status: 'READY', color: '#A3C585', pulse: false },
 ];
 
 export default function AnalysisPage() {
@@ -85,21 +85,21 @@ export default function AnalysisPage() {
   };
 
   const metrics = [
-    { label: 'Detection Rate', value: '99.7%', color: '#00FFB3' },
-    { label: 'False Positive Rate', value: '0.3%', color: '#00D4FF' },
-    { label: 'Avg Inference', value: '47ms', color: '#FFB800' },
+    { label: 'Detection Rate', value: '99.7%', color: '#A3C585' },
+    { label: 'False Positive Rate', value: '0.3%', color: '#FF5A1F' },
+    { label: 'Avg Inference', value: '47ms', color: '#E9A23B' },
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#0A0A0F]">
+    <div className="flex min-h-screen bg-[#0E0D0B]">
       {/* Sidebar */}
       <aside
-        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#171512] transition-all duration-300"
         style={{ width: sidebarOpen ? 240 : 64 }}
       >
         <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
-          <Shield size={28} weight="fill" color="#00D4FF" />
-          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+          <Shield size={28} weight="fill" color="#FF5A1F" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#FF5A1F]">SENTINEL-X</span>}
         </div>
         <nav className="flex-1 py-4 flex flex-col gap-1">
           {NAV.map((item) => {
@@ -111,7 +111,7 @@ export default function AnalysisPage() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
                   active
-                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                     : 'text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
               >
@@ -124,8 +124,8 @@ export default function AnalysisPage() {
         <div className="border-t border-white/5 p-4">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
-                <User size={16} color="#00D4FF" />
+              <div className="w-8 h-8 rounded-full bg-[#FF5A1F]/20 flex items-center justify-center">
+                <User size={16} color="#FF5A1F" />
               </div>
               <div>
                 <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
@@ -136,9 +136,9 @@ export default function AnalysisPage() {
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#171512] border border-white/10 flex items-center justify-center hover:border-[#FF5A1F]/40 transition-colors"
         >
-          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+          {sidebarOpen ? <CaretLeft size={12} color="#FF5A1F" /> : <CaretRight size={12} color="#FF5A1F" />}
         </button>
       </aside>
 
@@ -147,20 +147,20 @@ export default function AnalysisPage() {
         <div className="p-6 max-w-[1600px] mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <h1 className="text-2xl font-bold tracking-wider text-white">AI FORENSICS ENGINE</h1>
-            <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#00FFB3]/10 border border-[#00FFB3]/20">
+            <h1 className="text-2xl font-bold tracking-wider text-white">FORENSICS</h1>
+            <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#A3C585]/10 border border-[#A3C585]/20">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FFB3] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00FFB3]" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A3C585] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#A3C585]" />
               </span>
-              <span className="text-xs font-bold text-[#00FFB3]">ACTIVE</span>
+              <span className="text-xs font-bold text-[#A3C585]">ACTIVE</span>
             </span>
           </div>
 
           {/* Model Metrics */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             {metrics.map((m) => (
-              <div key={m.label} className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+              <div key={m.label} className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
                 <div className="text-xs text-white/40 uppercase tracking-wider mb-2">{m.label}</div>
                 <div className="text-3xl font-bold font-mono" style={{ color: m.color }}>
                   {m.value}
@@ -170,7 +170,7 @@ export default function AnalysisPage() {
           </div>
 
           {/* Risk Distribution */}
-          <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 mb-6">
+          <div className="rounded-xl bg-[#171512] border border-white/5 p-5 mb-6">
             <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-4">Risk Distribution</h2>
             <div className="flex flex-col gap-3">
               {RISK_DIST.map((r) => (
@@ -191,7 +191,7 @@ export default function AnalysisPage() {
           </div>
 
           {/* Anomaly Detection Table */}
-          <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 mb-6">
+          <div className="rounded-xl bg-[#171512] border border-white/5 p-5 mb-6">
             <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-4">Anomaly Detection</h2>
             <table className="w-full text-xs">
               <thead>
@@ -207,15 +207,15 @@ export default function AnalysisPage() {
               <tbody>
                 {ANOMALY_DATA.map((row) => {
                   const currentStatus = rowStatuses[row.entity] || row.status;
-                  const statusColor = currentStatus === 'OPENED' ? '#00D4FF' : RISK_COLORS[row.status];
+                  const statusColor = currentStatus === 'OPENED' ? '#FF5A1F' : RISK_COLORS[row.status];
                   return (
                     <tr key={row.entity} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3 font-mono text-[#00D4FF]">{row.entity}</td>
+                      <td className="py-3 font-mono text-[#FF5A1F]">{row.entity}</td>
                       <td className="py-3 font-mono text-white/50">{row.cluster}</td>
                       <td className="py-3 text-center">
                         <span
                           className="font-mono font-bold"
-                          style={{ color: row.score > 0.8 ? '#FF2D55' : row.score > 0.5 ? '#FFB800' : '#00FFB3' }}
+                          style={{ color: row.score > 0.8 ? '#E5484D' : row.score > 0.5 ? '#E9A23B' : '#A3C585' }}
                         >
                           {row.score.toFixed(2)}
                         </span>
@@ -235,7 +235,7 @@ export default function AnalysisPage() {
                       </td>
                       <td className="py-3 text-center">
                         {currentStatus === 'OPENED' ? (
-                          <span className="text-[10px] text-[#00D4FF]/60 font-mono">OPENED</span>
+                          <span className="text-[10px] text-[#FF5A1F]/60 font-mono">OPENED</span>
                         ) : (
                           <button
                             onClick={() => handleAction(row.entity)}
@@ -257,9 +257,9 @@ export default function AnalysisPage() {
             </table>
           </div>
 
-          {/* ML Pipeline Status */}
-          <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 mb-6">
-            <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-4">ML Pipeline Status</h2>
+          {/* Pipeline Status */}
+          <div className="rounded-xl bg-[#171512] border border-white/5 p-5 mb-6">
+            <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-4">Pipeline Status</h2>
             <div className="flex items-center justify-center gap-8">
               {PIPELINE_STEPS.map((step, i) => (
                 <div key={step.label} className="flex items-center gap-4">
@@ -297,7 +297,7 @@ export default function AnalysisPage() {
             <button
               onClick={handleScan}
               disabled={scanning}
-              className="px-6 py-3 rounded-xl bg-[#00D4FF]/10 border border-[#00D4FF]/20 text-[#00D4FF] font-bold text-sm hover:bg-[#00D4FF]/20 transition-all disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-3 rounded-xl bg-[#FF5A1F]/10 border border-[#FF5A1F]/20 text-[#FF5A1F] font-bold text-sm hover:bg-[#FF5A1F]/20 transition-all disabled:opacity-50 flex items-center gap-2"
             >
               {scanning ? (
                 <>
@@ -312,9 +312,9 @@ export default function AnalysisPage() {
               )}
             </button>
             {scanDone && (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00FFB3]/10 border border-[#00FFB3]/20">
-                <Check size={16} color="#00FFB3" weight="bold" />
-                <span className="text-sm text-[#00FFB3] font-medium">Scan Complete — 0 new threats detected</span>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#A3C585]/10 border border-[#A3C585]/20">
+                <Check size={16} color="#A3C585" weight="bold" />
+                <span className="text-sm text-[#A3C585] font-medium">Scan Complete — 0 new threats detected</span>
               </div>
             )}
           </div>

@@ -26,7 +26,7 @@ import {
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
-  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/analysis', label: 'Risk Analysis', icon: Cpu },
   { href: '/audit', label: 'Audit Log', icon: List },
   { href: '/network', label: 'Network', icon: Globe },
   { href: '/security', label: 'Security', icon: Lock },
@@ -34,11 +34,11 @@ const NAV = [
 ];
 
 const RISK_COLORS: Record<string, string> = {
-  CRITICAL: '#FF2D55',
-  HIGH: '#FF6B00',
-  MEDIUM: '#FFB800',
-  LOW: '#00FFB3',
-  CLEAR: '#00D4FF',
+  CRITICAL: '#E5484D',
+  HIGH: '#D9822B',
+  MEDIUM: '#E9A23B',
+  LOW: '#A3C585',
+  CLEAR: '#FF5A1F',
 };
 
 const MOCK_TXNS = [
@@ -121,22 +121,22 @@ export default function DashboardPage() {
   const dismissAlert = (id: number) => setAlerts((a) => a.filter((x) => x.id !== id));
 
   const stats = [
-    { label: 'Total Transactions', value: totalTx, icon: ChartBar, color: '#00D4FF' },
-    { label: 'Threats Intercepted', value: threats, icon: Warning, color: '#FF2D55' },
-    { label: 'Active Nodes', value: nodes, icon: Globe, color: '#00FFB3' },
-    { label: 'System Risk', value: `${risk}%`, icon: ShieldCheck, color: '#FF6B00' },
+    { label: 'Total Transactions', value: totalTx, icon: ChartBar, color: '#FF5A1F' },
+    { label: 'Threats Intercepted', value: threats, icon: Warning, color: '#E5484D' },
+    { label: 'Active Nodes', value: nodes, icon: Globe, color: '#A3C585' },
+    { label: 'System Risk', value: `${risk}%`, icon: ShieldCheck, color: '#D9822B' },
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#0A0A0F]">
+    <div className="flex min-h-screen bg-[#0E0D0B]">
       {/* Sidebar */}
       <aside
-        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#171512] transition-all duration-300"
         style={{ width: sidebarOpen ? 240 : 64 }}
       >
         <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
-          <Shield size={28} weight="fill" color="#00D4FF" />
-          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+          <Shield size={28} weight="fill" color="#FF5A1F" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#FF5A1F]">SENTINEL-X</span>}
         </div>
         <nav className="flex-1 py-4 flex flex-col gap-1">
           {NAV.map((item) => {
@@ -148,7 +148,7 @@ export default function DashboardPage() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
                   active
-                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                     : 'text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
               >
@@ -161,8 +161,8 @@ export default function DashboardPage() {
         <div className="border-t border-white/5 p-4">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
-                <User size={16} color="#00D4FF" />
+              <div className="w-8 h-8 rounded-full bg-[#FF5A1F]/20 flex items-center justify-center">
+                <User size={16} color="#FF5A1F" />
               </div>
               <div>
                 <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
@@ -173,9 +173,9 @@ export default function DashboardPage() {
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#171512] border border-white/10 flex items-center justify-center hover:border-[#FF5A1F]/40 transition-colors"
         >
-          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+          {sidebarOpen ? <CaretLeft size={12} color="#FF5A1F" /> : <CaretRight size={12} color="#FF5A1F" />}
         </button>
       </aside>
 
@@ -189,7 +189,7 @@ export default function DashboardPage() {
               <p className="text-white/40 text-sm mt-1">Real-time financial threat intelligence</p>
             </div>
             <div className="flex items-center gap-4">
-              <div className="px-4 py-2 rounded-lg bg-[#0D0D14] border border-white/5 font-mono text-[#00D4FF] text-sm">
+              <div className="px-4 py-2 rounded-lg bg-[#171512] border border-white/5 font-mono text-[#FF5A1F] text-sm">
                 <Clock size={14} className="inline mr-2" />
                 {clock}
               </div>
@@ -203,7 +203,7 @@ export default function DashboardPage() {
               return (
                 <div
                   key={s.label}
-                  className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover"
+                  className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs text-white/40 uppercase tracking-wider">{s.label}</span>
@@ -220,12 +220,12 @@ export default function DashboardPage() {
           {/* Transaction Feed + Alert Panel */}
           <div className="grid grid-cols-5 gap-4 mb-6">
             {/* Transaction Feed */}
-            <div className="col-span-3 rounded-xl bg-[#0D0D14] border border-white/5 p-5">
+            <div className="col-span-3 rounded-xl bg-[#171512] border border-white/5 p-5">
               <div className="flex items-center gap-3 mb-4">
                 <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase">Live Transaction Feed</h2>
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FFB3] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00FFB3]" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A3C585] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#A3C585]" />
                 </span>
               </div>
               <div className="overflow-hidden">
@@ -246,7 +246,7 @@ export default function DashboardPage() {
                         key={`${tx.id}-${i}`}
                         className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors data-row-enter"
                       >
-                        <td className="py-2.5 font-mono text-[#00D4FF]">{tx.id}</td>
+                        <td className="py-2.5 font-mono text-[#FF5A1F]">{tx.id}</td>
                         <td className="py-2.5 text-right font-mono text-white/80">{tx.amount}</td>
                         <td className="py-2.5 pl-4 font-mono text-white/50">{tx.from}</td>
                         <td className="py-2.5 font-mono text-white/50">{tx.to}</td>
@@ -271,9 +271,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Alert Panel */}
-            <div className="col-span-2 rounded-xl bg-[#0D0D14] border border-white/5 p-5">
+            <div className="col-span-2 rounded-xl bg-[#171512] border border-white/5 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Bell size={18} color="#FF2D55" weight="fill" />
+                <Bell size={18} color="#E5484D" weight="fill" />
                 <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase">Active Threats</h2>
                 <span className="ml-auto text-xs font-mono text-white/30">{alerts.length}</span>
               </div>
@@ -316,7 +316,7 @@ export default function DashboardPage() {
               </div>
               <a
                 href="/audit"
-                className="mt-4 flex items-center gap-1 text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors"
+                className="mt-4 flex items-center gap-1 text-xs text-[#FF5A1F]/60 hover:text-[#FF5A1F] transition-colors"
               >
                 View All Alerts <CaretRight size={12} />
               </a>
@@ -326,17 +326,17 @@ export default function DashboardPage() {
           {/* Quick Actions */}
           <div className="grid grid-cols-4 gap-4">
             {[
-              { label: 'Run Analysis', href: '/analysis', color: '#00D4FF', icon: Cpu },
-              { label: 'View Network', href: '/network', color: '#00FFB3', icon: Globe },
-              { label: 'Audit Log', href: '/audit', color: '#FFB800', icon: List },
-              { label: 'Admin Panel', href: '/admin', color: '#FF6B00', icon: Gear },
+              { label: 'Run Analysis', href: '/analysis', color: '#FF5A1F', icon: Cpu },
+              { label: 'View Network', href: '/network', color: '#A3C585', icon: Globe },
+              { label: 'Audit Log', href: '/audit', color: '#E9A23B', icon: List },
+              { label: 'Admin Panel', href: '/admin', color: '#D9822B', icon: Gear },
             ].map((action) => {
               const Icon = action.icon;
               return (
                 <button
                   key={action.label}
                   onClick={() => (window.location.href = action.href)}
-                  className="rounded-xl bg-[#0D0D14] border border-white/5 p-4 flex items-center gap-3 hover:border-white/10 transition-all group card-hover"
+                  className="rounded-xl bg-[#171512] border border-white/5 p-4 flex items-center gap-3 hover:border-white/10 transition-all group card-hover"
                 >
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center"

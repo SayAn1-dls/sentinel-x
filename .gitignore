@@ -70,3 +70,4 @@ credentials.json
 # Streak maintenance artifacts
 daily-logs/
 contribution-surge/
+.vercel/

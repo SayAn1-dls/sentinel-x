@@ -81,17 +81,17 @@ function RiskGauge({ score, size = 160 }: { score: number; size?: number }) {
       const scoreAngle = startAngle + (currentScore / 100) * totalArc;
       const gradient = ctx.createConicGradient(startAngle, cx, cy);
       if (currentScore > 70) {
-        gradient.addColorStop(0, '#E63946');
-        gradient.addColorStop(0.5, '#E63946');
-        gradient.addColorStop(1, '#C62D38');
+        gradient.addColorStop(0, '#E5484D');
+        gradient.addColorStop(0.5, '#E5484D');
+        gradient.addColorStop(1, '#E5484D');
       } else if (currentScore > 40) {
-        gradient.addColorStop(0, '#F59E0B');
-        gradient.addColorStop(0.5, '#E63946');
-        gradient.addColorStop(1, '#E63946');
+        gradient.addColorStop(0, '#E9A23B');
+        gradient.addColorStop(0.5, '#E5484D');
+        gradient.addColorStop(1, '#E5484D');
       } else {
-        gradient.addColorStop(0, '#10B981');
-        gradient.addColorStop(0.5, '#F59E0B');
-        gradient.addColorStop(1, '#F59E0B');
+        gradient.addColorStop(0, '#A3C585');
+        gradient.addColorStop(0.5, '#E9A23B');
+        gradient.addColorStop(1, '#E9A23B');
       }
 
       ctx.beginPath();
@@ -114,7 +114,7 @@ function RiskGauge({ score, size = 160 }: { score: number; size?: number }) {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.font = 'bold 36px "Libre Baskerville", Georgia, serif';
-      ctx.fillStyle = currentScore > 70 ? '#E63946' : currentScore > 40 ? '#F59E0B' : '#10B981';
+      ctx.fillStyle = currentScore > 70 ? '#E5484D' : currentScore > 40 ? '#E9A23B' : '#A3C585';
       ctx.fillText(Math.round(currentScore).toString(), cx, cy - 6);
 
       ctx.font = '9px "JetBrains Mono", monospace';
@@ -126,7 +126,7 @@ function RiskGauge({ score, size = 160 }: { score: number; size?: number }) {
       const dotY = cy + Math.sin(scoreAngle) * radius;
       ctx.beginPath();
       ctx.arc(dotX, dotY, 4, 0, Math.PI * 2);
-      ctx.fillStyle = currentScore > 70 ? '#E63946' : currentScore > 40 ? '#F59E0B' : '#10B981';
+      ctx.fillStyle = currentScore > 70 ? '#E5484D' : currentScore > 40 ? '#E9A23B' : '#A3C585';
       ctx.shadowColor = ctx.fillStyle;
       ctx.shadowBlur = 10;
       ctx.fill();

@@ -1,306 +1,224 @@
-'use client';
-import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import {
-  ShieldCheck, Database, Fingerprint, Globe, ArrowRight,
-  LockKey, Bell, Graph, Clipboard, MagnifyingGlass,
-  CloudArrowUp, Brain, Siren, CaretRight,
-  GitBranch, Stack, Cpu,
-  User, Lightbulb, Rocket, CheckCircle,
-} from '@phosphor-icons/react';
+import Ledger from '@/components/landing/Ledger';
+import Reveal from '@/components/landing/Reveal';
 
-function useCounter(target: number, duration = 2000) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true;
-        const start = performance.now();
-        const step = (now: number) => {
-          const progress = Math.min((now - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          setCount(Math.floor(eased * target));
-          if (progress < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-      }
-    }, { threshold: 0.3 });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, duration]);
-  return { count, ref };
-}
-
-const TX_FEED = [
-  { id: 'TX-8A2F', amount: '$42,180', from: 'NODE-7X2', to: 'NODE-3K9', risk: 'LOW' },
-  { id: 'TX-C91D', amount: '$128,500', from: 'NODE-1A8', to: 'NODE-9F2', risk: 'HIGH' },
-  { id: 'TX-F4E7', amount: '$8,920', from: 'NODE-5M3', to: 'NODE-2J6', risk: 'CLEAR' },
-  { id: 'TX-B28A', amount: '$256,000', from: 'NODE-4P1', to: 'NODE-8W5', risk: 'CRITICAL' },
-  { id: 'TX-A77C', amount: '$15,340', from: 'NODE-2R9', to: 'NODE-6T1', risk: 'MEDIUM' },
+const CHAPTERS = [
+  {
+    title: 'The question',
+    body: 'It started with a question I couldn’t shake: when a bank stops a payment in under a second, what is it actually looking at? Every answer I found was a sales page. So I decided to build one myself and find out.',
+  },
+  {
+    title: 'The ugly first version',
+    body: 'The first Sentinel was one page and a pile of if-statements. It flagged everything — including my own test transfers. But it taught me the real problem: one strange payment means little. The pattern across many accounts means everything.',
+  },
+  {
+    title: 'Thinking in networks',
+    body: 'So I stopped reading transactions as rows and started drawing them as a map — accounts as points, money as lines. Rings of mule accounts and cash looping back to where it began suddenly had a shape. That shift is the heart of Sentinel-X.',
+  },
+  {
+    title: 'Breaking it on purpose',
+    body: 'I spent late nights attacking my own system: stolen passwords tried at speed, hijacked sessions, quiet devices phoning home. Every time something slipped through, it became a new check and a new test. Passkey login and the network kill-switch were born in those nights.',
+  },
+  {
+    title: 'Where it stands',
+    body: 'Today it’s a full console — a live feed, risk scores, a network map, admin controls and an audit trail that remembers every click. It isn’t finished. Neither am I. That’s the fun part.',
+  },
 ];
 
-const RISK_COLOR: Record<string, string> = {
-  CRITICAL: 'text-[#FF2D55] bg-[#FF2D55]/10',
-  HIGH: 'text-[#FF6B00] bg-[#FF6B00]/10',
-  MEDIUM: 'text-[#FFB800] bg-[#FFB800]/10',
-  LOW: 'text-[#00FFB3] bg-[#00FFB3]/10',
-  CLEAR: 'text-[#00D4FF] bg-[#00D4FF]/10',
-};
-
-const FEATURES = [
-  { icon: Brain, title: 'GNN Fraud Detection', desc: 'Graph Neural Networks map transaction flows and flag anomalies across 893 active nodes in real time.' },
-  { icon: Globe, title: 'Network Topology', desc: 'Interactive SVG maps visualize node clusters, transaction paths, and suspicious connection patterns.' },
-  { icon: Siren, title: 'Real-Time Alerts', desc: 'Sub-second threat detection with severity-ranked alerts, kill-switch isolation, and audit trails.' },
-  { icon: MagnifyingGlass, title: 'Deep Audit Logs', desc: '20-level filterable event logs with CSV export, actor tracking, and tamper-proof timestamping.' },
-  { icon: LockKey, title: 'Security Hardening', desc: 'Session management, compliance dashboards (SOC2, PCI-DSS, GDPR), and active threat timeline.' },
-  { icon: Graph, title: 'Risk Analytics', desc: 'Risk scoring engine with confidence intervals, pipeline stage tracking, and batch scan triggers.' },
+const WORK = [
+  { n: '01', title: 'Follow the money', body: 'Every transfer is drawn onto a map of accounts, so loops, fan-outs and mule rings stand out instead of hiding in a spreadsheet.', href: '/network' },
+  { n: '02', title: 'Score every move', body: 'Velocity, geography, device and history roll into one number per payment — with the reasons written next to it, in plain words.', href: '/analysis' },
+  { n: '03', title: 'Lock the door', body: 'Passkey sign-in with no passwords to steal, session watching, and a single switch that freezes a suspicious corner of the network.', href: '/security' },
+  { n: '04', title: 'Keep the receipts', body: 'Who did what, when, and why — every action lands in an audit log you can filter, read and export.', href: '/audit' },
 ];
 
-const STATS_DATA = [
-  { label: 'Transactions Monitored', end: 4290000, suffix: '+', display: '4.29M+', icon: Database },
-  { label: 'Model Accuracy', end: 997, suffix: '%', display: '99.7%', icon: CheckCircle },
-  { label: 'Active Network Nodes', end: 893, suffix: '', display: '893', icon: Globe },
-  { label: 'Threats Intercepted', end: 12847, suffix: '', display: '12,847', icon: ShieldCheck },
-];
+const STACK = ['Next.js', 'TypeScript', 'Python', 'MongoDB', 'WebAuthn passkeys', 'Tailwind'];
+const TICKER = ['Follows the money', 'Scores the risk', 'Locks the door', 'Keeps the receipts'];
 
-const TECH = [
-  { icon: Brain, label: 'PyTorch GNN' },
-  { icon: Stack, label: 'FastAPI' },
-  { icon: Cpu, label: 'Next.js 15' },
-  { icon: GitBranch, label: 'GraphQL' },
-  { icon: CloudArrowUp, label: 'Render + Vercel' },
-  { icon: Database, label: 'PostgreSQL' },
-];
-
-function StatCard({ label, end, suffix, display, icon: Icon }: typeof STATS_DATA[0]) {
-  const { count, ref } = useCounter(end, 2200);
-  const formatted = end > 10000
-    ? count.toLocaleString()
-    : suffix === '%' ? (count / 10).toFixed(1) : count.toString();
+export default function Home() {
   return (
-    <div ref={ref} className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 flex flex-col gap-3 hover:border-[#00D4FF]/30 transition-colors">
-      <div className="w-10 h-10 rounded-xl bg-[#00D4FF]/10 flex items-center justify-center">
-        <Icon size={20} className="text-[#00D4FF]" />
-      </div>
-      <div className="text-3xl font-bold text-white font-mono tracking-tight">
-        {suffix === '%' ? `${formatted}%` : `${formatted}${suffix}`}
-      </div>
-      <div className="text-xs text-white/40 font-medium uppercase tracking-widest">{label}</div>
-    </div>
-  );
-}
-
-export default function SentinelXPage() {
-  const [txIndex, setTxIndex] = useState(0);
-  const [time, setTime] = useState('');
-
-  useEffect(() => {
-    const tick = () => {
-      const d = new Date();
-      setTime(d.toLocaleTimeString('en-US', { hour12: false }));
-    };
-    tick();
-    const t = setInterval(tick, 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    const t = setInterval(() => setTxIndex(i => (i + 1) % TX_FEED.length), 1800);
-    return () => clearInterval(t);
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-[#05050D] text-white overflow-x-hidden">
-      {/* NAV */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#05050D]/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 border border-[#00D4FF]/30 flex items-center justify-center">
-              <ShieldCheck size={16} className="text-[#00D4FF]" weight="fill" />
-            </div>
-            <span className="font-bold text-sm tracking-wider text-white">SENTINEL<span className="text-[#00D4FF]">-X</span></span>
-          </div>
-          <div className="hidden md:flex items-center gap-6 text-xs text-white/40 font-medium">
-            <span>Features</span>
-            <span>Architecture</span>
-            <span>Security</span>
-          </div>
-          <Link href="/dashboard">
-            <button className="flex items-center gap-2 bg-[#00D4FF] text-black text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#00BBEE] transition-colors">
-              Launch Dashboard <ArrowRight size={14} weight="bold" />
-            </button>
+    <main className="relative">
+      {/* Nav */}
+      <header className="fixed inset-x-0 top-0 z-50 mix-blend-difference">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 text-paper">
+          <Link href="/" className="font-display text-2xl tracking-tight">
+            Sentinel<span className="italic text-accent">—</span>X
           </Link>
+          <div className="hidden items-center gap-8 text-sm md:flex">
+            <a href="#story" className="draw">Story</a>
+            <a href="#work" className="draw">What it does</a>
+            <a href="#build" className="draw">The build</a>
+          </div>
+          <Link href="/dashboard" className="rounded-full border border-paper/60 px-5 py-2 text-sm transition-colors hover:bg-paper hover:text-ink">
+            Open console
+          </Link>
+        </nav>
+      </header>
+
+      {/* Hero */}
+      <section className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center gap-16 px-6 pt-32 pb-20 lg:grid-cols-[1.25fr_1fr]">
+        <div>
+          <p className="mb-8 font-mono text-xs uppercase tracking-[0.3em] text-sand">
+            A fraud console · built by Sayan
+          </p>
+          <h1 className="font-display text-[clamp(3rem,7vw,6.5rem)] font-light leading-[0.92] tracking-[-0.03em]">
+            Every payment tells a story.{' '}
+            <em className="font-normal text-accent">Some of them lie.</em>
+          </h1>
+          <p className="mt-10 max-w-xl text-lg leading-relaxed text-paper/70">
+            Sentinel-X watches money move between accounts, notices when the story stops adding up,
+            and leaves a paper trail a human can actually read.
+          </p>
+          <div className="mt-12 flex flex-wrap items-center gap-6">
+            <Link
+              href="/dashboard"
+              className="group inline-flex items-center gap-3 rounded-full bg-accent px-8 py-4 font-medium text-ink transition-transform hover:-translate-y-0.5"
+            >
+              Step inside
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+            <a href="#story" className="draw text-paper/80">or read how it started ↓</a>
+          </div>
         </div>
-      </nav>
-
-      {/* HERO */}
-      <section className="pt-40 pb-24 px-6 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 bg-[#00D4FF]/5 border border-[#00D4FF]/20 rounded-full px-4 py-1.5 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
-              <span className="text-[#00D4FF] text-xs font-semibold tracking-widest uppercase">Live System Active</span>
-            </div>
-            <h1 className="text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight mb-6">
-              AI-Powered<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D4FF] to-[#00FFB3]">Fraud Detection</span><br />
-              Infrastructure
-            </h1>
-            <p className="text-white/50 text-base leading-relaxed mb-10 max-w-lg">
-              Sentinel-X uses Graph Neural Networks to monitor 4.29M+ transactions across 893 active nodes — detecting anomalies, isolating threats, and generating audit trails in real time.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/dashboard">
-                <button className="flex items-center gap-2 bg-[#00D4FF] text-black font-bold px-6 py-3 rounded-xl hover:bg-[#00BBEE] transition-all text-sm">
-                  Get Started <ArrowRight size={16} weight="bold" />
-                </button>
-              </Link>
-              <Link href="/analysis">
-                <button className="flex items-center gap-2 bg-white/5 border border-white/10 text-white/70 font-semibold px-6 py-3 rounded-xl hover:bg-white/8 hover:border-white/20 transition-all text-sm">
-                  View Analysis <CaretRight size={14} />
-                </button>
-              </Link>
-            </div>
-          </div>
-
-          {/* LIVE FEED CARD */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-[#00D4FF]/5 rounded-3xl blur-3xl" />
-            <div className="relative bg-[#0D0D1A] border border-white/10 rounded-2xl overflow-hidden">
-              {/* Card header */}
-              <div className="border-b border-white/5 px-5 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#00FFB3] animate-pulse" />
-                  <span className="text-xs text-white/50 font-mono">LIVE TRANSACTION FEED</span>
-                </div>
-                <span className="text-xs font-mono text-[#00D4FF]">{time}</span>
-              </div>
-              {/* Ticker */}
-              <div className="px-5 py-4 space-y-3">
-                {TX_FEED.map((tx, i) => {
-                  const isActive = i === txIndex;
-                  return (
-                    <div
-                      key={tx.id}
-                      className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-500 ${isActive ? 'bg-[#00D4FF]/5 border-[#00D4FF]/20' : 'bg-white/[0.02] border-white/5'}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-1.5 h-8 rounded-full transition-all duration-500 ${isActive ? 'bg-[#00D4FF]' : 'bg-white/10'}`} />
-                        <div>
-                          <div className="text-xs font-mono text-white/80 font-semibold">{tx.id}</div>
-                          <div className="text-[10px] text-white/30">{tx.from} → {tx.to}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-bold font-mono text-white">{tx.amount}</span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${RISK_COLOR[tx.risk]}`}>{tx.risk}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              {/* Footer stats */}
-              <div className="border-t border-white/5 px-5 py-3 grid grid-cols-3 gap-4">
-                {[['893', 'Nodes'], ['99.7%', 'Accuracy'], ['<50ms', 'Latency']].map(([val, lbl]) => (
-                  <div key={lbl} className="text-center">
-                    <div className="text-sm font-bold font-mono text-[#00D4FF]">{val}</div>
-                    <div className="text-[10px] text-white/30">{lbl}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="mx-auto w-full max-w-md">
+          <Ledger />
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="py-20 px-6 border-y border-white/5 bg-white/[0.01]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs text-[#00D4FF] font-semibold tracking-widest uppercase mb-3">By The Numbers</p>
-            <h2 className="text-3xl font-black">System at Scale</h2>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {STATS_DATA.map(s => <StatCard key={s.label} {...s} />)}
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-xs text-[#00D4FF] font-semibold tracking-widest uppercase mb-3">Capabilities</p>
-          <h2 className="text-3xl font-black">Everything You Need</h2>
-          <p className="text-white/40 text-sm mt-3 max-w-lg mx-auto">End-to-end fraud intelligence — from raw transaction ingestion to compliance reporting.</p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {FEATURES.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="group bg-white/[0.02] border border-white/8 rounded-2xl p-6 hover:border-[#00D4FF]/25 hover:bg-white/[0.04] transition-all">
-              <div className="w-10 h-10 rounded-xl bg-[#00D4FF]/8 border border-[#00D4FF]/15 flex items-center justify-center mb-4 group-hover:bg-[#00D4FF]/15 transition-colors">
-                <Icon size={20} className="text-[#00D4FF]" />
-              </div>
-              <h3 className="font-bold text-sm text-white mb-2">{title}</h3>
-              <p className="text-white/40 text-xs leading-relaxed">{desc}</p>
-            </div>
+      {/* Ticker */}
+      <div className="overflow-hidden border-y border-[var(--line)] bg-accent py-5 text-ink">
+        <div className="marquee flex w-max gap-12 whitespace-nowrap font-display text-3xl italic md:text-5xl">
+          {[...TICKER, ...TICKER, ...TICKER, ...TICKER].map((t, i) => (
+            <span key={i} className="flex items-center gap-12">
+              {t} <span className="not-italic">✺</span>
+            </span>
           ))}
         </div>
+      </div>
+
+      {/* Story */}
+      <section id="story" className="mx-auto max-w-7xl px-6 py-32">
+        <div className="grid gap-16 lg:grid-cols-[1fr_1.4fr]">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <p className="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-sand">The story so far</p>
+            <h2 className="font-display text-5xl font-light leading-[1] tracking-tight md:text-6xl">
+              Hi, I’m <em className="text-accent">Sayan.</em>
+              <br />I build things to understand them.
+            </h2>
+            <div className="mt-10 flex items-center gap-5">
+              <div className="grid h-20 w-20 place-items-center rounded-full border border-accent font-display text-3xl italic text-accent">
+                SB
+              </div>
+              <div className="text-sm leading-relaxed text-paper/60">
+                Sayan Bhattacharya
+                <br />
+                Developer · tinkerer · professional skeptic
+              </div>
+            </div>
+          </div>
+
+          <ol className="relative border-l border-[var(--line)]">
+            {CHAPTERS.map((c, i) => (
+              <li key={c.title} className="relative pb-16 pl-10 last:pb-0">
+                <span className="absolute -left-[5px] top-3 h-2.5 w-2.5 rounded-full bg-accent" />
+                <Reveal>
+                  <p className="font-mono text-xs text-sand">Chapter {String(i + 1).padStart(2, '0')}</p>
+                  <h3 className="mt-2 font-display text-3xl md:text-4xl">{c.title}</h3>
+                  <p className="mt-4 max-w-xl text-lg leading-relaxed text-paper/70">{c.body}</p>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <Reveal className="mx-auto mt-32 max-w-4xl text-center">
+          <blockquote className="font-display text-4xl font-light italic leading-tight md:text-6xl">
+            “I don’t trust systems I can’t explain — so I build the ones{' '}
+            <span className="text-accent">I’d want to trust.</span>”
+          </blockquote>
+        </Reveal>
       </section>
 
-      {/* TECH STACK */}
-      <section className="py-16 px-6 border-y border-white/5 bg-white/[0.01]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-center text-xs text-white/30 font-semibold tracking-widest uppercase mb-8">Built With</p>
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            {TECH.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 bg-white/[0.03] border border-white/8 rounded-xl px-4 py-2.5">
-                <Icon size={16} className="text-[#00D4FF]" />
-                <span className="text-xs font-semibold text-white/60">{label}</span>
-              </div>
-            ))}
+      {/* What it does */}
+      <section id="work" className="border-t border-[var(--line)] bg-ink-2">
+        <div className="mx-auto max-w-7xl px-6 py-32">
+          <div className="mb-20 flex flex-wrap items-end justify-between gap-6">
+            <h2 className="font-display text-5xl tracking-tight md:text-7xl">
+              What it <em className="text-accent">does</em>
+            </h2>
+            <p className="max-w-sm text-paper/60">Four jobs, done properly. Click any of them to see it running.</p>
           </div>
+          <ul>
+            {WORK.map(w => (
+              <li key={w.n} className="border-t border-[var(--line)] last:border-b">
+                <Link
+                  href={w.href}
+                  className="group grid items-baseline gap-4 py-10 transition-colors md:grid-cols-[6rem_1fr_1.3fr_3rem]"
+                >
+                  <span className="font-mono text-sm text-sand">{w.n}</span>
+                  <h3 className="font-display text-3xl transition-colors group-hover:text-accent md:text-5xl">{w.title}</h3>
+                  <p className="text-paper/60 md:text-lg">{w.body}</p>
+                  <span className="hidden text-3xl text-sand transition-transform group-hover:translate-x-2 group-hover:text-accent md:block">→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* The build */}
+      <section id="build" className="mx-auto max-w-7xl px-6 py-32">
+        <div className="grid gap-12 md:grid-cols-2">
+          <Reveal>
+            <h2 className="font-display text-5xl leading-[1] tracking-tight md:text-6xl">
+              Made by hand, <em className="text-accent">line by line.</em>
+            </h2>
+          </Reveal>
+          <Reveal delay={150}>
+            <p className="text-lg leading-relaxed text-paper/70">
+              No templates, no shortcuts. A Next.js console in front, Python detectors behind it, MongoDB
+              keeping the records, and passkeys standing at the door. Every detector has a test, because a
+              fraud tool you can’t verify is just another way to be fooled.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {STACK.map(s => (
+                <span key={s} className="rounded-full border border-[var(--line)] px-4 py-1.5 font-mono text-xs text-paper/70">
+                  {s}
+                </span>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-32 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex w-16 h-16 rounded-2xl bg-[#00D4FF]/10 border border-[#00D4FF]/25 items-center justify-center mb-6">
-            <Rocket size={28} className="text-[#00D4FF]" weight="fill" />
-          </div>
-          <h2 className="text-4xl font-black mb-4">Ready to Deploy?</h2>
-          <p className="text-white/40 text-sm leading-relaxed mb-10 max-w-md mx-auto">
-            Enter the live dashboard and monitor your entire financial network — alerts, audits, topology, and analytics in one place.
-          </p>
-          <Link href="/dashboard">
-            <button className="inline-flex items-center gap-3 bg-[#00D4FF] text-black font-bold px-8 py-4 rounded-xl hover:bg-[#00BBEE] transition-all text-base">
-              <ShieldCheck size={20} weight="fill" />
-              Launch Dashboard
-              <ArrowRight size={18} weight="bold" />
-            </button>
+      <section className="relative overflow-hidden border-t border-[var(--line)]">
+        <div className="mx-auto max-w-7xl px-6 py-40 text-center">
+          <h2 className="font-display text-[clamp(3rem,9vw,8.5rem)] font-light leading-[0.9] tracking-[-0.03em]">
+            Come watch
+            <br />
+            the <em className="text-accent">money move.</em>
+          </h2>
+          <Link
+            href="/dashboard"
+            className="group mt-14 inline-flex items-center gap-3 rounded-full border border-paper px-10 py-5 text-lg transition-colors hover:bg-paper hover:text-ink"
+          >
+            Open the console <span className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="border-t border-white/5 py-8 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <ShieldCheck size={16} className="text-[#00D4FF]" weight="fill" />
-            <span className="text-xs font-bold text-white/40 tracking-wider">SENTINEL-X</span>
-          </div>
-          <div className="flex items-center gap-6 text-[10px] text-white/20">
-            {['Dashboard', 'Analysis', 'Audit', 'Network', 'Security', 'Admin'].map(p => (
-              <Link key={p} href={`/${p.toLowerCase()}`} className="hover:text-white/50 transition-colors">{p}</Link>
-            ))}
-          </div>
-          <span className="text-[10px] text-white/20">© 2025 Sentinel-X. All rights reserved.</span>
+      <footer className="border-t border-[var(--line)]">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-paper/50 md:flex-row">
+          <span className="font-display text-lg text-paper">
+            Sentinel<span className="italic text-accent">—</span>X
+          </span>
+          <span>Designed &amp; built by Sayan Bhattacharya · {new Date().getFullYear()}</span>
+          <a href="https://github.com/SayAn1-dls/sentinel-x" className="draw" target="_blank" rel="noreferrer">
+            GitHub ↗
+          </a>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }
