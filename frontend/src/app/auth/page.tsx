@@ -8,7 +8,7 @@ export default function AuthRedirect() {
     try { router.replace('/dashboard'); } catch (_) { window.location.href = '/dashboard'; }
   }, [router]);
   return (
-    <div className="min-h-screen bg-[#0A0F1E] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0E0D0B] flex items-center justify-center">
       <p className="text-white/40 text-sm">Redirecting to dashboard...</p>
     </div>
   );

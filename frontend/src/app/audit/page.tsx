@@ -19,7 +19,7 @@ import {
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
-  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/analysis', label: 'Risk Analysis', icon: Cpu },
   { href: '/audit', label: 'Audit Log', icon: List },
   { href: '/network', label: 'Network', icon: Globe },
   { href: '/security', label: 'Security', icon: Lock },
@@ -27,10 +27,10 @@ const NAV = [
 ];
 
 const RISK_COLORS: Record<string, string> = {
-  CRITICAL: '#FF2D55',
-  HIGH: '#FF6B00',
-  MEDIUM: '#FFB800',
-  LOW: '#00FFB3',
+  CRITICAL: '#E5484D',
+  HIGH: '#D9822B',
+  MEDIUM: '#E9A23B',
+  LOW: '#A3C585',
 };
 
 const AUDIT_DATA = [
@@ -98,15 +98,15 @@ export default function AuditPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0A0A0F]">
+    <div className="flex min-h-screen bg-[#0E0D0B]">
       {/* Sidebar */}
       <aside
-        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#171512] transition-all duration-300"
         style={{ width: sidebarOpen ? 240 : 64 }}
       >
         <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
-          <Shield size={28} weight="fill" color="#00D4FF" />
-          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+          <Shield size={28} weight="fill" color="#FF5A1F" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#FF5A1F]">SENTINEL-X</span>}
         </div>
         <nav className="flex-1 py-4 flex flex-col gap-1">
           {NAV.map((item) => {
@@ -118,7 +118,7 @@ export default function AuditPage() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
                   active
-                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                     : 'text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
               >
@@ -131,8 +131,8 @@ export default function AuditPage() {
         <div className="border-t border-white/5 p-4">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
-                <User size={16} color="#00D4FF" />
+              <div className="w-8 h-8 rounded-full bg-[#FF5A1F]/20 flex items-center justify-center">
+                <User size={16} color="#FF5A1F" />
               </div>
               <div>
                 <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
@@ -143,9 +143,9 @@ export default function AuditPage() {
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#171512] border border-white/10 flex items-center justify-center hover:border-[#FF5A1F]/40 transition-colors"
         >
-          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+          {sidebarOpen ? <CaretLeft size={12} color="#FF5A1F" /> : <CaretRight size={12} color="#FF5A1F" />}
         </button>
       </aside>
 
@@ -157,7 +157,7 @@ export default function AuditPage() {
             <h1 className="text-2xl font-bold tracking-wider text-white">AUDIT TRAIL</h1>
             <button
               onClick={exportCSV}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF]/10 border border-[#00D4FF]/20 text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/20 transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FF5A1F]/10 border border-[#FF5A1F]/20 text-[#FF5A1F] text-sm font-medium hover:bg-[#FF5A1F]/20 transition-all"
             >
               <Download size={16} weight="bold" />
               Export CSV
@@ -171,7 +171,7 @@ export default function AuditPage() {
               <select
                 value={severityFilter}
                 onChange={(e) => { setSeverityFilter(e.target.value); setPage(1); }}
-                className="bg-[#0D0D14] border border-white/10 rounded-lg px-3 py-2 text-xs text-white/70 outline-none focus:border-[#00D4FF]/30"
+                className="bg-[#171512] border border-white/10 rounded-lg px-3 py-2 text-xs text-white/70 outline-none focus:border-[#FF5A1F]/30"
               >
                 <option value="ALL">All Severity</option>
                 <option value="CRITICAL">CRITICAL</option>
@@ -183,7 +183,7 @@ export default function AuditPage() {
             <select
               value={actionFilter}
               onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
-              className="bg-[#0D0D14] border border-white/10 rounded-lg px-3 py-2 text-xs text-white/70 outline-none focus:border-[#00D4FF]/30"
+              className="bg-[#171512] border border-white/10 rounded-lg px-3 py-2 text-xs text-white/70 outline-none focus:border-[#FF5A1F]/30"
             >
               {ALL_ACTIONS.map((a) => (
                 <option key={a} value={a}>
@@ -198,13 +198,13 @@ export default function AuditPage() {
                 placeholder="Search actor or target..."
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-                className="w-full bg-[#0D0D14] border border-white/10 rounded-lg pl-9 pr-3 py-2 text-xs text-white/70 outline-none focus:border-[#00D4FF]/30 placeholder:text-white/20"
+                className="w-full bg-[#171512] border border-white/10 rounded-lg pl-9 pr-3 py-2 text-xs text-white/70 outline-none focus:border-[#FF5A1F]/30 placeholder:text-white/20"
               />
             </div>
           </div>
 
           {/* Table */}
-          <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 mb-4">
+          <div className="rounded-xl bg-[#171512] border border-white/5 p-5 mb-4">
             <table className="w-full text-xs">
               <thead>
                 <tr className="text-white/30 border-b border-white/5">
@@ -227,14 +227,14 @@ export default function AuditPage() {
                     <td className="py-3">
                       <span className="font-mono text-white/70 px-2 py-0.5 rounded bg-white/[0.03]">{row.action}</span>
                     </td>
-                    <td className="py-3 font-mono text-[#00D4FF]">{row.target}</td>
+                    <td className="py-3 font-mono text-[#FF5A1F]">{row.target}</td>
                     <td className="py-3 text-center">
                       <span
                         className="px-2 py-0.5 rounded-full text-[10px] font-bold"
                         style={{
-                          color: RISK_COLORS[row.severity] || '#00D4FF',
-                          backgroundColor: `${RISK_COLORS[row.severity] || '#00D4FF'}15`,
-                          border: `1px solid ${RISK_COLORS[row.severity] || '#00D4FF'}30`,
+                          color: RISK_COLORS[row.severity] || '#FF5A1F',
+                          backgroundColor: `${RISK_COLORS[row.severity] || '#FF5A1F'}15`,
+                          border: `1px solid ${RISK_COLORS[row.severity] || '#FF5A1F'}30`,
                         }}
                       >
                         {row.severity}
@@ -263,7 +263,7 @@ export default function AuditPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage <= 1}
-                className="px-3 py-1.5 rounded-lg bg-[#0D0D14] border border-white/10 text-xs text-white/50 disabled:opacity-30 hover:border-[#00D4FF]/30 transition-all"
+                className="px-3 py-1.5 rounded-lg bg-[#171512] border border-white/10 text-xs text-white/50 disabled:opacity-30 hover:border-[#FF5A1F]/30 transition-all"
               >
                 <CaretLeft size={12} className="inline" /> Prev
               </button>
@@ -273,7 +273,7 @@ export default function AuditPage() {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage >= totalPages}
-                className="px-3 py-1.5 rounded-lg bg-[#0D0D14] border border-white/10 text-xs text-white/50 disabled:opacity-30 hover:border-[#00D4FF]/30 transition-all"
+                className="px-3 py-1.5 rounded-lg bg-[#171512] border border-white/10 text-xs text-white/50 disabled:opacity-30 hover:border-[#FF5A1F]/30 transition-all"
               >
                 Next <CaretRight size={12} className="inline" />
               </button>

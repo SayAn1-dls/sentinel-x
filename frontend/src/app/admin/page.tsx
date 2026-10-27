@@ -38,7 +38,7 @@ import {
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
-  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/analysis', label: 'Risk Analysis', icon: Cpu },
   { href: '/audit', label: 'Audit Log', icon: List },
   { href: '/network', label: 'Network', icon: Globe },
   { href: '/security', label: 'Security', icon: Lock },
@@ -82,17 +82,17 @@ interface ActivityEntry {
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
-  CRITICAL: '#FF2D55',
-  HIGH: '#FF6B00',
-  MEDIUM: '#FFB800',
-  LOW: '#00FFB3',
-  INFO: '#00D4FF',
+  CRITICAL: '#E5484D',
+  HIGH: '#D9822B',
+  MEDIUM: '#E9A23B',
+  LOW: '#A3C585',
+  INFO: '#FF5A1F',
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  ACTIVE: '#00FFB3',
-  SUSPENDED: '#FF2D55',
-  PENDING: '#FFB800',
+  ACTIVE: '#A3C585',
+  SUSPENDED: '#E5484D',
+  PENDING: '#E9A23B',
 };
 
 const INITIAL_USERS: UserRecord[] = [
@@ -109,23 +109,23 @@ const INITIAL_USERS: UserRecord[] = [
 ];
 
 const INITIAL_ROLES: RoleDef[] = [
-  { id: 'r1', name: 'SUPER_ADMIN', color: '#FF2D55', permissions: ['all.read', 'all.write', 'all.delete', 'users.manage', 'roles.manage', 'system.config', 'audit.export'], userCount: 1 },
-  { id: 'r2', name: 'ADMIN', color: '#FF6B00', permissions: ['all.read', 'all.write', 'users.manage', 'audit.export'], userCount: 2 },
-  { id: 'r3', name: 'ANALYST', color: '#00D4FF', permissions: ['transactions.read', 'analysis.read', 'analysis.write', 'network.read', 'audit.read'], userCount: 3 },
-  { id: 'r4', name: 'OPERATOR', color: '#00FFB3', permissions: ['transactions.read', 'network.read', 'network.write', 'security.read'], userCount: 2 },
-  { id: 'r5', name: 'VIEWER', color: '#FFB800', permissions: ['transactions.read', 'analysis.read', 'audit.read'], userCount: 2 },
+  { id: 'r1', name: 'SUPER_ADMIN', color: '#E5484D', permissions: ['all.read', 'all.write', 'all.delete', 'users.manage', 'roles.manage', 'system.config', 'audit.export'], userCount: 1 },
+  { id: 'r2', name: 'ADMIN', color: '#D9822B', permissions: ['all.read', 'all.write', 'users.manage', 'audit.export'], userCount: 2 },
+  { id: 'r3', name: 'ANALYST', color: '#FF5A1F', permissions: ['transactions.read', 'analysis.read', 'analysis.write', 'network.read', 'audit.read'], userCount: 3 },
+  { id: 'r4', name: 'OPERATOR', color: '#A3C585', permissions: ['transactions.read', 'network.read', 'network.write', 'security.read'], userCount: 2 },
+  { id: 'r5', name: 'VIEWER', color: '#E9A23B', permissions: ['transactions.read', 'analysis.read', 'audit.read'], userCount: 2 },
 ];
 
 const INITIAL_TOGGLES: FeatureToggle[] = [
   { id: 't1', name: 'Real-Time Transaction Monitoring', description: 'Live feed of all financial transactions with risk scoring', enabled: true, category: 'CORE' },
-  { id: 't2', name: 'AI Anomaly Detection', description: 'ML-powered detection of suspicious transaction patterns', enabled: true, category: 'AI' },
+  { id: 't2', name: 'Anomaly Detection', description: 'Pattern-based detection of suspicious transaction patterns', enabled: true, category: 'Detection' },
   { id: 't3', name: 'Auto-Block High Risk', description: 'Automatically block transactions flagged as CRITICAL risk', enabled: false, category: 'ENFORCEMENT' },
   { id: 't4', name: 'Network Topology Map', description: 'Visual graph of entity relationships and transaction flows', enabled: true, category: 'VISUALIZATION' },
   { id: 't5', name: 'SMS Alert Notifications', description: 'Send SMS alerts for CRITICAL and HIGH severity events', enabled: true, category: 'NOTIFICATIONS' },
   { id: 't6', name: 'Email Digest Reports', description: 'Daily email summary of flagged transactions and threats', enabled: false, category: 'NOTIFICATIONS' },
   { id: 't7', name: 'API Rate Limiting', description: 'Enforce rate limits on all external API endpoints', enabled: true, category: 'SECURITY' },
   { id: 't8', name: 'Two-Factor Authentication', description: 'Require MFA for all user logins', enabled: true, category: 'SECURITY' },
-  { id: 't9', name: 'Dark Web Monitoring', description: 'Scan dark web forums for leaked credentials and data', enabled: false, category: 'AI' },
+  { id: 't9', name: 'Dark Web Monitoring', description: 'Scan dark web forums for leaked credentials and data', enabled: false, category: 'Detection' },
   { id: 't10', name: 'Automated Compliance Reports', description: 'Generate compliance reports on scheduled intervals', enabled: true, category: 'COMPLIANCE' },
 ];
 
@@ -237,15 +237,15 @@ export default function AdminPage() {
   const toggleCategories = ['ALL', ...Array.from(new Set(toggles.map((t) => t.category)))];
 
   return (
-    <div className="flex min-h-screen bg-[#0A0A0F]">
+    <div className="flex min-h-screen bg-[#0E0D0B]">
       {/* Sidebar */}
       <aside
-        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#171512] transition-all duration-300"
         style={{ width: sidebarOpen ? 240 : 64 }}
       >
         <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
-          <Shield size={28} weight="fill" color="#00D4FF" />
-          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+          <Shield size={28} weight="fill" color="#FF5A1F" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#FF5A1F]">SENTINEL-X</span>}
         </div>
         <nav className="flex-1 py-4 flex flex-col gap-1">
           {NAV.map((item) => {
@@ -257,7 +257,7 @@ export default function AdminPage() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
                   active
-                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                     : 'text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
               >
@@ -270,8 +270,8 @@ export default function AdminPage() {
         <div className="border-t border-white/5 p-4">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
-                <User size={16} color="#00D4FF" />
+              <div className="w-8 h-8 rounded-full bg-[#FF5A1F]/20 flex items-center justify-center">
+                <User size={16} color="#FF5A1F" />
               </div>
               <div>
                 <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
@@ -282,9 +282,9 @@ export default function AdminPage() {
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#171512] border border-white/10 flex items-center justify-center hover:border-[#FF5A1F]/40 transition-colors"
         >
-          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+          {sidebarOpen ? <CaretLeft size={12} color="#FF5A1F" /> : <CaretRight size={12} color="#FF5A1F" />}
         </button>
       </aside>
 
@@ -298,7 +298,7 @@ export default function AdminPage() {
               <p className="text-white/40 text-sm mt-1">User management, roles, feature flags & activity log</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="px-4 py-2 rounded-lg bg-[#0D0D14] border border-white/5 font-mono text-[#00D4FF] text-sm">
+              <div className="px-4 py-2 rounded-lg bg-[#171512] border border-white/5 font-mono text-[#FF5A1F] text-sm">
                 <Clock size={14} className="inline mr-2" />
                 {clock}
               </div>
@@ -307,42 +307,42 @@ export default function AdminPage() {
 
           {/* Summary Stats */}
           <div className="grid grid-cols-4 gap-4 mb-6">
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Total Users</span>
-                <Users size={20} color="#00D4FF" weight="fill" />
+                <Users size={20} color="#FF5A1F" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#00D4FF]">{users.length}</div>
+              <div className="text-3xl font-bold font-mono text-[#FF5A1F]">{users.length}</div>
             </div>
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Active Now</span>
-                <Power size={20} color="#00FFB3" weight="fill" />
+                <Power size={20} color="#A3C585" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#00FFB3]">
+              <div className="text-3xl font-bold font-mono text-[#A3C585]">
                 {users.filter((u) => u.status === 'ACTIVE').length}
               </div>
             </div>
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Roles Defined</span>
-                <Key size={20} color="#FFB800" weight="fill" />
+                <Key size={20} color="#E9A23B" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#FFB800]">{roles.length}</div>
+              <div className="text-3xl font-bold font-mono text-[#E9A23B]">{roles.length}</div>
             </div>
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Features Active</span>
-                <Lightning size={20} color="#FF6B00" weight="fill" />
+                <Lightning size={20} color="#D9822B" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#FF6B00]">
+              <div className="text-3xl font-bold font-mono text-[#D9822B]">
                 {toggles.filter((t) => t.enabled).length}/{toggles.length}
               </div>
             </div>
           </div>
 
           {/* Tabbed Section */}
-          <div className="rounded-xl bg-[#0D0D14] border border-white/5">
+          <div className="rounded-xl bg-[#171512] border border-white/5">
             <div className="flex border-b border-white/5">
               {[
                 { key: 'users' as const, label: 'User Management', count: users.length },
@@ -355,7 +355,7 @@ export default function AdminPage() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`px-6 py-4 text-sm font-medium transition-all border-b-2 ${
                     activeTab === tab.key
-                      ? 'text-[#00D4FF] border-[#00D4FF]'
+                      ? 'text-[#FF5A1F] border-[#FF5A1F]'
                       : 'text-white/40 border-transparent hover:text-white/60'
                   }`}
                 >
@@ -376,7 +376,7 @@ export default function AdminPage() {
                         onClick={() => setUserFilter(f)}
                         className={`px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
                           userFilter === f
-                            ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                            ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                             : 'bg-white/5 text-white/40 hover:text-white/60 border border-transparent'
                         }`}
                       >
@@ -386,7 +386,7 @@ export default function AdminPage() {
                   </div>
                   <button
                     onClick={() => setShowAddUser(!showAddUser)}
-                    className="px-3 py-1.5 rounded-lg text-[11px] font-medium bg-[#00FFB3]/10 text-[#00FFB3] border border-[#00FFB3]/20 hover:bg-[#00FFB3]/20 transition-all flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg text-[11px] font-medium bg-[#A3C585]/10 text-[#A3C585] border border-[#A3C585]/20 hover:bg-[#A3C585]/20 transition-all flex items-center gap-1"
                   >
                     <Plus size={14} />
                     Add User
@@ -394,29 +394,29 @@ export default function AdminPage() {
                 </div>
 
                 {showAddUser && (
-                  <div className="mb-4 p-4 rounded-lg bg-[#0A0A0F] border border-[#00FFB3]/20">
+                  <div className="mb-4 p-4 rounded-lg bg-[#0E0D0B] border border-[#A3C585]/20">
                     <div className="grid grid-cols-4 gap-3">
                       <input
                         type="text"
                         placeholder="Full Name"
                         value={newUserName}
                         onChange={(e) => setNewUserName(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white/80 placeholder-white/30 focus:border-[#00D4FF]/40 focus:outline-none"
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white/80 placeholder-white/30 focus:border-[#FF5A1F]/40 focus:outline-none"
                       />
                       <input
                         type="email"
                         placeholder="Email"
                         value={newUserEmail}
                         onChange={(e) => setNewUserEmail(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white/80 placeholder-white/30 focus:border-[#00D4FF]/40 focus:outline-none"
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white/80 placeholder-white/30 focus:border-[#FF5A1F]/40 focus:outline-none"
                       />
                       <select
                         value={newUserRole}
                         onChange={(e) => setNewUserRole(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white/80 focus:border-[#00D4FF]/40 focus:outline-none"
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white/80 focus:border-[#FF5A1F]/40 focus:outline-none"
                       >
                         {roles.map((r) => (
-                          <option key={r.id} value={r.name} className="bg-[#0D0D14]">
+                          <option key={r.id} value={r.name} className="bg-[#171512]">
                             {r.name}
                           </option>
                         ))}
@@ -424,7 +424,7 @@ export default function AdminPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={addUser}
-                          className="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-[#00FFB3]/10 text-[#00FFB3] border border-[#00FFB3]/20 hover:bg-[#00FFB3]/20 transition-all"
+                          className="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-[#A3C585]/10 text-[#A3C585] border border-[#A3C585]/20 hover:bg-[#A3C585]/20 transition-all"
                         >
                           Create
                         </button>
@@ -455,7 +455,7 @@ export default function AdminPage() {
                   <tbody>
                     {filteredUsers.map((u) => (
                       <tr key={u.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
-                        <td className="py-3 font-mono text-[#00D4FF]">{u.id}</td>
+                        <td className="py-3 font-mono text-[#FF5A1F]">{u.id}</td>
                         <td className="py-3 text-white/70">{u.name}</td>
                         <td className="py-3 text-white/40">{u.email}</td>
                         <td className="py-3">
@@ -484,9 +484,9 @@ export default function AdminPage() {
                         <td className="py-3 font-mono text-white/40">{u.lastLogin}</td>
                         <td className="py-3 text-center">
                           {u.mfa ? (
-                            <CheckCircle size={16} color="#00FFB3" weight="fill" />
+                            <CheckCircle size={16} color="#A3C585" weight="fill" />
                           ) : (
-                            <WarningCircle size={16} color="#FF6B00" weight="fill" />
+                            <WarningCircle size={16} color="#D9822B" weight="fill" />
                           )}
                         </td>
                         <td className="py-3 text-center">
@@ -497,17 +497,17 @@ export default function AdminPage() {
                               title={u.status === 'ACTIVE' ? 'Suspend' : 'Activate'}
                             >
                               {u.status === 'ACTIVE' ? (
-                                <UserMinus size={14} color="#FFB800" />
+                                <UserMinus size={14} color="#E9A23B" />
                               ) : (
-                                <UserPlus size={14} color="#00FFB3" />
+                                <UserPlus size={14} color="#A3C585" />
                               )}
                             </button>
                             <button
                               onClick={() => deleteUser(u.id)}
-                              className="p-1.5 rounded hover:bg-[#FF2D55]/10 transition-colors"
+                              className="p-1.5 rounded hover:bg-[#E5484D]/10 transition-colors"
                               title="Delete user"
                             >
-                              <Trash size={14} color="#FF2D55" />
+                              <Trash size={14} color="#E5484D" />
                             </button>
                           </div>
                         </td>
@@ -523,7 +523,7 @@ export default function AdminPage() {
               <div className="p-5">
                 <div className="grid grid-cols-1 gap-4">
                   {roles.map((role) => (
-                    <div key={role.id} className="rounded-lg bg-[#0A0A0F] border border-white/5 p-4">
+                    <div key={role.id} className="rounded-lg bg-[#0E0D0B] border border-white/5 p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <div
@@ -541,7 +541,7 @@ export default function AdminPage() {
                           onClick={() => setEditingRole(editingRole === role.id ? null : role.id)}
                           className={`px-3 py-1 rounded text-[11px] font-medium transition-all flex items-center gap-1 ${
                             editingRole === role.id
-                              ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                              ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                               : 'bg-white/5 text-white/40 hover:text-white/60'
                           }`}
                         >
@@ -565,7 +565,7 @@ export default function AdminPage() {
                               }`}
                               disabled={editingRole !== role.id}
                             >
-                              {hasPerm && <CheckCircle size={10} className="inline mr-1" color="#00FFB3" weight="fill" />}
+                              {hasPerm && <CheckCircle size={10} className="inline mr-1" color="#A3C585" weight="fill" />}
                               {perm}
                             </button>
                           );
@@ -587,7 +587,7 @@ export default function AdminPage() {
                       onClick={() => setToggleCategory(cat)}
                       className={`px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
                         toggleCategory === cat
-                          ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                          ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                           : 'bg-white/5 text-white/40 hover:text-white/60 border border-transparent'
                       }`}
                     >
@@ -601,8 +601,8 @@ export default function AdminPage() {
                       key={t.id}
                       className={`rounded-lg border p-4 transition-all ${
                         t.enabled
-                          ? 'bg-[#0A0A0F] border-[#00FFB3]/10'
-                          : 'bg-[#0A0A0F] border-white/5'
+                          ? 'bg-[#0E0D0B] border-[#A3C585]/10'
+                          : 'bg-[#0E0D0B] border-white/5'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -617,7 +617,7 @@ export default function AdminPage() {
                           className="transition-all hover:scale-110"
                         >
                           {t.enabled ? (
-                            <ToggleRight size={28} color="#00FFB3" weight="fill" />
+                            <ToggleRight size={28} color="#A3C585" weight="fill" />
                           ) : (
                             <ToggleLeft size={28} color="#ffffff30" weight="fill" />
                           )}
@@ -648,7 +648,7 @@ export default function AdminPage() {
                       <tr key={a.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
                         <td className="py-3 font-mono text-white/40">{a.time}</td>
                         <td className="py-3">
-                          <span className={`${a.actor === 'system' ? 'text-[#00D4FF]/60 italic' : 'text-white/70'}`}>
+                          <span className={`${a.actor === 'system' ? 'text-[#FF5A1F]/60 italic' : 'text-white/70'}`}>
                             {a.actor}
                           </span>
                         </td>
@@ -696,7 +696,7 @@ export default function AdminPage() {
                         onClick={() => setActivityPage(i)}
                         className={`w-8 h-8 rounded-lg text-[11px] font-medium transition-all ${
                           activityPage === i
-                            ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                            ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                             : 'bg-white/5 text-white/40 hover:text-white/60'
                         }`}
                       >

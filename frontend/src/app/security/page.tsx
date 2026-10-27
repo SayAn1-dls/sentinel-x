@@ -35,7 +35,7 @@ import {
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
-  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/analysis', label: 'Risk Analysis', icon: Cpu },
   { href: '/audit', label: 'Audit Log', icon: List },
   { href: '/network', label: 'Network', icon: Globe },
   { href: '/security', label: 'Security', icon: Lock },
@@ -85,33 +85,33 @@ interface ComplianceItem {
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
-  CRITICAL: '#FF2D55',
-  HIGH: '#FF6B00',
-  MEDIUM: '#FFB800',
-  LOW: '#00FFB3',
-  INFO: '#00D4FF',
+  CRITICAL: '#E5484D',
+  HIGH: '#D9822B',
+  MEDIUM: '#E9A23B',
+  LOW: '#A3C585',
+  INFO: '#FF5A1F',
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  HEALTHY: '#00FFB3',
-  WARNING: '#FFB800',
-  CRITICAL: '#FF2D55',
-  ACTIVE: '#00FFB3',
-  IDLE: '#FFB800',
-  LOCKED: '#FF2D55',
-  COMPLIANT: '#00FFB3',
-  NON_COMPLIANT: '#FF2D55',
-  PARTIAL: '#FFB800',
-  REVIEW: '#00D4FF',
+  HEALTHY: '#A3C585',
+  WARNING: '#E9A23B',
+  CRITICAL: '#E5484D',
+  ACTIVE: '#A3C585',
+  IDLE: '#E9A23B',
+  LOCKED: '#E5484D',
+  COMPLIANT: '#A3C585',
+  NON_COMPLIANT: '#E5484D',
+  PARTIAL: '#E9A23B',
+  REVIEW: '#FF5A1F',
 };
 
 const INITIAL_HEALTH: HealthCard[] = [
-  { id: 'fw', label: 'Firewall Status', value: 98.7, max: 100, status: 'HEALTHY', icon: ShieldCheck, color: '#00FFB3', detail: 'All 12 firewall zones active, 0 policy violations' },
-  { id: 'enc', label: 'Encryption Layer', value: 100, max: 100, status: 'HEALTHY', icon: Lock, color: '#00D4FF', detail: 'AES-256 active on all channels, TLS 1.3 enforced' },
-  { id: 'ids', label: 'IDS/IPS Engine', value: 94.2, max: 100, status: 'HEALTHY', icon: Eye, color: '#00FFB3', detail: '847 rules active, 12 triggered in last 24h' },
-  { id: 'auth', label: 'Auth System', value: 76.5, max: 100, status: 'WARNING', icon: Fingerprint, color: '#FFB800', detail: '3 failed MFA attempts detected from unusual geo' },
-  { id: 'net', label: 'Network Health', value: 99.1, max: 100, status: 'HEALTHY', icon: WifiHigh, color: '#00FFB3', detail: 'Latency 2.3ms avg, 0 packet loss, all nodes up' },
-  { id: 'db', label: 'Data Integrity', value: 62.8, max: 100, status: 'CRITICAL', icon: Database, color: '#FF2D55', detail: 'Hash mismatch detected in 4 audit log entries' },
+  { id: 'fw', label: 'Firewall Status', value: 98.7, max: 100, status: 'HEALTHY', icon: ShieldCheck, color: '#A3C585', detail: 'All 12 firewall zones active, 0 policy violations' },
+  { id: 'enc', label: 'Encryption Layer', value: 100, max: 100, status: 'HEALTHY', icon: Lock, color: '#FF5A1F', detail: 'AES-256 active on all channels, TLS 1.3 enforced' },
+  { id: 'ids', label: 'IDS/IPS Engine', value: 94.2, max: 100, status: 'HEALTHY', icon: Eye, color: '#A3C585', detail: '847 rules active, 12 triggered in last 24h' },
+  { id: 'auth', label: 'Auth System', value: 76.5, max: 100, status: 'WARNING', icon: Fingerprint, color: '#E9A23B', detail: '3 failed MFA attempts detected from unusual geo' },
+  { id: 'net', label: 'Network Health', value: 99.1, max: 100, status: 'HEALTHY', icon: WifiHigh, color: '#A3C585', detail: 'Latency 2.3ms avg, 0 packet loss, all nodes up' },
+  { id: 'db', label: 'Data Integrity', value: 62.8, max: 100, status: 'CRITICAL', icon: Database, color: '#E5484D', detail: 'Hash mismatch detected in 4 audit log entries' },
 ];
 
 const INITIAL_SESSIONS: Session[] = [
@@ -195,9 +195,9 @@ export default function SecurityPage() {
           setHealth((prev) =>
             prev.map((h) =>
               h.id === 'db'
-                ? { ...h, value: 99.4, status: 'HEALTHY' as const, color: '#00FFB3', detail: 'All audit log hashes verified — integrity restored' }
+                ? { ...h, value: 99.4, status: 'HEALTHY' as const, color: '#A3C585', detail: 'All audit log hashes verified — integrity restored' }
                 : h.id === 'auth'
-                ? { ...h, value: 97.1, status: 'HEALTHY' as const, color: '#00FFB3', detail: 'MFA anomaly resolved — all auth channels nominal' }
+                ? { ...h, value: 97.1, status: 'HEALTHY' as const, color: '#A3C585', detail: 'MFA anomaly resolved — all auth channels nominal' }
                 : h
             )
           );
@@ -221,15 +221,15 @@ export default function SecurityPage() {
   const overallScore = Math.round(health.reduce((a, h) => a + h.value, 0) / health.length * 10) / 10;
 
   return (
-    <div className="flex min-h-screen bg-[#0A0A0F]">
+    <div className="flex min-h-screen bg-[#0E0D0B]">
       {/* Sidebar */}
       <aside
-        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#171512] transition-all duration-300"
         style={{ width: sidebarOpen ? 240 : 64 }}
       >
         <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
-          <Shield size={28} weight="fill" color="#00D4FF" />
-          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+          <Shield size={28} weight="fill" color="#FF5A1F" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#FF5A1F]">SENTINEL-X</span>}
         </div>
         <nav className="flex-1 py-4 flex flex-col gap-1">
           {NAV.map((item) => {
@@ -241,7 +241,7 @@ export default function SecurityPage() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
                   active
-                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                     : 'text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
               >
@@ -254,8 +254,8 @@ export default function SecurityPage() {
         <div className="border-t border-white/5 p-4">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
-                <User size={16} color="#00D4FF" />
+              <div className="w-8 h-8 rounded-full bg-[#FF5A1F]/20 flex items-center justify-center">
+                <User size={16} color="#FF5A1F" />
               </div>
               <div>
                 <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
@@ -266,9 +266,9 @@ export default function SecurityPage() {
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#171512] border border-white/10 flex items-center justify-center hover:border-[#FF5A1F]/40 transition-colors"
         >
-          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+          {sidebarOpen ? <CaretLeft size={12} color="#FF5A1F" /> : <CaretRight size={12} color="#FF5A1F" />}
         </button>
       </aside>
 
@@ -287,14 +287,14 @@ export default function SecurityPage() {
                 disabled={scanRunning}
                 className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all ${
                   scanRunning
-                    ? 'bg-[#00D4FF]/10 text-[#00D4FF]/50 cursor-not-allowed'
-                    : 'bg-[#00D4FF]/10 text-[#00D4FF] hover:bg-[#00D4FF]/20 border border-[#00D4FF]/20'
+                    ? 'bg-[#FF5A1F]/10 text-[#FF5A1F]/50 cursor-not-allowed'
+                    : 'bg-[#FF5A1F]/10 text-[#FF5A1F] hover:bg-[#FF5A1F]/20 border border-[#FF5A1F]/20'
                 }`}
               >
                 <ShieldCheck size={16} weight="fill" />
                 {scanRunning ? `Scanning... ${scanProgress}%` : 'Run Security Scan'}
               </button>
-              <div className="px-4 py-2 rounded-lg bg-[#0D0D14] border border-white/5 font-mono text-[#00D4FF] text-sm">
+              <div className="px-4 py-2 rounded-lg bg-[#171512] border border-white/5 font-mono text-[#FF5A1F] text-sm">
                 <Clock size={14} className="inline mr-2" />
                 {clock}
               </div>
@@ -303,14 +303,14 @@ export default function SecurityPage() {
 
           {/* Scan Progress Bar */}
           {scanRunning && (
-            <div className="mb-6 rounded-xl bg-[#0D0D14] border border-[#00D4FF]/20 p-4">
+            <div className="mb-6 rounded-xl bg-[#171512] border border-[#FF5A1F]/20 p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-[#00D4FF] font-medium uppercase tracking-wider">Security Scan in Progress</span>
-                <span className="text-xs font-mono text-[#00D4FF]">{scanProgress}%</span>
+                <span className="text-xs text-[#FF5A1F] font-medium uppercase tracking-wider">Security Scan in Progress</span>
+                <span className="text-xs font-mono text-[#FF5A1F]">{scanProgress}%</span>
               </div>
               <div className="w-full h-2 rounded-full bg-white/5 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#00D4FF] to-[#00FFB3] transition-all duration-200"
+                  className="h-full rounded-full bg-gradient-to-r from-[#FF5A1F] to-[#A3C585] transition-all duration-200"
                   style={{ width: `${scanProgress}%` }}
                 />
               </div>
@@ -319,33 +319,33 @@ export default function SecurityPage() {
 
           {/* Summary Stats */}
           <div className="grid grid-cols-4 gap-4 mb-6">
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Overall Score</span>
-                <Pulse size={20} color="#00D4FF" weight="fill" />
+                <Pulse size={20} color="#FF5A1F" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#00D4FF]">{overallScore}%</div>
+              <div className="text-3xl font-bold font-mono text-[#FF5A1F]">{overallScore}%</div>
             </div>
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Active Sessions</span>
-                <Users size={20} color="#00FFB3" weight="fill" />
+                <Users size={20} color="#A3C585" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#00FFB3]">{activeSessions}</div>
+              <div className="text-3xl font-bold font-mono text-[#A3C585]">{activeSessions}</div>
             </div>
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Critical Events</span>
-                <Fire size={20} color="#FF2D55" weight="fill" />
+                <Fire size={20} color="#E5484D" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#FF2D55]">{criticalEvents}</div>
+              <div className="text-3xl font-bold font-mono text-[#E5484D]">{criticalEvents}</div>
             </div>
-            <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+            <div className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wider">Compliance</span>
-                <CheckCircle size={20} color="#00FFB3" weight="fill" />
+                <CheckCircle size={20} color="#A3C585" weight="fill" />
               </div>
-              <div className="text-3xl font-bold font-mono text-[#00FFB3]">
+              <div className="text-3xl font-bold font-mono text-[#A3C585]">
                 {compliance.filter((c) => c.status === 'COMPLIANT').length}/{compliance.length}
               </div>
             </div>
@@ -358,7 +358,7 @@ export default function SecurityPage() {
               {health.map((h) => {
                 const Icon = h.icon;
                 return (
-                  <div key={h.id} className="rounded-xl bg-[#0D0D14] border border-white/5 p-5 card-hover">
+                  <div key={h.id} className="rounded-xl bg-[#171512] border border-white/5 p-5 card-hover">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <Icon size={18} color={h.color} weight="fill" />
@@ -400,7 +400,7 @@ export default function SecurityPage() {
           </div>
 
           {/* Tabbed Section */}
-          <div className="rounded-xl bg-[#0D0D14] border border-white/5">
+          <div className="rounded-xl bg-[#171512] border border-white/5">
             {/* Tabs */}
             <div className="flex border-b border-white/5">
               {[
@@ -413,7 +413,7 @@ export default function SecurityPage() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`px-6 py-4 text-sm font-medium transition-all border-b-2 ${
                     activeTab === tab.key
-                      ? 'text-[#00D4FF] border-[#00D4FF]'
+                      ? 'text-[#FF5A1F] border-[#FF5A1F]'
                       : 'text-white/40 border-transparent hover:text-white/60'
                   }`}
                 >
@@ -443,7 +443,7 @@ export default function SecurityPage() {
                   <tbody>
                     {sessions.map((s) => (
                       <tr key={s.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
-                        <td className="py-3 font-mono text-[#00D4FF]">{s.id}</td>
+                        <td className="py-3 font-mono text-[#FF5A1F]">{s.id}</td>
                         <td className="py-3 text-white/70">{s.user}</td>
                         <td className="py-3">
                           <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/5 text-white/50">
@@ -470,7 +470,7 @@ export default function SecurityPage() {
                           {s.status !== 'LOCKED' && !terminatedSessions.has(s.id) ? (
                             <button
                               onClick={() => terminateSession(s.id)}
-                              className="px-2 py-1 rounded text-[10px] font-medium bg-[#FF2D55]/10 text-[#FF2D55] hover:bg-[#FF2D55]/20 transition-colors border border-[#FF2D55]/20"
+                              className="px-2 py-1 rounded text-[10px] font-medium bg-[#E5484D]/10 text-[#E5484D] hover:bg-[#E5484D]/20 transition-colors border border-[#E5484D]/20"
                             >
                               Terminate
                             </button>
@@ -495,7 +495,7 @@ export default function SecurityPage() {
                       onClick={() => setTimelineFilter(f)}
                       className={`px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
                         timelineFilter === f
-                          ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                          ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                           : 'bg-white/5 text-white/40 hover:text-white/60 border border-transparent'
                       }`}
                     >
@@ -564,7 +564,7 @@ export default function SecurityPage() {
               <div className="p-5">
                 <div className="grid grid-cols-3 gap-4">
                   {compliance.map((c) => (
-                    <div key={c.id} className="rounded-lg bg-[#0A0A0F] border border-white/5 p-4">
+                    <div key={c.id} className="rounded-lg bg-[#0E0D0B] border border-white/5 p-4">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-sm font-bold text-white/80">{c.standard}</span>
                         <span

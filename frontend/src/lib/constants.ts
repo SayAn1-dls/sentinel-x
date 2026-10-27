@@ -62,5 +62,5 @@ export const SIDEBAR_LINKS = [
   { href: '/dashboard', label: 'DASHBOARD', icon: '⚡' },
   { href: '/audit', label: 'AUDIT LOG', icon: '📋' },
   { href: '/network', label: 'NETWORK', icon: '🔒' },
-  { href: '/analysis', label: 'AI LAB', icon: '🧠' },
+  { href: '/analysis', label: 'ANALYSIS', icon: '◎' },
 ] as const;

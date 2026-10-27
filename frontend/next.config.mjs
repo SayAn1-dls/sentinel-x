@@ -2,22 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  compress: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  allowedDevOrigins: [
-    '*.emergentagent.com',
-    '*.preview.emergentagent.com',
-    '*.internal.stage-preview.emergentagent.com',
-    'localhost',
-  ],
-  images: {
-    formats: ['image/webp', 'image/avif'],
-  },
   headers: async () => [
     {
       source: '/(.*)',

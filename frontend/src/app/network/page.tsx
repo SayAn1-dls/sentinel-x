@@ -19,7 +19,7 @@ import {
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
-  { href: '/analysis', label: 'AI Analysis', icon: Cpu },
+  { href: '/analysis', label: 'Risk Analysis', icon: Cpu },
   { href: '/audit', label: 'Audit Log', icon: List },
   { href: '/network', label: 'Network', icon: Globe },
   { href: '/security', label: 'Security', icon: Lock },
@@ -27,11 +27,11 @@ const NAV = [
 ];
 
 const RISK_COLORS: Record<string, string> = {
-  CRITICAL: '#FF2D55',
-  HIGH: '#FF6B00',
-  MEDIUM: '#FFB800',
-  LOW: '#00FFB3',
-  CLEAR: '#00D4FF',
+  CRITICAL: '#E5484D',
+  HIGH: '#D9822B',
+  MEDIUM: '#E9A23B',
+  LOW: '#A3C585',
+  CLEAR: '#FF5A1F',
 };
 
 type NodeData = {
@@ -102,22 +102,22 @@ export default function NetworkPage() {
   const nodeMap = new Map(NODES.map((n) => [n.id, n]));
 
   const trafficStats = [
-    { label: 'Tx/sec', value: '1,247', color: '#00D4FF' },
-    { label: 'Blocked', value: '23', color: '#FF2D55' },
-    { label: 'Flagged', value: '156', color: '#FF6B00' },
-    { label: 'Clean', value: '1,068', color: '#00FFB3' },
+    { label: 'Tx/sec', value: '1,247', color: '#FF5A1F' },
+    { label: 'Blocked', value: '23', color: '#E5484D' },
+    { label: 'Flagged', value: '156', color: '#D9822B' },
+    { label: 'Clean', value: '1,068', color: '#A3C585' },
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#0A0A0F]">
+    <div className="flex min-h-screen bg-[#0E0D0B]">
       {/* Sidebar */}
       <aside
-        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#0D0D14] transition-all duration-300"
+        className="fixed top-0 left-0 h-full z-50 flex flex-col border-r border-white/5 bg-[#171512] transition-all duration-300"
         style={{ width: sidebarOpen ? 240 : 64 }}
       >
         <div className="flex items-center gap-2 px-4 h-16 border-b border-white/5">
-          <Shield size={28} weight="fill" color="#00D4FF" />
-          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#00D4FF]">SENTINEL-X</span>}
+          <Shield size={28} weight="fill" color="#FF5A1F" />
+          {sidebarOpen && <span className="text-lg font-bold tracking-wider text-[#FF5A1F]">SENTINEL-X</span>}
         </div>
         <nav className="flex-1 py-4 flex flex-col gap-1">
           {NAV.map((item) => {
@@ -129,7 +129,7 @@ export default function NetworkPage() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all text-sm font-medium ${
                   active
-                    ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20'
+                    ? 'bg-[#FF5A1F]/10 text-[#FF5A1F] border border-[#FF5A1F]/20'
                     : 'text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
               >
@@ -142,8 +142,8 @@ export default function NetworkPage() {
         <div className="border-t border-white/5 p-4">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#00D4FF]/20 flex items-center justify-center">
-                <User size={16} color="#00D4FF" />
+              <div className="w-8 h-8 rounded-full bg-[#FF5A1F]/20 flex items-center justify-center">
+                <User size={16} color="#FF5A1F" />
               </div>
               <div>
                 <div className="text-xs font-medium text-white/80">Sayan Bhattacharya</div>
@@ -154,9 +154,9 @@ export default function NetworkPage() {
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#0D0D14] border border-white/10 flex items-center justify-center hover:border-[#00D4FF]/40 transition-colors"
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#171512] border border-white/10 flex items-center justify-center hover:border-[#FF5A1F]/40 transition-colors"
         >
-          {sidebarOpen ? <CaretLeft size={12} color="#00D4FF" /> : <CaretRight size={12} color="#00D4FF" />}
+          {sidebarOpen ? <CaretLeft size={12} color="#FF5A1F" /> : <CaretRight size={12} color="#FF5A1F" />}
         </button>
       </aside>
 
@@ -165,7 +165,7 @@ export default function NetworkPage() {
         <div className="p-6 max-w-[1600px] mx-auto">
           {/* Toast */}
           {toast && (
-            <div className="fixed top-6 right-6 z-[100] px-4 py-3 rounded-lg bg-[#00FFB3]/10 border border-[#00FFB3]/20 text-sm text-[#00FFB3] font-medium animate-pulse">
+            <div className="fixed top-6 right-6 z-[100] px-4 py-3 rounded-lg bg-[#A3C585]/10 border border-[#A3C585]/20 text-sm text-[#A3C585] font-medium animate-pulse">
               {toast}
             </div>
           )}
@@ -173,9 +173,9 @@ export default function NetworkPage() {
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <h1 className="text-2xl font-bold tracking-wider text-white">NETWORK TOPOLOGY</h1>
-            <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#00FFB3]/10 border border-[#00FFB3]/20">
-              <Broadcast size={14} color="#00FFB3" />
-              <span className="text-xs font-bold text-[#00FFB3]">893 Active Nodes</span>
+            <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#A3C585]/10 border border-[#A3C585]/20">
+              <Broadcast size={14} color="#A3C585" />
+              <span className="text-xs font-bold text-[#A3C585]">893 Active Nodes</span>
             </span>
           </div>
 
@@ -195,11 +195,11 @@ export default function NetworkPage() {
           <div className="grid grid-cols-5 gap-4">
             {/* SVG Visualization */}
             <div className="col-span-3">
-              <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-4">
+              <div className="rounded-xl bg-[#171512] border border-white/5 p-4">
                 <svg
                   viewBox="0 0 540 420"
                   className="w-full rounded-lg"
-                  style={{ backgroundColor: '#0D0D14' }}
+                  style={{ backgroundColor: '#171512' }}
                   key={refreshKey}
                 >
                   <defs>
@@ -286,7 +286,7 @@ export default function NetworkPage() {
                 </svg>
                 <button
                   onClick={() => setRefreshKey((k) => k + 1)}
-                  className="mt-3 px-4 py-2 rounded-lg bg-white/[0.03] border border-white/10 text-xs text-white/50 hover:text-white/80 hover:border-[#00D4FF]/30 transition-all"
+                  className="mt-3 px-4 py-2 rounded-lg bg-white/[0.03] border border-white/10 text-xs text-white/50 hover:text-white/80 hover:border-[#FF5A1F]/30 transition-all"
                 >
                   Refresh Topology
                 </button>
@@ -295,13 +295,13 @@ export default function NetworkPage() {
 
             {/* Node Detail Panel */}
             <div className="col-span-2">
-              <div className="rounded-xl bg-[#0D0D14] border border-white/5 p-5">
+              <div className="rounded-xl bg-[#171512] border border-white/5 p-5">
                 <h2 className="text-sm font-bold tracking-wider text-white/80 uppercase mb-5">Node Details</h2>
 
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-white/40">Node ID</span>
-                    <span className="text-sm font-mono font-bold text-[#00D4FF]">{selected.id}</span>
+                    <span className="text-sm font-mono font-bold text-[#FF5A1F]">{selected.id}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-white/40">Risk Level</span>
@@ -326,7 +326,7 @@ export default function NetworkPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-white/40">Status</span>
-                    <span className="text-xs font-bold text-[#00FFB3]">ACTIVE</span>
+                    <span className="text-xs font-bold text-[#A3C585]">ACTIVE</span>
                   </div>
                 </div>
 
@@ -335,8 +335,8 @@ export default function NetworkPage() {
                     onClick={toggleFlag}
                     className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${
                       isFlagged
-                        ? 'bg-[#FF2D55]/10 border border-[#FF2D55]/20 text-[#FF2D55] hover:bg-[#FF2D55]/20'
-                        : 'bg-[#FF6B00]/10 border border-[#FF6B00]/20 text-[#FF6B00] hover:bg-[#FF6B00]/20'
+                        ? 'bg-[#E5484D]/10 border border-[#E5484D]/20 text-[#E5484D] hover:bg-[#E5484D]/20'
+                        : 'bg-[#D9822B]/10 border border-[#D9822B]/20 text-[#D9822B] hover:bg-[#D9822B]/20'
                     }`}
                   >
                     <Warning size={14} className="inline mr-1" />
@@ -344,7 +344,7 @@ export default function NetworkPage() {
                   </button>
                   <button
                     onClick={isolateNode}
-                    className="w-full py-2.5 rounded-lg text-xs font-bold bg-[#FF2D55]/10 border border-[#FF2D55]/20 text-[#FF2D55] hover:bg-[#FF2D55]/20 transition-all"
+                    className="w-full py-2.5 rounded-lg text-xs font-bold bg-[#E5484D]/10 border border-[#E5484D]/20 text-[#E5484D] hover:bg-[#E5484D]/20 transition-all"
                   >
                     <Crosshair size={14} className="inline mr-1" />
                     Isolate Node

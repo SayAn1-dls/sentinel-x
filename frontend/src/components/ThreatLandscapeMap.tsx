@@ -183,8 +183,8 @@ export default function ThreatLandscapeMap() {
       ctx.fill();
       ctx.beginPath();
       ctx.arc(hqX, hqY, 3, 0, Math.PI * 2);
-      ctx.fillStyle = '#10B981';
-      ctx.shadowColor = '#10B981';
+      ctx.fillStyle = '#A3C585';
+      ctx.shadowColor = '#A3C585';
       ctx.shadowBlur = 8;
       ctx.fill();
       ctx.shadowBlur = 0;
@@ -232,8 +232,8 @@ export default function ThreatLandscapeMap() {
           else ctx.lineTo(bx, by);
         }
 
-        const arcColor = arc.source.severity === 'CRITICAL' ? '#E63946' :
-          arc.source.severity === 'HIGH' ? '#F59E0B' : '#6B6B6B';
+        const arcColor = arc.source.severity === 'CRITICAL' ? '#E5484D' :
+          arc.source.severity === 'HIGH' ? '#E9A23B' : '#6B6B6B';
 
         ctx.strokeStyle = arcColor;
         ctx.globalAlpha = arc.opacity * 0.6;
