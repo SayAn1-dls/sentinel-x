@@ -75,6 +75,11 @@ class SessionState:
     geo_jumps: int = 0
     ua_switches: int = 0
 
+    # fingerprint latch: set once on the first event, never overwritten.
+    # (Guarding on origin_ip meant sessions whose first event carried no IP
+    # kept resetting the baseline, so geo/UA jumps were never detected.)
+    _fingerprint_set: bool = field(default=False, init=False, repr=False)
+
     # accumulated risk score (EWMA)
     _risk_score: float = 0.0
     _EWMA_ALPHA: float = field(default=0.3, init=False, repr=False)
@@ -222,11 +227,12 @@ class SessionRiskTracker:
         state.request_count += 1
         state.record_request_ts(event.ts)
 
-        # set baseline fingerprint on first event
-        if not state.origin_ip:
+        # set baseline fingerprint once, on the first event
+        if not state._fingerprint_set:
             state.origin_ip = event.ip
             state.origin_country = event.country
             state.origin_ua = event.user_agent
+            state._fingerprint_set = True
 
         if event.event_type == EventType.AUTH_ATTEMPT and event.status_code in (401, 403):
             state.failed_auth_count += 1
