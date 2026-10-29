@@ -143,12 +143,16 @@ class BehavioralBaseline:
             scores.append(min(1.0, (self.rare_hour_pct - hour_pct) / self.rare_hour_pct))
 
         # 2. Rare or new country
+        # NOTE: the profile is updated before evaluation, so counts include the
+        # current event. Use PRIOR counts for the rarity check, otherwise a
+        # first-seen country can never be labelled NEW_COUNTRY.
         if ev.country:
-            country_pct = profile.country_counts.get(ev.country, 0) / max(profile.sample_count, 1)
-            if country_pct < self.rare_country_pct:
-                label = "NEW_COUNTRY" if profile.country_counts.get(ev.country, 0) == 0 else "RARE_COUNTRY"
-                deviations.append(f"{label}:{ev.country} ({country_pct:.1%})")
-                scores.append(min(1.0, 1.0 - country_pct / self.rare_country_pct))
+            prior_count = profile.country_counts.get(ev.country, 0) - 1
+            prior_pct = prior_count / max(profile.sample_count - 1, 1)
+            if prior_pct < self.rare_country_pct:
+                label = "NEW_COUNTRY" if prior_count == 0 else "RARE_COUNTRY"
+                deviations.append(f"{label}:{ev.country} ({prior_pct:.1%})")
+                scores.append(min(1.0, 1.0 - prior_pct / self.rare_country_pct))
 
         # 3. Unusual action for this user
         action_pct = profile.action_counts.get(ev.action, 0) / max(profile.sample_count, 1)
