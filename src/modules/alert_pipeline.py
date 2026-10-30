@@ -73,13 +73,17 @@ class Incident:
     alerts: List[Alert] = field(default_factory=list)
     opened_at: float = field(default_factory=time.time)
     updated_at: float = field(default_factory=time.time)
+    escalated_to: Optional[Severity] = None
 
     @property
     def severity(self) -> Severity:
-        """Severity is the max across all constituent alerts."""
-        if not self.alerts:
-            return Severity.LOW
-        return max(a.severity for a in self.alerts)
+        """Severity is the max across constituent alerts, raised by any
+        escalation-rule promotion. (Previously escalation rules only set an
+        unread attribute, so promoted incidents kept their base severity.)"""
+        base = max((a.severity for a in self.alerts), default=Severity.LOW)
+        if self.escalated_to is not None and self.escalated_to > base:
+            return self.escalated_to
+        return base
 
     @property
     def score(self) -> float:
@@ -237,12 +241,15 @@ class AlertPipeline:
         return incident
 
     def _apply_escalation(self, incident: Incident) -> None:
+        promoted: Optional[Severity] = None
         for rule in self.escalation_rules:
-            if rule.matches(incident):
-                # escalation is reflected in the dynamic severity property
-                # but we can attach a tag for auditing
-                if not hasattr(incident, "_escalated"):
-                    incident._escalated = rule.promote_to  # type: ignore[attr-defined]
+            if rule.matches(incident) and (promoted is None or rule.promote_to > promoted):
+                promoted = rule.promote_to
+        # only ever raise the promotion, never downgrade it
+        if promoted is not None and (
+            incident.escalated_to is None or promoted > incident.escalated_to
+        ):
+            incident.escalated_to = promoted
 
 
 # ── Quick smoke test ─────────────────────────────────────────────────────────
