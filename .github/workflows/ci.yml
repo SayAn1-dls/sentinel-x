@@ -33,7 +33,7 @@ jobs:
 
       - name: Run tests
         run: |
-          if [ -d tests/ ]; then pytest tests/ -v --tb=short; else echo "No tests directory found"; fi
+          if [ -d tests/ ]; then pytest tests/ backend/tests/ -v --tb=short; else echo "No tests directory found"; fi
 
   frontend-build:
     name: Frontend — Build Check
