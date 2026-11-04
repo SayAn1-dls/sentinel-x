@@ -56,6 +56,7 @@ class CorrelationEngine:
         self._buffer_duration = timedelta(seconds=buffer_duration_seconds)
         self._incidents: List[CorrelatedIncident] = []
         self._incident_counter = 0
+        self._consumed: Dict[str, set] = defaultdict(set)
 
     def add_rule(self, rule: CorrelationRule) -> None:
         """Add a correlation rule."""
@@ -68,7 +69,10 @@ class CorrelationEngine:
             event: Event dictionary with at least 'type', 'sensor_id', 'timestamp'.
 
         Returns:
-            List of newly detected correlated incidents.
+            List of newly detected correlated incidents. A rule does
+            not re-fire while every matching event was already reported
+            in an earlier incident; at least one fresh matching event
+            is required to trigger it again.
         """
         self._event_buffer.append(event)
         self._prune_buffer()
@@ -89,6 +93,9 @@ class CorrelationEngine:
             e for e in self._event_buffer
             if e.get("timestamp", datetime.utcnow()) >= cutoff
         ]
+        live_ids = {id(e) for e in self._event_buffer}
+        for rule_id in self._consumed:
+            self._consumed[rule_id] = self._consumed[rule_id] & live_ids
 
     def _check_rule(self, rule: CorrelationRule) -> Optional[CorrelatedIncident]:
         """Check if current events satisfy a correlation rule.
@@ -113,8 +120,11 @@ class CorrelationEngine:
             if event_type in rule.required_events or sensor_id in rule.required_events:
                 matching.append(event)
 
-        if len(matching) >= rule.min_events:
+        fresh = [e for e in matching if id(e) not in self._consumed[rule.rule_id]]
+        if len(matching) >= rule.min_events and fresh:
             self._incident_counter += 1
+            for e in matching:
+                self._consumed[rule.rule_id].add(id(e))
             sensors = set(e.get("sensor_id", "") for e in matching)
             timestamps = [e.get("timestamp", now) for e in matching]
 
