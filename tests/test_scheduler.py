@@ -62,3 +62,70 @@ class TestTaskScheduler:
 
     def test_cancel_unknown_task(self):
         assert self.scheduler.cancel("nonexistent") is False
+
+
+class TestOneShotSemantics:
+    """Regression: a one-shot task (interval_seconds=None, no max_runs)
+    must execute exactly once. Before the fix, is_due ignored task
+    status, so completed/failed one-shot tasks re-ran on every tick."""
+
+    def setup_method(self):
+        self.scheduler = TaskScheduler()
+        self.exec_count = 0
+
+    def _counting_task(self):
+        self.exec_count += 1
+
+    def test_one_shot_without_max_runs_runs_exactly_once(self):
+        self.scheduler.schedule("once", self._counting_task)
+        self.scheduler.tick()
+        self.scheduler.tick()
+        self.scheduler.tick()
+        assert self.exec_count == 1
+
+    def test_failed_one_shot_not_retried(self):
+        calls = []
+
+        def bad():
+            calls.append(1)
+            raise RuntimeError("boom")
+
+        self.scheduler.schedule("bad", bad)
+        first = self.scheduler.tick()
+        assert first[0]["status"] == "failed"
+        second = self.scheduler.tick()
+        assert second == []
+        assert len(calls) == 1
+
+    def test_completed_one_shot_reports_completed(self):
+        self.scheduler.schedule("once", self._counting_task)
+        self.scheduler.tick()
+        status = {s["name"]: s for s in self.scheduler.get_status()}
+        assert status["once"]["status"] == "completed"
+
+
+class TestRecurringSemantics:
+    """Recurring tasks keep running on their interval after the fix."""
+
+    def setup_method(self):
+        self.scheduler = TaskScheduler()
+        self.exec_count = 0
+
+    def _counting_task(self):
+        self.exec_count += 1
+
+    def test_recurring_runs_every_elapsed_interval(self):
+        self.scheduler.schedule("rec", self._counting_task, interval_seconds=0)
+        self.scheduler.tick()
+        self.scheduler.tick()
+        assert self.exec_count == 2
+        status = {s["name"]: s for s in self.scheduler.get_status()}
+        assert status["rec"]["status"] == "pending"
+
+    def test_recurring_max_runs_stops_after_limit(self):
+        self.scheduler.schedule(
+            "rec", self._counting_task, interval_seconds=0, max_runs=2)
+        self.scheduler.tick()
+        self.scheduler.tick()
+        self.scheduler.tick()
+        assert self.exec_count == 2
