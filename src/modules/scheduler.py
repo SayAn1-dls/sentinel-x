@@ -42,8 +42,14 @@ class ScheduledTask:
 
     @property
     def is_due(self) -> bool:
-        """Check if the task is due for execution."""
-        if self.status == TaskStatus.CANCELLED:
+        """Check if the task is due for execution.
+
+        Only PENDING tasks can be due: a one-shot task that already
+        ran (COMPLETED or FAILED) must not execute again, and a
+        CANCELLED task never runs. Recurring tasks return to PENDING
+        after each execution.
+        """
+        if self.status != TaskStatus.PENDING:
             return False
         if self.max_runs and self.run_count >= self.max_runs:
             return False
