@@ -13,7 +13,11 @@ from collections import defaultdict
 
 @dataclass
 class RateLimitResult:
-    """Result of a rate limit check."""
+    """Result of a rate limit check.
+
+    reset_at is a UNIX epoch timestamp (seconds); retry_after is a
+    relative duration in seconds.
+    """
     allowed: bool
     remaining: int
     limit: int
@@ -63,7 +67,12 @@ class TokenBucketLimiter:
 
         Returns:
             RateLimitResult indicating if the request is allowed.
+
+        Raises:
+            ValueError: If tokens is not a positive integer.
         """
+        if tokens < 1:
+            raise ValueError("tokens must be a positive integer")
         current_tokens = self._refill(key)
 
         if current_tokens >= tokens:
@@ -72,7 +81,7 @@ class TokenBucketLimiter:
                 allowed=True,
                 remaining=int(current_tokens - tokens),
                 limit=self.capacity,
-                reset_at=time.monotonic() + (self.capacity - current_tokens + tokens) / self.refill_rate,
+                reset_at=time.time() + (self.capacity - current_tokens + tokens) / self.refill_rate,
             )
         else:
             wait_time = (tokens - current_tokens) / self.refill_rate
@@ -80,6 +89,6 @@ class TokenBucketLimiter:
                 allowed=False,
                 remaining=0,
                 limit=self.capacity,
-                reset_at=time.monotonic() + wait_time,
+                reset_at=time.time() + wait_time,
                 retry_after=wait_time,
             )
