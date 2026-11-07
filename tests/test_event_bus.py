@@ -82,3 +82,98 @@ class TestEventBus:
         count = self.bus.publish(event)
         assert count == 1  # Second handler still executed
         assert len(self.received_events) == 1
+
+
+class TestHandlerFailureLogging:
+    """A failing handler must be logged, not silently swallowed."""
+
+    def test_handler_exception_is_logged(self, caplog):
+        import logging
+
+        def bad_handler(event):
+            raise RuntimeError("handler crashed")
+
+        self_bus = EventBus()
+        self_bus.subscribe(EventType.SENSOR_DATA, bad_handler)
+        event = Event.create(EventType.SENSOR_DATA, "s1", {})
+        with caplog.at_level(logging.ERROR, logger="src.modules.event_bus"):
+            count = self_bus.publish(event)
+        assert count == 0
+        assert len(caplog.records) == 1
+        record = caplog.records[0]
+        assert record.levelno == logging.ERROR
+        assert event.event_id in record.getMessage()
+        assert record.exc_info is not None  # traceback preserved
+
+    def test_failing_handler_does_not_block_later_handlers(self, caplog):
+        import logging
+
+        received = []
+
+        def bad_handler(event):
+            raise RuntimeError("boom")
+
+        bus = EventBus()
+        bus.subscribe(EventType.SENSOR_DATA, bad_handler)
+        bus.subscribe(EventType.SENSOR_DATA, received.append)
+        with caplog.at_level(logging.ERROR, logger="src.modules.event_bus"):
+            count = bus.publish(Event.create(EventType.SENSOR_DATA, "s1", {}))
+        assert count == 1
+        assert len(received) == 1
+
+
+class TestPublishSnapshot:
+    """Handlers registered at publish time all run, per the contract."""
+
+    def test_unsubscribe_during_publish_does_not_skip_handlers(self):
+        bus = EventBus()
+        received = []
+
+        def h2(event):
+            received.append("h2")
+
+        def h1(event):
+            bus.unsubscribe(EventType.ALERT_TRIGGERED, h2)
+            received.append("h1")
+
+        bus.subscribe(EventType.ALERT_TRIGGERED, h1)
+        bus.subscribe(EventType.ALERT_TRIGGERED, h2)
+        count = bus.publish(Event.create(EventType.ALERT_TRIGGERED, "x", {}))
+        # Both were registered when publish started: both must run.
+        assert received == ["h1", "h2"]
+        assert count == 2
+        # The unsubscription still applies to the NEXT publish.
+        count = bus.publish(Event.create(EventType.ALERT_TRIGGERED, "x", {}))
+        assert received == ["h1", "h2", "h1"]
+        assert count == 1
+
+
+class TestHistory:
+    """Public accessor for the documented bounded event history."""
+
+    def test_history_returns_events_in_publication_order(self):
+        bus = EventBus()
+        events = [Event.create(EventType.SENSOR_DATA, "s1", {"i": i}) for i in range(3)]
+        for e in events:
+            bus.publish(e)
+        assert bus.history() == events
+
+    def test_history_limit_returns_most_recent(self):
+        bus = EventBus()
+        events = [Event.create(EventType.SENSOR_DATA, "s1", {"i": i}) for i in range(5)]
+        for e in events:
+            bus.publish(e)
+        assert bus.history(limit=2) == events[-2:]
+
+    def test_history_non_positive_limit_returns_empty(self):
+        bus = EventBus()
+        bus.publish(Event.create(EventType.SENSOR_DATA, "s1", {}))
+        assert bus.history(limit=0) == []
+        assert bus.history(limit=-1) == []
+
+    def test_history_returns_a_copy(self):
+        bus = EventBus()
+        bus.publish(Event.create(EventType.SENSOR_DATA, "s1", {}))
+        snapshot = bus.history()
+        snapshot.clear()
+        assert len(bus.history()) == 1
