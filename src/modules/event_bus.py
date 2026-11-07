@@ -9,7 +9,10 @@ from typing import Callable, Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+import logging
 import uuid
+
+logger = logging.getLogger(__name__)
 
 
 class EventType(Enum):
@@ -98,22 +101,48 @@ class EventBus:
     def publish(self, event: Event) -> int:
         """Publish an event to all registered handlers.
 
+        Every handler registered at publish time is invoked in
+        registration order, even if an earlier handler unsubscribes
+        other handlers while processing this event. A handler that
+        raises is logged and skipped without breaking the chain.
+
         Args:
             event: The event to publish.
 
         Returns:
-            Number of handlers that processed the event.
+            Number of handlers that processed the event without error.
         """
         self._event_log.append(event)
         if len(self._event_log) > self._max_history:
             self._event_log = self._event_log[-self._max_history:]
 
-        handlers = self._subscribers.get(event.event_type, [])
+        handlers = list(self._subscribers.get(event.event_type, ()))
         processed = 0
         for handler in handlers:
             try:
                 handler(event)
                 processed += 1
             except Exception:
-                pass  # Log error but don't break the chain
+                logger.exception(
+                    "Event handler %r failed on event %s (%s)",
+                    handler, event.event_id, event.event_type.value,
+                )
         return processed
+
+    def history(self, limit: Optional[int] = None) -> List[Event]:
+        """Return a copy of the bounded event history, oldest first.
+
+        Args:
+            limit: Maximum number of most recent events to return.
+                None returns the full retained history. Non-positive
+                values return an empty list.
+
+        Returns:
+            Events in publication order. Mutating the returned list
+            does not affect the bus.
+        """
+        if limit is None:
+            return list(self._event_log)
+        if limit <= 0:
+            return []
+        return list(self._event_log[-limit:])
