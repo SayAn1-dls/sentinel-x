@@ -349,7 +349,12 @@ class ThreatGraph:
     # ── Subgraph isolation ────────────────────────────────────────────────────
 
     def subgraph(self, root: str, depth: int = 3) -> "ThreatGraph":
-        """Extract a sub-graph rooted at `root` up to `depth` hops."""
+        """Extract a sub-graph rooted at `root` up to `depth` hops.
+
+        Node attributes (including risk scores) and edge metadata are
+        preserved as-is: edges are copied directly instead of being
+        re-added, so no risk re-propagation is applied.
+        """
         sub = ThreatGraph()
         reachable = {n for n, _ in self.bfs(root, max_depth=depth)}
         for nid in reachable:
@@ -357,7 +362,14 @@ class ThreatGraph:
             sub.add_node(nid, node.kind, node.label, node.risk_score)
         for edge in self._all_edges:
             if edge.src in reachable and edge.dst in reachable:
-                sub.add_edge(edge.src, edge.dst, edge.kind, edge.timestamp)
+                copied = Edge(
+                    src=edge.src, dst=edge.dst, kind=edge.kind,
+                    weight=edge.weight, timestamp=edge.timestamp,
+                    metadata=dict(edge.metadata),
+                )
+                sub._edges[edge.src].append(copied)
+                sub._redges[edge.dst].append(copied)
+                sub._all_edges.append(copied)
         return sub
 
     # ── Suspicious cluster detection ─────────────────────────────────────────
