@@ -116,3 +116,86 @@ class TestWebhookHandler:
         )
         payload = handler.prepare(alert, "https://example.com")
         assert payload.signature is None
+
+
+class TestEmailHtmlEscaping:
+    """Alert-controlled strings must not inject markup into the HTML body."""
+
+    def _hostile_alert(self):
+        from datetime import datetime
+        from src.modules.alert import Alert, AlertPriority
+        return Alert(
+            alert_id="a1",
+            rule_id="r1",
+            title='<img src=x onerror="alert(1)">',
+            message="payload: <script>evil()</script>",
+            priority=AlertPriority.P1_CRITICAL,
+            source="ids",
+            triggered_at=datetime(2026, 11, 9, 10, 0, 0),
+        )
+
+    def test_html_body_escapes_title_and_message(self):
+        from src.modules.notification import EmailHandler
+        n = EmailHandler("sec@x.io").format_alert_email(self._hostile_alert())
+        assert "<script>evil()</script>" not in n.body_html
+        assert 'onerror="alert(1)"' not in n.body_html
+        assert "&lt;script&gt;" in n.body_html
+        assert "&lt;img" in n.body_html
+
+    def test_text_body_keeps_original_text(self):
+        from src.modules.notification import EmailHandler
+        n = EmailHandler("sec@x.io").format_alert_email(self._hostile_alert())
+        assert "<script>evil()</script>" in n.body_text
+
+
+class TestSlackHandler:
+    """Slack channel advertised by the module docstring."""
+
+    def _alert(self):
+        from datetime import datetime
+        from src.modules.alert import Alert, AlertPriority
+        return Alert(
+            alert_id="a1",
+            rule_id="r1",
+            title="Brute force detected",
+            message="200 failed logins",
+            priority=AlertPriority.P2_HIGH,
+            source="auth",
+            triggered_at=datetime(2026, 11, 9, 10, 0, 0),
+        )
+
+    def test_format_uses_configured_webhook(self):
+        from src.modules.notification import SlackHandler
+        h = SlackHandler(webhook_url="https://hooks.slack.com/default")
+        m = h.format_alert(self._alert())
+        assert m.webhook_url == "https://hooks.slack.com/default"
+        assert "[P2_HIGH] Brute force detected" in m.text
+        assert m.blocks  # structured payload present
+
+    def test_explicit_webhook_overrides_configured(self):
+        from src.modules.notification import SlackHandler
+        h = SlackHandler(webhook_url="https://hooks.slack.com/default")
+        m = h.format_alert(self._alert(), webhook_url="https://hooks.slack.com/other")
+        assert m.webhook_url == "https://hooks.slack.com/other"
+
+    def test_missing_webhook_url_raises(self):
+        import pytest
+        from src.modules.notification import SlackHandler
+        with pytest.raises(ValueError):
+            SlackHandler().format_alert(self._alert())
+
+    def test_priority_emoji_mapping(self):
+        from datetime import datetime
+        from src.modules.alert import Alert, AlertPriority
+        from src.modules.notification import SlackHandler
+        a = self._alert()
+        a.priority = AlertPriority.P1_CRITICAL
+        m = SlackHandler("https://hooks.slack.com/x").format_alert(a)
+        assert m.text.startswith(":rotating_light:")
+
+    def test_send_returns_status(self):
+        from src.modules.notification import SlackHandler
+        h = SlackHandler("https://hooks.slack.com/x", default_channel="#sec")
+        result = h.send(h.format_alert(self._alert()))
+        assert result["status"] == "sent"
+        assert result["channel"] == "#sec"
