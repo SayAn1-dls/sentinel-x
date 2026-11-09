@@ -5,8 +5,9 @@ Concrete implementations for alert delivery channels:
 email, webhook, and Slack notifications.
 """
 
-from typing import Dict, Any, Optional
-from dataclasses import dataclass
+from typing import Dict, Any, List, Optional
+from dataclasses import dataclass, field
+import html
 import json
 import hashlib
 import hmac
@@ -64,7 +65,9 @@ class EmailHandler:
             alert: Alert instance to format.
 
         Returns:
-            EmailNotification ready for sending.
+            EmailNotification ready for sending. Alert-supplied strings
+            are HTML-escaped in the HTML body; the plain-text body keeps
+            the original text.
         """
         subject = f"[Sentinel-X] {alert.priority.name}: {alert.title}"
         body = (
@@ -74,16 +77,20 @@ class EmailHandler:
             f"Time: {alert.triggered_at.isoformat()}\n"
             f"\n{alert.message}\n"
         )
+        esc_title = html.escape(alert.title)
+        esc_id = html.escape(str(alert.alert_id))
+        esc_source = html.escape(alert.source)
+        esc_message = html.escape(alert.message)
         html_body = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px;">
-            <h2 style="color: #e74c3c;">⚠️ {alert.title}</h2>
+            <h2 style="color: #e74c3c;">⚠️ {esc_title}</h2>
             <table style="width: 100%; border-collapse: collapse;">
-                <tr><td><strong>Alert ID</strong></td><td>{alert.alert_id}</td></tr>
+                <tr><td><strong>Alert ID</strong></td><td>{esc_id}</td></tr>
                 <tr><td><strong>Priority</strong></td><td>{alert.priority.name}</td></tr>
-                <tr><td><strong>Source</strong></td><td>{alert.source}</td></tr>
+                <tr><td><strong>Source</strong></td><td>{esc_source}</td></tr>
                 <tr><td><strong>Time</strong></td><td>{alert.triggered_at.isoformat()}</td></tr>
             </table>
-            <p style="margin-top: 16px;">{alert.message}</p>
+            <p style="margin-top: 16px;">{esc_message}</p>
         </div>
         """
         return EmailNotification(
@@ -186,5 +193,100 @@ class WebhookHandler:
         return {
             "status": "delivered",
             "url": payload.url,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+
+@dataclass
+class SlackMessage:
+    """Slack notification payload for an incoming webhook."""
+    webhook_url: str
+    text: str
+    blocks: List[Dict[str, Any]] = field(default_factory=list)
+    channel: Optional[str] = None
+    username: str = "Sentinel-X"
+
+
+class SlackHandler:
+    """Formats alert notifications for Slack incoming webhooks.
+
+    In production, posts the message JSON to the webhook URL.
+
+    Attributes:
+        webhook_url: Default Slack incoming webhook URL.
+        default_channel: Optional channel override for delivery.
+    """
+
+    PRIORITY_EMOJI = {
+        1: ":rotating_light:",
+        2: ":warning:",
+        3: ":large_yellow_circle:",
+        4: ":white_circle:",
+    }
+
+    def __init__(self, webhook_url: str = "", default_channel: Optional[str] = None):
+        self.webhook_url = webhook_url
+        self.default_channel = default_channel
+
+    def format_alert(self, alert, webhook_url: Optional[str] = None) -> SlackMessage:
+        """Format an alert as a Slack message.
+
+        Args:
+            alert: Alert instance to format.
+            webhook_url: Destination webhook URL. Falls back to the
+                handler's configured URL.
+
+        Returns:
+            SlackMessage ready for delivery.
+
+        Raises:
+            ValueError: If no webhook URL is configured or provided.
+        """
+        url = webhook_url or self.webhook_url
+        if not url:
+            raise ValueError(
+                "Slack webhook URL required: none configured or provided"
+            )
+        emoji = self.PRIORITY_EMOJI.get(alert.priority.value, ":bell:")
+        text = f"{emoji} [{alert.priority.name}] {alert.title}"
+        blocks = [
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": text},
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {"type": "mrkdwn", "text": f"*Alert ID:*\n{alert.alert_id}"},
+                    {"type": "mrkdwn", "text": f"*Source:*\n{alert.source}"},
+                    {"type": "mrkdwn", "text": f"*Priority:*\n{alert.priority.name}"},
+                    {"type": "mrkdwn", "text": f"*Time:*\n{alert.triggered_at.isoformat()}"},
+                ],
+            },
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": alert.message},
+            },
+        ]
+        return SlackMessage(
+            webhook_url=url,
+            text=text,
+            blocks=blocks,
+            channel=self.default_channel,
+        )
+
+    def send(self, message: SlackMessage) -> Dict[str, Any]:
+        """Send a Slack message (stub for production HTTP client).
+
+        Args:
+            message: Prepared Slack message.
+
+        Returns:
+            Send result with status.
+        """
+        # In production: httpx.post(message.webhook_url, json=payload)
+        return {
+            "status": "sent",
+            "channel": message.channel,
             "timestamp": datetime.utcnow().isoformat(),
         }
