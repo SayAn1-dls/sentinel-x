@@ -7,6 +7,7 @@ Tests for ThresholdDetector and StatisticalDetector classes.
 import pytest
 from datetime import datetime
 from src.modules.detection import (
+    AnomalyDetector,
     ThresholdDetector,
     StatisticalDetector,
     AnomalyType,
@@ -128,3 +129,66 @@ class TestStatisticalDetector:
         result_f = self.detector.ingest("sensor_f", 100.0)
         assert result_e is None
         assert result_f is None
+
+
+class TestAnomalyDetector:
+    """Contract tests for the batch, model-fitting AnomalyDetector."""
+
+    DATA = [float(i % 7) for i in range(50)]  # mean 2.94, std ~2.02
+
+    def test_fit_requires_min_samples(self):
+        with pytest.raises(ValueError):
+            AnomalyDetector().fit([1.0] * 5)
+
+    def test_fit_computes_baseline(self):
+        d = AnomalyDetector().fit(self.DATA)
+        assert abs(d.baseline["mean"] - 2.94) < 1e-9
+        assert d.baseline["n"] == 50
+        assert d.baseline["min"] == 0.0
+        assert d.baseline["max"] == 6.0
+
+    def test_detect_requires_fit(self):
+        with pytest.raises(RuntimeError):
+            AnomalyDetector().detect(1.0)
+
+    def test_normal_value_not_flagged(self):
+        d = AnomalyDetector().fit(self.DATA)
+        result = d.detect(3.5)
+        assert result["is_anomaly"] is False
+        assert result["z_score"] < 2.7
+
+    def test_extreme_value_flagged_and_counted(self):
+        d = AnomalyDetector().fit(self.DATA)
+        before = d.detection_count
+        result = d.detect(30.0)
+        assert result["is_anomaly"] is True
+        assert d.detection_count == before + 1
+
+    def test_sensitivity_changes_threshold(self):
+        # z ~ 3.0 for value 9.0: above medium (2.7) and critical (1.65)
+        # thresholds, below low (3.6).
+        low = AnomalyDetector(sensitivity="low").fit(self.DATA)
+        medium = AnomalyDetector(sensitivity="medium").fit(self.DATA)
+        critical = AnomalyDetector(sensitivity="critical").fit(self.DATA)
+        assert low.detect(9.0)["is_anomaly"] is False
+        assert medium.detect(9.0)["is_anomaly"] is True
+        assert critical.detect(9.0)["is_anomaly"] is True
+        # Near the mean, nothing flags regardless of sensitivity.
+        assert critical.detect(3.2)["is_anomaly"] is False
+
+    def test_default_medium_threshold_unchanged(self):
+        # Backward compatibility: medium sensitivity keeps the old 2.70
+        # cutoff, so z in (2.7, 3.6] still flags at the default.
+        d = AnomalyDetector().fit(self.DATA)
+        assert d.detect(9.0)["is_anomaly"] is True   # z ~ 3.0 > 2.7
+        assert d.detect(8.0)["is_anomaly"] is False  # z ~ 2.5 < 2.7
+
+    def test_history_and_summary(self):
+        d = AnomalyDetector(sensitivity="high").fit(self.DATA)
+        d.detect(3.0)
+        d.detect(25.0)
+        summary = d.get_summary()
+        assert summary["total_checked"] == 2
+        assert summary["anomalies_found"] == 1
+        assert summary["baseline_samples"] == 50
+        assert summary["sensitivity"] == 0.85
