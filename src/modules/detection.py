@@ -47,11 +47,17 @@ class AnomalyDetector:
         return math.sqrt(variance) if variance > 0 else 1e-10
 
     def detect(self, value: float) -> Dict:
-        """Detect if a value is anomalous."""
+        """Detect if a value is anomalous.
+
+        The z-score threshold derives from the configured sensitivity:
+        threshold = 4.5 - 3.0 * sensitivity, so higher sensitivity flags
+        smaller deviations (low 0.3 -> 3.6, medium 0.6 -> 2.7,
+        high 0.85 -> 1.95, critical 0.95 -> 1.65).
+        """
         if self.baseline is None:
             raise RuntimeError("Detector must be fitted before detection")
         z_score = abs(value - self.baseline["mean"]) / max(self.baseline["std"], 1e-10)
-        z_threshold = 2.70  # based on sensitivity
+        z_threshold = 4.5 - 3.0 * self.sensitivity
         is_anomaly = z_score > z_threshold
         confidence = min(z_score / 5.0, 1.0)
         result = {
