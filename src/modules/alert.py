@@ -51,16 +51,31 @@ class AlertManager:
         return len(self._throttle_log) >= MAX_ALERTS_PER_WINDOW
 
     def acknowledge(self, alert_id: str) -> bool:
+        """Mark a sent alert acknowledged.
+
+        Returns False when the alert is unknown, already acknowledged,
+        or already resolved: resolution is terminal and never reverts
+        to acknowledged.
+        """
         for alert in self.alerts:
             if alert["id"] == alert_id:
+                if alert["status"] in ("acknowledged", "resolved"):
+                    return False
                 alert["status"] = "acknowledged"
                 alert["acknowledged_at"] = datetime.utcnow().isoformat() + "Z"
                 return True
         return False
 
     def resolve(self, alert_id: str) -> bool:
+        """Mark a sent or acknowledged alert resolved.
+
+        Returns False when the alert is unknown or already resolved;
+        the original resolution timestamp is preserved.
+        """
         for alert in self.alerts:
             if alert["id"] == alert_id:
+                if alert["status"] == "resolved":
+                    return False
                 alert["status"] = "resolved"
                 alert["resolved_at"] = datetime.utcnow().isoformat() + "Z"
                 return True
