@@ -97,7 +97,7 @@ async def stats():
 
 @app.get("/api/transactions")
 async def transactions(limit: int = 10, offset: int = 0):
-    return {"total": 4291847, "limit": limit, "offset": offset, "data": MOCK_TRANSACTIONS[:limit]}
+    return {"total": 4291847, "limit": limit, "offset": offset, "data": MOCK_TRANSACTIONS[offset:offset + limit]}
 
 
 @app.get("/api/alerts")
