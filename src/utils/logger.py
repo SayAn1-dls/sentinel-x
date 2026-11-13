@@ -17,7 +17,7 @@ class JSONFormatter(logging.Formatter):
 
     def format(self, record):
         log_entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.fromtimestamp(record.created, timezone.utc).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
@@ -43,7 +43,10 @@ def get_logger(name: str, log_level: str = "INFO") -> logging.Logger:
         Configured logging.Logger instance.
     """
     logger = logging.getLogger(name)
-    logger.setLevel(getattr(logging, log_level.upper(), logging.INFO))
+    level = getattr(logging, log_level.upper(), None)
+    if not isinstance(level, int):
+        raise ValueError(f"Unknown log level: {log_level!r}")
+    logger.setLevel(level)
 
     if not logger.handlers:
         console_handler = logging.StreamHandler()
