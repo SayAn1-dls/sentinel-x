@@ -1,7 +1,12 @@
 """Unit tests for the ThreatGraph correlation engine."""
 
+import time
+
 from src.modules.threat_graph import (
+    AttackChain,
+    Edge,
     EdgeKind,
+    Node,
     NodeKind,
     ThreatGraph,
 )
@@ -130,3 +135,111 @@ class TestStats:
         assert s["edges"] == 3
         assert s["edge_types"]["login"] == 1
         assert s["edge_types"]["c2_beacon"] == 1
+
+
+class TestExplicitTimestamp:
+    def test_epoch_zero_timestamp_preserved(self):
+        # Regression: `timestamp or time.time()` conflated falsy 0.0 with
+        # the None default and silently re-stamped epoch-0 events to now.
+        g = ThreatGraph()
+        edge = g.add_edge("a", "b", EdgeKind.LOGIN, timestamp=0.0)
+        assert edge.timestamp == 0.0
+
+    def test_none_timestamp_defaults_to_now(self):
+        g = ThreatGraph()
+        before = time.time()
+        edge = g.add_edge("a", "b", EdgeKind.LOGIN)
+        assert before <= edge.timestamp <= time.time()
+
+
+class TestModelContracts:
+    def test_node_touch_updates_last_seen_only(self):
+        node = Node(node_id="n1", kind=NodeKind.IP, label="x",
+                    risk_score=0.5, first_seen=100.0, last_seen=100.0)
+        node.touch()
+        assert node.last_seen > 100.0
+        assert node.first_seen == 100.0
+
+    def test_node_identity_by_node_id(self):
+        a = Node(node_id="n1", kind=NodeKind.IP, label="a")
+        b = Node(node_id="n1", kind=NodeKind.USER, label="b")
+        c = Node(node_id="n2", kind=NodeKind.IP, label="a")
+        assert a == b and hash(a) == hash(b)
+        assert a != c and a != "n1"
+
+    def test_edge_uid_format(self):
+        e = Edge(src="s", dst="d", kind=EdgeKind.LOGIN, weight=0.2)
+        assert e.uid == f"s→d:{EdgeKind.LOGIN}"
+
+    def test_chain_length_and_path_str(self):
+        chain = AttackChain(nodes=["a", "b", "c"], edges=[],
+                            total_weight=1.0, max_weight=0.5)
+        assert chain.length == 3
+        assert chain.path_str == "a → b → c"
+
+    def test_chain_severity_thresholds(self):
+        def sev(total):
+            return AttackChain(nodes=["a", "b"], edges=[],
+                               total_weight=total, max_weight=0.0).severity
+        assert sev(4.0) == "CRITICAL"
+        assert sev(2.5) == "HIGH"
+        assert sev(1.5) == "MEDIUM"
+        assert sev(1.4) == "LOW"
+
+
+class TestDfsTraversal:
+    def test_dfs_visits_all_reachable_once(self):
+        g = ThreatGraph()
+        for s, d in [("a", "b"), ("b", "c"), ("a", "c"), ("c", "d")]:
+            g.add_edge(s, d, EdgeKind.LOGIN)
+        assert sorted(g.dfs("a")) == ["a", "b", "c", "d"]
+
+    def test_dfs_respects_max_depth(self):
+        g = ThreatGraph()
+        g.add_edge("a", "b", EdgeKind.LOGIN)
+        g.add_edge("b", "c", EdgeKind.LOGIN)
+        assert sorted(g.dfs("a", max_depth=1)) == ["a", "b"]
+
+    def test_dfs_matches_bfs_reachability(self):
+        g = ThreatGraph()
+        for s, d in [("a", "b"), ("b", "c"), ("a", "d"), ("d", "e")]:
+            g.add_edge(s, d, EdgeKind.LOGIN)
+        bfs_nodes = {n for n, _ in g.bfs("a")}
+        assert set(g.dfs("a")) == bfs_nodes
+
+
+class TestScoreAndStatsEdges:
+    def test_impact_score_zero_for_isolated_node(self):
+        g = ThreatGraph()
+        g.add_node("lonely", NodeKind.IP, risk_score=0.9)
+        assert g.impact_score("lonely") == 0.0
+
+    def test_pivot_nodes_ranks_intermediate_node(self):
+        g = ThreatGraph()
+        for nid in ("a", "b", "m", "c", "d"):
+            g.add_node(nid, NodeKind.IP)
+        for s, d in [("a", "m"), ("b", "m"), ("m", "c"), ("m", "d")]:
+            g.add_edge(s, d, EdgeKind.LOGIN)
+        pivots = g.pivot_nodes()
+        assert pivots[0].node_id == "m"
+        assert pivots[0].pivot_score > 0
+
+    def test_suspicious_clusters_groups_connected_high_risk(self):
+        g = ThreatGraph()
+        g.add_node("x", NodeKind.IP, risk_score=0.9)
+        g.add_node("y", NodeKind.USER, risk_score=0.9)
+        g.add_edge("x", "y", EdgeKind.C2_BEACON)
+        g.add_node("z", NodeKind.IP, risk_score=0.0)
+        clusters = g.suspicious_clusters(min_risk=0.5)
+        assert clusters == [{"x", "y"}]
+
+    def test_top_risk_nodes_orders_descending(self):
+        g = ThreatGraph()
+        g.add_node("low", NodeKind.IP, risk_score=0.1)
+        g.add_node("high", NodeKind.IP, risk_score=0.9)
+        assert [n.node_id for n in g.top_risk_nodes(1)] == ["high"]
+
+    def test_repr_shows_counts(self):
+        g = ThreatGraph()
+        g.add_edge("a", "b", EdgeKind.LOGIN)
+        assert repr(g) == "ThreatGraph(nodes=0, edges=1)"
