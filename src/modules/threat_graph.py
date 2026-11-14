@@ -182,7 +182,7 @@ class ThreatGraph:
         weight = EDGE_WEIGHT[kind]
         edge = Edge(
             src=src, dst=dst, kind=kind, weight=weight,
-            timestamp=timestamp or time.time(),
+            timestamp=time.time() if timestamp is None else timestamp,
             metadata=metadata,
         )
         self._edges[src].append(edge)
