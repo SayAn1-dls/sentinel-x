@@ -254,3 +254,65 @@ class TestSessionRiskTracker:
         ranked = t.top_risky()
         assert ranked[0][0] == "risky"
         assert t.session_count() == 2
+
+
+class TestOutOfOrderEvents:
+    def test_delayed_event_does_not_regress_last_seen(self):
+        # Regression: `state.last_seen = event.ts` let an out-of-order
+        # (delayed/queued) event with an older ts move last_seen backwards,
+        # making an active session look idle and evictable.
+        t = SessionRiskTracker(session_ttl_s=60.0)
+        now = time.time()
+        t.update("s1", SessionEvent(EventType.REQUEST, ts=now))
+        t.update("s1", SessionEvent(EventType.REQUEST, ts=now - 3600.0))
+        assert t._sessions["s1"].last_seen == now
+
+    def test_active_session_survives_eviction_after_delayed_event(self):
+        t = SessionRiskTracker(session_ttl_s=60.0)
+        now = time.time()
+        t.update("s1", SessionEvent(EventType.REQUEST, ts=now))
+        t.update("s1", SessionEvent(EventType.REQUEST, ts=now - 3600.0))
+        assert t.evict_stale() == 0
+        assert t.session_count() == 1
+
+    def test_last_seen_still_advances_on_newer_events(self):
+        t = SessionRiskTracker()
+        t.update("s1", SessionEvent(EventType.REQUEST, ts=1000.0))
+        t.update("s1", SessionEvent(EventType.REQUEST, ts=2000.0))
+        assert t._sessions["s1"].last_seen == 2000.0
+
+
+class TestTrackerQueries:
+    def test_score_returns_none_for_unknown_session(self):
+        t = SessionRiskTracker()
+        assert t.score("nope") is None
+
+    def test_score_returns_current_ewma(self):
+        t = SessionRiskTracker()
+        returned = t.update("s1", SessionEvent(EventType.AUTH_ATTEMPT,
+                                               status_code=401, ts=1000.0))
+        assert t.score("s1") == returned
+
+    def test_evict_stale_removes_only_expired_sessions(self):
+        t = SessionRiskTracker(session_ttl_s=60.0)
+        now = time.time()
+        t.update("old", SessionEvent(EventType.REQUEST, ts=now - 120.0))
+        t.update("fresh", SessionEvent(EventType.REQUEST, ts=now))
+        assert t.evict_stale() == 1
+        assert t.score("old") is None
+        assert t.score("fresh") is not None
+
+    def test_top_risky_respects_n(self):
+        t = SessionRiskTracker()
+        for i in range(5):
+            t.update(f"s{i}", SessionEvent(EventType.AUTH_ATTEMPT,
+                                           status_code=401, ts=1000.0 + i))
+        assert len(t.top_risky(3)) == 3
+
+    def test_session_age_and_idle_gap(self):
+        t = SessionRiskTracker()
+        now = time.time()
+        t.update("s1", SessionEvent(EventType.REQUEST, ts=now))
+        state = t._sessions["s1"]
+        assert 0.0 <= state.session_age_s() < 5.0
+        assert 0.0 <= state.idle_gap_s() < 5.0
