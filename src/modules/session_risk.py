@@ -54,7 +54,10 @@ class SessionEvent:
 class SessionState:
     session_id: str
     created_at: float = field(default_factory=time.time)
-    last_seen: float = field(default_factory=time.time)
+    # 0.0 = no event seen yet; the first ingested event always sets this.
+    # (Starting at wall-clock now would pin last_seen above any historical
+    # event timestamp, so genuinely stale sessions would never look stale.)
+    last_seen: float = 0.0
 
     # running signals
     request_count: int = 0
@@ -191,7 +194,9 @@ class SessionRiskTracker:
             state._EWMA_ALPHA * raw
             + (1 - state._EWMA_ALPHA) * state._risk_score
         )
-        state.last_seen = event.ts
+        # Guard against out-of-order delivery: a delayed event with an older
+        # ts must not regress last_seen (evict_stale would drop live sessions).
+        state.last_seen = max(state.last_seen, event.ts)
         return round(state._risk_score, 4)
 
     def score(self, session_id: str) -> Optional[float]:
