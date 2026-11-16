@@ -5,10 +5,13 @@ Handles sensor data ingestion, normalization, and routing
 to the detection engine.
 """
 
+import logging
 from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+
+logger = logging.getLogger(__name__)
 
 
 class DataFormat(Enum):
@@ -166,7 +169,10 @@ class DataRouter:
                 handler(reading)
                 processed += 1
             except Exception:
-                pass  # Log and continue
+                logger.exception(
+                    "Handler %r failed while routing %s reading",
+                    handler, reading.sensor_type,
+                )
 
         self._processed_count += 1
         return processed
