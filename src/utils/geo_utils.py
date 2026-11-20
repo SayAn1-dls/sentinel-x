@@ -43,7 +43,7 @@ def haversine_km(lat1: float, lon1: float,
     Great-circle distance between two coordinates (Haversine formula).
 
     >>> round(haversine_km(28.6139, 77.2090, 19.0760, 72.8777), 1)
-    1153.3
+    1148.1
     """
     lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
     dlat = lat2 - lat1
@@ -65,10 +65,11 @@ def impossible_travel(loc_a: GeoLocation, loc_b: GeoLocation,
     >>> impossible_travel(a, b, elapsed_seconds=60)  # 1 minute
     True
     """
-    if elapsed_seconds <= 0:
-        return False
     dist_km = haversine_km(loc_a.latitude, loc_a.longitude,
                            loc_b.latitude, loc_b.longitude)
+    if elapsed_seconds <= 0:
+        # No elapsed time: any positive distance is impossible by definition.
+        return dist_km > 0
     required_kmh = (dist_km / elapsed_seconds) * 3600
     return required_kmh > max_speed_kmh
 
