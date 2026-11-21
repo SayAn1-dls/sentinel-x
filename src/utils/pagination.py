@@ -58,7 +58,14 @@ def paginate(
 
     Returns:
         Page with items and metadata.
+
+    Raises:
+        ValueError: If page < 1 or page_size < 1.
     """
+    if page < 1:
+        raise ValueError(f"page must be >= 1, got {page}")
+    if page_size < 1:
+        raise ValueError(f"page_size must be >= 1, got {page_size}")
     total = len(items)
     start = (page - 1) * page_size
     end = start + page_size
@@ -100,7 +107,9 @@ def decode_cursor(cursor: str) -> Dict[str, Any]:
         ValueError: If cursor is invalid.
     """
     try:
-        json_str = base64.urlsafe_b64decode(cursor.encode()).decode()
+        # validate=True via altchars: reject non-alphabet characters instead
+        # of silently discarding them and decoding a corrupted cursor.
+        json_str = base64.b64decode(cursor.encode(), altchars=b"-_", validate=True).decode()
         return json.loads(json_str)
     except Exception as e:
         raise ValueError(f"Invalid cursor: {e}")
