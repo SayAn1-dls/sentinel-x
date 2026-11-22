@@ -52,6 +52,8 @@ class EntropyScanner:
             raise ValueError("window_size must be positive")
         self.window_size = window_size
         self.step = step or window_size
+        if self.step <= 0:
+            raise ValueError("step must be positive")
         self.high_threshold = high_threshold
         self.low_threshold = low_threshold
 
@@ -78,8 +80,13 @@ class EntropyScanner:
         return sum((c - expected) ** 2 / expected for c in counts)
 
     def windows(self, data: bytes) -> Iterable[EntropyWindow]:
-        """Yield entropy for each sliding window over the buffer."""
-        for off in range(0, max(len(data) - self.window_size + 1, 1), self.step):
+        """Yield entropy for each sliding window over the buffer.
+
+        Every step-aligned offset with at least one unread byte gets a
+        window, so the final chunk may be partial - the tail of the
+        buffer is always scanned.
+        """
+        for off in range(0, max(len(data), 1), self.step):
             chunk = data[off:off + self.window_size]
             yield EntropyWindow(off, len(chunk), round(self.byte_entropy(chunk), 4))
 
