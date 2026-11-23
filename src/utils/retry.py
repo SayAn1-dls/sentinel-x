@@ -49,7 +49,12 @@ def calculate_backoff(
     Returns:
         Delay in seconds before the next retry.
     """
-    delay = min(base_delay * (exponential_base ** attempt), max_delay)
+    # The raw power can overflow float64 for large attempt counts before
+    # min() applies the cap; saturate at max_delay instead of raising.
+    try:
+        delay = min(base_delay * (exponential_base ** attempt), max_delay)
+    except OverflowError:
+        delay = max_delay
     if jitter:
         delay = delay * (0.5 + random.random() * 0.5)
     return delay
