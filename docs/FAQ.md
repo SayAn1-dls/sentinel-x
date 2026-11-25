@@ -4,7 +4,7 @@
 A: You are not logged in or your session expired. Log in with Google at `/auth`.
 
 ## Q: Why is the Google login not working?
-A: Verify that `OAUTH_BACKEND_URL` is set correctly on Render and that `NEXTAUTH_URL` matches the live URL.
+A: Verify that `OAUTH_BACKEND_URL` is set correctly on Render.
 
 ## Q: I see no alerts on the dashboard. Is it working?
 A: The dashboard requires data in the `sentinel_x` MongoDB collection. Seed data or trigger events to populate it.
@@ -13,4 +13,4 @@ A: The dashboard requires data in the `sentinel_x` MongoDB collection. Seed data
 A: Render free-tier spins down after inactivity. First request wakes the server and takes 30-60 seconds.
 
 ## Q: Can I run this locally?
-A: Yes. Clone the repo, copy `.env.example` to `.env.local`, fill in your credentials, and run `yarn dev`.
+A: Yes. Clone the repo, copy `.env.example` to `.env.local`, fill in your credentials, and run `npm install` then `npm run dev` from `frontend/` (serves on port 3000).
