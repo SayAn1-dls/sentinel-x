@@ -6,11 +6,11 @@
 
 ## Session Exchange Fails (401 after Google login)
 - Check `OAUTH_BACKEND_URL` env var is set to `https://demobackend.emergentagent.com`
-- Verify `NEXTAUTH_URL` matches the live Render URL
+- Confirm the request reaches `/api/auth/session` and the backend at that URL is up
 
 ## Build Fails on Render
-- TypeScript errors: `ignoreBuildErrors: true` is set in next.config.mjs
-- If yarn install fails: clear build cache on Render dashboard
+- TypeScript errors fail the build (`next.config.mjs` does not set `ignoreBuildErrors`). Run `npm run build` locally to reproduce
+- If `npm ci` fails: check `package-lock.json` is in sync with `package.json`, then clear build cache on Render dashboard
 
 ## MongoDB Not Connecting
 - Check `MONGO_URL` env var on Render
