@@ -13,7 +13,7 @@
 
 ## Database Monitoring
 - MongoDB Atlas: watch `sentinel_x` collection sizes
-- Index: `sessions.token`, `audit_logs.timestamp`, `alerts.status`
+- Index: `user_sessions.session_token`, `audit_logs.timestamp`, `transactions.timestamp`
 - Alert if audit_logs exceeds 100k entries
 
 ## Security Monitoring
