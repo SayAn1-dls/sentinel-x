@@ -203,3 +203,78 @@ class TestScanFile:
         s = EntropyScanner()
         rep = s.scan_file(str(f), max_bytes=4096)
         assert rep.total_bytes == 4096
+
+
+UNIFORM = bytes(range(256)) * 16          # 4096 bytes, 8.0 bits/byte, chi-square 0
+MIXED = UNIFORM + b"\x00" * (4096 * 5)    # 1 of 6 windows is high entropy
+
+
+class TestScanDirectory:
+    """Directory sweep: returns only suspicious files, skips tiny and unreadable ones."""
+
+    def test_flags_encrypted_file(self, tmp_path):
+        (tmp_path / "blob.enc").write_bytes(UNIFORM * 2)
+        reports = EntropyScanner().scan_directory(str(tmp_path))
+        assert [r.classification for r in reports] == ["encrypted_or_random"]
+        assert reports[0].path == str(tmp_path / "blob.enc")
+
+    def test_flags_mixed_with_embedded_payload(self, tmp_path):
+        (tmp_path / "doc.bin").write_bytes(MIXED)
+        reports = EntropyScanner().scan_directory(str(tmp_path))
+        assert [r.classification for r in reports] == ["mixed_with_embedded_payload"]
+
+    def test_ignores_plaintext_and_structured_files(self, tmp_path):
+        (tmp_path / "plain.txt").write_bytes(b"A" * 8192)
+        (tmp_path / "text.txt").write_bytes((b"hello world, sentinel-x. " * 400))
+        assert EntropyScanner().scan_directory(str(tmp_path)) == []
+
+    def test_walks_subdirectories(self, tmp_path):
+        sub = tmp_path / "a" / "b"
+        sub.mkdir(parents=True)
+        (sub / "deep.enc").write_bytes(UNIFORM * 2)
+        reports = EntropyScanner().scan_directory(str(tmp_path))
+        assert [r.path for r in reports] == [str(sub / "deep.enc")]
+
+    def test_min_size_boundary(self, tmp_path):
+        # Smaller than min_size is skipped; exactly min_size is scanned.
+        (tmp_path / "small.bin").write_bytes(UNIFORM[:1023])
+        (tmp_path / "exact.bin").write_bytes(UNIFORM[:1024])
+        reports = EntropyScanner().scan_directory(str(tmp_path), min_size=1024)
+        assert [os.path.basename(r.path) for r in reports] == ["exact.bin"]
+
+    def test_custom_min_size(self, tmp_path):
+        (tmp_path / "tiny.bin").write_bytes(UNIFORM[:512])
+        s = EntropyScanner()
+        assert s.scan_directory(str(tmp_path)) == []
+        assert len(s.scan_directory(str(tmp_path), min_size=256)) == 1
+
+    def test_missing_root_returns_empty(self, tmp_path):
+        assert EntropyScanner().scan_directory(str(tmp_path / "nope")) == []
+
+    def test_empty_directory_returns_empty(self, tmp_path):
+        assert EntropyScanner().scan_directory(str(tmp_path)) == []
+
+    def test_broken_symlink_is_skipped_not_raised(self, tmp_path):
+        (tmp_path / "good.enc").write_bytes(UNIFORM * 2)
+        os.symlink(str(tmp_path / "missing"), str(tmp_path / "dangling"))
+        reports = EntropyScanner().scan_directory(str(tmp_path))
+        assert [os.path.basename(r.path) for r in reports] == ["good.enc"]
+
+    def test_unreadable_file_is_skipped(self, tmp_path):
+        if os.geteuid() == 0:
+            pytest.skip("root can read anything")
+        locked = tmp_path / "locked.enc"
+        locked.write_bytes(UNIFORM * 2)
+        (tmp_path / "ok.enc").write_bytes(UNIFORM * 2)
+        os.chmod(locked, 0)
+        try:
+            reports = EntropyScanner().scan_directory(str(tmp_path))
+        finally:
+            os.chmod(locked, 0o644)
+        assert [os.path.basename(r.path) for r in reports] == ["ok.enc"]
+
+    def test_uses_scanner_thresholds(self, tmp_path):
+        # A stricter high_threshold turns the MIXED file's high window into a normal one.
+        (tmp_path / "doc.bin").write_bytes(MIXED)
+        strict = EntropyScanner(high_threshold=8.5)
+        assert strict.scan_directory(str(tmp_path)) == []
