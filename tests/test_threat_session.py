@@ -316,3 +316,76 @@ class TestTrackerQueries:
         state = t._sessions["s1"]
         assert 0.0 <= state.session_age_s() < 5.0
         assert 0.0 <= state.idle_gap_s() < 5.0
+
+class TestPrivilegeAndExportSignals:
+    """PRIVILEGE_CHANGE and DATA_EXPORT events must feed their counters and
+    the privilege/export factors through the public update() API."""
+
+    def test_privilege_change_event_counted(self):
+        t = SessionRiskTracker()
+        t.update("s1", SessionEvent(EventType.PRIVILEGE_CHANGE, ts=1000.0))
+        assert t._sessions["s1"].privilege_changes == 1
+
+    def test_data_export_event_counted(self):
+        t = SessionRiskTracker()
+        t.update("s1", SessionEvent(EventType.DATA_EXPORT, ts=1000.0))
+        assert t._sessions["s1"].data_exports == 1
+
+    def test_privilege_and_export_do_not_touch_other_counters(self):
+        t = SessionRiskTracker()
+        t.update("s1", SessionEvent(EventType.PRIVILEGE_CHANGE, ts=1000.0))
+        t.update("s1", SessionEvent(EventType.DATA_EXPORT, ts=1000.0))
+        st = t._sessions["s1"]
+        assert st.failed_auth_count == 0
+        assert st.geo_jumps == 0
+        assert st.ua_switches == 0
+
+    def test_first_privilege_change_matches_factor_weight(self):
+        # Old ts keeps velocity at 0; only the privilege factor is live:
+        # raw = 0.10 * 0.5 = 0.05, first EWMA pull = 0.3 * 0.05 = 0.015
+        t = SessionRiskTracker()
+        score = t.update("s1", SessionEvent(EventType.PRIVILEGE_CHANGE, ts=1000.0))
+        assert score == pytest.approx(0.3 * 0.10 * 0.5, abs=1e-4)
+
+    def test_first_data_export_matches_factor_weight(self):
+        # raw = 0.07 * 0.45 = 0.0315, first EWMA pull = 0.3 * 0.0315
+        t = SessionRiskTracker()
+        score = t.update("s1", SessionEvent(EventType.DATA_EXPORT, ts=1000.0))
+        assert score == pytest.approx(0.3 * 0.07 * 0.45, abs=1e-4)
+
+    def test_privilege_factor_saturates_at_cap(self):
+        # _privilege_score caps at 2 changes; a tracker fed 30 changes must
+        # converge to the same raw score as one fed exactly 2 (0.10 * 1.0),
+        # not keep climbing with the change count.
+        def converged(changes):
+            t = SessionRiskTracker()
+            score = 0.0
+            for _ in range(changes):
+                score = t.update("s1", SessionEvent(EventType.PRIVILEGE_CHANGE,
+                                                    ts=1000.0))
+            return score
+        assert converged(30) == pytest.approx(converged(40), abs=1e-4)
+        assert converged(40) == pytest.approx(0.10, abs=0.001)
+
+    def test_export_factor_saturates_at_cap(self):
+        # _export_score caps at 0.45 * 3 > 1.0; converged raw stays 0.07.
+        t = SessionRiskTracker()
+        score = 0.0
+        for _ in range(40):
+            score = t.update("s1", SessionEvent(EventType.DATA_EXPORT, ts=1000.0))
+        assert score == pytest.approx(0.07, abs=0.001)
+
+    def test_all_three_signal_factors_stack(self):
+        # 40 rounds of (PRIVILEGE_CHANGE, DATA_EXPORT, AUTH_ATTEMPT 401):
+        # auth -> 1-exp(-8) ~= 0.99966, privilege -> 1.0, export -> 1.0
+        # raw -> 0.25*0.99966 + 0.10 + 0.07 = 0.41992
+        t = SessionRiskTracker()
+        score = 0.0
+        for i in range(40):
+            ts = 1000.0 + i * 0.001  # all far in the past: velocity stays 0
+            t.update("s1", SessionEvent(EventType.PRIVILEGE_CHANGE, ts=ts))
+            t.update("s1", SessionEvent(EventType.DATA_EXPORT, ts=ts))
+            score = t.update("s1", SessionEvent(EventType.AUTH_ATTEMPT,
+                                                status_code=401, ts=ts))
+        expected = 0.25 * (1.0 - math.exp(-0.2 * 40)) + 0.10 + 0.07
+        assert score == pytest.approx(expected, abs=0.002)
