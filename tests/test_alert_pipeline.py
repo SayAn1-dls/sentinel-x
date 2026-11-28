@@ -197,3 +197,9 @@ class TestEscalation:
         p = AlertPipeline()
         inc = p.ingest(_alert(score=0.95))
         assert inc.severity == Severity.CRITICAL
+
+class TestIncidentEdgeCases:
+    def test_empty_incident_score_is_zero(self):
+        # The score property must guard the no-alerts case before weighting
+        # (was the only uncovered live line in alert_pipeline.py).
+        assert Incident("INC-1", "e1").score == 0.0
