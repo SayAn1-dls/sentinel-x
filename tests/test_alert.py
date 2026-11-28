@@ -212,3 +212,103 @@ class TestAlertManager:
         assert s["by_severity"]["critical"] == 1
         assert s["by_status"]["acknowledged"] == 1
         assert s["by_status"]["sent"] == 1
+
+class TestAlertDeduplicatorCleanup:
+    """cleanup() must drop expired fingerprints and keep fresh ones."""
+
+    def _make_alert(self, rule_id="r1", source="s1"):
+        return Alert(
+            alert_id="a1",
+            rule_id=rule_id,
+            title="Test Alert",
+            message="Test message",
+            priority=AlertPriority.P2_HIGH,
+            source=source,
+            triggered_at=datetime.utcnow(),
+        )
+
+    def test_cleanup_removes_expired_entries(self):
+        dedup = AlertDeduplicator(cooldown=timedelta(minutes=5))
+        alert = self._make_alert()
+        dedup.is_duplicate(alert)
+        # Backdate the fingerprint beyond the cooldown
+        fp = dedup._fingerprint(alert)
+        dedup._fingerprints[fp] = datetime.utcnow() - timedelta(minutes=10)
+        assert dedup.cleanup() == 1
+        assert dedup._fingerprints == {}
+
+    def test_cleanup_keeps_fresh_entries(self):
+        dedup = AlertDeduplicator(cooldown=timedelta(minutes=5))
+        fresh = self._make_alert(rule_id="r1")
+        dedup.is_duplicate(fresh)
+        stale = self._make_alert(rule_id="r2")
+        dedup.is_duplicate(stale)
+        dedup._fingerprints[dedup._fingerprint(stale)] = (
+            datetime.utcnow() - timedelta(minutes=10)
+        )
+        assert dedup.cleanup() == 1
+        assert list(dedup._fingerprints) == [dedup._fingerprint(fresh)]
+        # The surviving fingerprint still suppresses within the cooldown
+        assert dedup.is_duplicate(fresh) is True
+
+
+class TestAlertRouterContract:
+    """Route-level contracts for the no_rule and broken-channel paths."""
+
+    def setup_method(self):
+        self.router = AlertRouter()
+        self.delivered = []
+
+    def _make_rule(self, rule_id="r1"):
+        return AlertRule(
+            rule_id=rule_id,
+            name="Test Rule",
+            condition="temperature > 40",
+            channels=[AlertChannel.EMAIL, AlertChannel.WEBHOOK],
+            priority=AlertPriority.P2_HIGH,
+        )
+
+    def _make_alert(self, rule_id="r1"):
+        return Alert(
+            alert_id="a-1",
+            rule_id=rule_id,
+            title="Temperature High",
+            message="Sensor reading exceeds threshold",
+            priority=AlertPriority.P2_HIGH,
+            source="sensor_001",
+            triggered_at=datetime.utcnow(),
+        )
+
+    def test_route_without_rule_returns_no_rule(self):
+        result = self.router.route(self._make_alert(rule_id="ghost"))
+        assert result["status"] == "no_rule"
+        assert result["alert_id"] == "a-1"
+        assert result["channels"] == {}
+
+    def test_broken_channel_does_not_block_others(self):
+        self.router.add_rule(self._make_rule())
+
+        def bad_handler(alert):
+            raise RuntimeError("webhook endpoint unreachable")
+
+        self.router.register_handler(AlertChannel.EMAIL, self.delivered.append)
+        self.router.register_handler(AlertChannel.WEBHOOK, bad_handler)
+        result = self.router.route(self._make_alert())
+        assert result["status"] == "routed"
+        assert result["channels"]["email"]["status"] == "delivered"
+        assert result["channels"]["webhook"]["status"] == "error"
+        assert "webhook endpoint unreachable" in result["channels"]["webhook"]["error"]
+        assert len(self.delivered) == 1
+        # The alert is still recorded as routed, so it can be acknowledged.
+        assert self.router.acknowledge("a-1") is True
+
+
+class TestAlertManagerResolve:
+    def test_resolve_unknown_alert_returns_false(self):
+        # Docstring: "Returns False when the alert is unknown or already
+        # resolved" - the unknown-id path was the untested half.
+        from src.modules.alert import AlertManager
+        m = AlertManager()
+        m.send("x", "warning")
+        assert m.resolve("ALR-999999") is False
+        assert m.alerts[0]["status"] == "sent"
